@@ -1,5 +1,4 @@
 // MQTT Message Examples
-
 const serverTowelsTopic = {
     "sensorId" : "ESPCN01",
     "toallas" : 4,
@@ -11,6 +10,7 @@ const serverTowelsTopic = {
 const serverWaterConsumeTopic = {
     "sensorId" : "ESPCN03",
     "consumoML" : 500,
+    "seconds" : 128,
     "fecha" : "2020-10-12"
 }
 
@@ -24,8 +24,9 @@ const espTotalsTopic = {
     "totalTowelsWaterConsume" : 1561,
     "totalFlowMetersWaterConsume" : 32110,
     "totalWaterConsume" : 32.11,
+    "totalWaterConsumeTime" : 18533,
     "totalWeight" : 1695,
-    "totalTowels" : 6
+    "totalTowels" : 65
 }
 
 /** Mongo Collections
