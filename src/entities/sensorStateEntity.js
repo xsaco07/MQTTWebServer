@@ -1,0 +1,1 @@
+module.exports.buildSensorStateEntity = (state) => Object.freeze({'state' : state});
