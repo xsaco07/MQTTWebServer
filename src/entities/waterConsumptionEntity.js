@@ -12,7 +12,7 @@ const waterConsumptionSchema = {
             type : String,
             required : true,
         },
-        consume : {
+        consumption : {
             type : Number,
             required : true,
             default : 0.00
@@ -25,7 +25,7 @@ const waterConsumptionSchema = {
         date : {
             type : Date,
             required : true,
-            default : Date.now()
+            default : new Date()
         }   
     }
 
@@ -37,5 +37,4 @@ const WaterConsumption = mongoose.model(
     'waterConumptions');
 
 module.exports.WaterConsumption = WaterConsumption;
-module.exports.buildWaterConsumptionEntity = (waterConsumptionObject) 
-    => new WaterConsumption(Object.freeze(waterConsumptionObject));
+module.exports.buildWaterConsumptionEntity = (waterConsumptionObject) => new WaterConsumption(Object.freeze(waterConsumptionObject));

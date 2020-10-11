@@ -25,7 +25,7 @@ const checkInSchema = {
     date : {
         type : Date,
         required : true,
-        default : Date.now()
+        default : new Date()
     }
 
 }

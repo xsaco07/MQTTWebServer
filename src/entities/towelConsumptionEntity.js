@@ -22,7 +22,7 @@ const towelConsumptionSchema = {
             required : true,
             default : 0.00
         },
-        consume : {
+        consumption : {
             type : Number,
             requird : true,
             default : 0.00
@@ -30,7 +30,7 @@ const towelConsumptionSchema = {
         date : {
             type : Date,
             required : true,
-            default : Date.now()
+            default : new Date()
         }   
     }
 
@@ -42,5 +42,4 @@ const TowelConsumption = mongoose.model(
     'towelConsumptions');
 
 module.exports.TowelConsumption = TowelConsumption;
-module.exports.buildTowelConsumptionEntity = (towelConsumptionObject) 
-    => new TowelConsumption(Object.freeze(towelConsumptionObject));
+module.exports.buildTowelConsumptionEntity = (towelConsumptionObject) => new TowelConsumption(Object.freeze(towelConsumptionObject));
