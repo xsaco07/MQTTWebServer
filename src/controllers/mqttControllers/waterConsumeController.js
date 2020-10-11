@@ -1,31 +1,41 @@
-const {buildWaterConsumptionEntity, WaterConsumption} = require('../../entities/waterConsumptionEntity');
+const entities = require('../../entities/entities');
+const {buildWaterConsumptionEntity} = require('../../entities/waterConsumptionEntity');
+
+const handleError = (err) => {
+    console.log(`An error has occured while tryng to performe a TowelConsumption model operation`);
+    console.log(`Error: ${err}`);
+};
 
 module.exports = {
     saveDoc : async (message) => {
-        const object = Object.freeze(JSON.parse(message));
-        const waterConsumptionDocument = buildWaterConsumptionEntity(object);
-        await waterConsumptionDocument.save((error) => {
-            console.log(`An error has occured while saving the waterConsumptionDocument`);
-            console.log(`Error: ${error}`);
+        const infoPacket = JSON.parse(message);
+        // Search and assign sensor id based on sensor name
+        const sensorObject = await entities.EspSensor.findOne({sensorName : infoPacket.sensorName}, '_id');
+        //Build entity
+        const finalObject = {'sensor_id' : sensorObject._id, infoPacket};
+        const waterConsumptionDocument = buildWaterConsumptionEntity(Object.freeze(finalObject));
+        //Save document
+        waterConsumptionDocument.save((err) => {
+            if(err) handleError(err);
         });
     },
     getDocs : async () => {
-        const docs = await WaterConsumption.find({});
+        const docs = await entities.WaterConsumption.find({});
         if(docs.length == 0) console.log(`Docs not found`);
         return docs;
     },
     getDocsByDate : async (date) => {
-        const docs = await WaterConsumption.find({date : date});
+        const docs = await entities.WaterConsumption.find({date : date});
         if(docs.length == 0) console.log(`Docs not found according to input: ${date}`);
         return docs;
     },
     getDocsByDateRange : async (date1, date2) => {
-        const docs = await WaterConsumption.find({date: { $gte: date1, $lte: date2 }});
+        const docs = await entities.WaterConsumption.find({"infoPacket.date" : { $gte: date1, $lte: date2}});
         if(docs.length == 0) console.log(`Docs not found according to input: ${date}`);
         return docs;
     },
     getDocsBySensorName : async (sensorName) => {
-        const docs = await WaterConsumption.find({infoPacket : {sensorName : sensorName}});
+        const docs = await entities.WaterConsumption.find({"infoPacket.sensorName" : sensorName});
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
     }

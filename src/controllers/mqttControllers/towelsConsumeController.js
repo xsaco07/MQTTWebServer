@@ -1,6 +1,6 @@
 const entities = require('../../entities/entities');
 
-const {buildTowelConsumptionEntity, TowelConsumption} = require('../../entities/towelConsumptionEntity');
+const {buildTowelConsumptionEntity} = require('../../entities/towelConsumptionEntity');
 
 const handleError = (err) => {
     console.log(`An error has occured while tryng to performe a TowelConsumption model operation`);
@@ -21,17 +21,17 @@ module.exports = {
         });
     },
     getDocs : async () => {
-        const docs = await TowelConsumption.find({});
+        const docs = await entities.TowelConsumption.find({});
         if(docs.length == 0) console.log(`Docs not found`);
         return docs;
     },
     getDocsByDateRange : async (date1, date2) => {
-        const docs = await TowelConsumption.find({"infoPacket.date" : { $gte: date1, $lte: date2}});
+        const docs = await entities.TowelConsumption.find({"infoPacket.date" : { $gte: date1, $lte: date2}});
         if(docs.length == 0) console.log(`Docs not found according to input: ${date1}, ${date2}`);
         return docs;
     },
     getDocsBySensorName : async (sensorName) => {
-        const docs = await TowelConsumption.find({"infoPacket.sensorName" : sensorName});
+        const docs = await entities.TowelConsumption.find({"infoPacket.sensorName" : sensorName});
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
     }

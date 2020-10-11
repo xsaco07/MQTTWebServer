@@ -34,7 +34,7 @@ const waterConsumptionSchema = {
 const WaterConsumption = mongoose.model(
     'WaterConsumption', 
     new Schema(waterConsumptionSchema),
-    'waterConumptions');
+    'waterConsumptions');
 
 module.exports.WaterConsumption = WaterConsumption;
 module.exports.buildWaterConsumptionEntity = (waterConsumptionObject) => new WaterConsumption(Object.freeze(waterConsumptionObject));
