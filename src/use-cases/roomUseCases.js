@@ -29,6 +29,19 @@ module.exports = {
         }
         
     },
+    // inputData = {room_id : ObjectId}
+    getRoomById : async (inputData) => {
+        const room_id = inputData.room_id;
+        let doc = {};
+        try {
+            doc = await entities.Room.findById(room_id);   
+        } catch (error) {
+            handleSaveError(error);
+        }
+        finally {
+            return doc;
+        }
+    },
     // inputData = {roomNumber : int}
     getRoomByNumber : async (inputData) => {
         const roomNumber = inputData.roomNumber;

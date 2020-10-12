@@ -7,7 +7,7 @@ var validateEmail = (email) => {
 };
 
 const guestSchema = {
-    credencials : {
+    fullName : {
         name : {
             type : String,
             required : true,
@@ -24,19 +24,30 @@ const guestSchema = {
             default : ''
         }
     },
+    age : {
+        type : Number,
+        required : true,
+        default : 0
+    },
+    country : {
+        type : String,
+        required : true,
+        default : 'No country'
+    },
     email : {
         type : String,
         required : false,
         default : 'No_Email',
         validate: [validateEmail, 'Please fill a valid email address']
     },
-    phoneNumner : {
+    phoneNumber : {
         type : String,
         required : false,
         default : 'No_phoneNumber'
     },
     room_id : {
         type : Schema.Types.ObjectId,
+        required: true,
         ref : 'Room'
     },
 
