@@ -23,9 +23,7 @@ const saveRooms = async () => {
     }    
 }
 
-saveRooms();
-
-/* const checkInDocument = buildCheckInEntity({
+const checkInDocument = buildCheckInEntity({
     room_id : roomDocument._id,
     duration : {
         days : 1,
@@ -36,6 +34,6 @@ saveRooms();
 checkInDocument.save((err) => {
     if(err) console.log(`An error has occured: ${err}`);
     else console.log(`Document saved: ${checkInDocument._id}`);
-}); */
+});
 
 
