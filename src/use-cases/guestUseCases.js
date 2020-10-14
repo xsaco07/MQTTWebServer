@@ -1,4 +1,5 @@
 const entities = require('../entities/entities');
+const factories = require('../entities/factories');
 const roomUseCases = require('../use-cases/roomUseCases');
 
 const handleSaveError = (err) => {
@@ -30,7 +31,7 @@ module.exports = {
             phoneNumber : inputData.phoneNumber,
             room_id : inputData.room_id
         });
-        const guestDocument = new entities.Guest(finalObject);
+        const guestDocument = factories.buildGuestEntity(finalObject);
         guestDocument.save((err) => {
             if(err) handleSaveError(err);
         });
@@ -46,6 +47,19 @@ module.exports = {
     getGuestById : async (inputData) => {
         let doc = {};
         try {doc = await entities.Guest.findById({_id : inputData.guest_id});}
+        catch (error) {handleSaveError(error);}
+        finally {return doc;}
+    },
+    // inputData = {name : String, lastName1 : String, lastName2 : String}
+    getGuestByFullName : async (inputData) => {
+        let doc = {};
+        try {doc = await entities.Guest.find({
+            fullName : {
+                name : inputData.name,
+                lastName1 : inputData.lastName1,
+                lastName2 : inputData.lastName2
+            }
+        });}
         catch (error) {handleSaveError(error);}
         finally {return doc;}
     },

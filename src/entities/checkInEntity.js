@@ -6,6 +6,10 @@ const checkInSchema = {
         type : Schema.Types.ObjectId,
         ref : 'Room'
     },
+    guest_id : {
+        type : Schema.Types.ObjectId,
+        ref : 'Guest'
+    },
     duration : {
         days : {
             type : Number,
@@ -15,7 +19,7 @@ const checkInSchema = {
         nights : {
             type : Number,
             required : false,
-            default : 0
+            default : this.days
         }
     },
     date : {
