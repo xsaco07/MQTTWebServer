@@ -10,7 +10,7 @@ const handleSaveError = (err) => {
 
 module.exports = {
 
-    // inputData = {roomNumber: X, capacity: Y}
+    // inputData = {roomNumber: int, capacity: int}
     newRoom : async (inputData) => {
         const roomDocument = factories.buildRoomEntity(inputData);
         roomDocument.save((err) => {

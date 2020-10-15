@@ -11,7 +11,7 @@ const handleSaveError = (err) => {
 module.exports = {
     // Method = POST
     // Action = newRoom/
-    // Req.body = {roomNumber: 5, capacity: 2}
+    // Req.body = {roomNumber: int, capacity: int}
     newRoom : async (req, res, next) => {
         const roomDocument = new entities.Room(req.body);
         try {
@@ -25,7 +25,7 @@ module.exports = {
     },
     // Method = GET
     // Action = room/
-    // Req.body = {}
+    // Params = {}
     getRooms : async (req, res, next) => {
         try {
             const docs = await roomUseCases.getRooms();
@@ -37,7 +37,7 @@ module.exports = {
     },
     // Method = GET
     // Action = /rooms/room_number/:roomNumber/
-    // Req.body =  {roomNumber : 4}
+    // Params =  {roomNumber : int}
     getRoomByNumber : async (req, res, next) => {
         try {
             const roomNumber = req.params.roomNumber;
@@ -53,7 +53,7 @@ module.exports = {
     },
     // Method = GET
     // Action = rooms/capacity/:capacity/
-    // Req.body =  {capacity : 3}
+    // Params =  {capacity : int}
     getRoomsByCapacity : async (req, res, next) => {
         try {
             const capacity = req.params.capacity;

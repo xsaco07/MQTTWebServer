@@ -2,35 +2,39 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const checkOutSchema = {
-    room_id : {
+    checIn_id : {
         type : Schema.Types.ObjectId,
-        ref : 'Room'
+        ref : 'CheckIn',
+        required : true
     },
-    guest_id : {
-        type : Schema.Types.ObjectId,
-        ref : 'Guest'
-    },
-    duration : {
-        days : {
+    totalWaterConsume : {
+        consumption : {
             type : Number,
-            required : false,
+            required : true,
             default : 0
         },
-        nights : {
+        seconds : {
             type : Number,
-            required : false,
+            required : true,
             default : 0
         }
     },
-    totalWaterConsume : {
-        type : Number,
-        required : true,
-        default : 0
-    },
     totalTowelsConsume : {
-        type : Number,
-        required : true,
-        default : 0
+        towels : {
+            type : Number,
+            required : true,
+            default : 0
+        },
+        weight : {
+            type : Number,
+            required : true,
+            default : 0
+        },
+        consumption : {
+            type : Number,
+            required : true,
+            default : 0
+        }
     },
     date : {
         type : Date,

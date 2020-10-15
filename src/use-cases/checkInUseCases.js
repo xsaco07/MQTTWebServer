@@ -30,17 +30,25 @@ module.exports = {
         catch (error) {handleSaveError(error);}
         finally {return docs;}
     },
+    // inputData = {checkIn_id : ObjectId}
+    getCheckInById = async (inputData) => {
+        let doc = {};
+        try {doc = await entities.CheckIn.findById(inputData.room_id);}
+        catch (error) {handleSaveError(error);}
+        finally {return doc;}
+
+    },
     // inputData = {room_id : ObjectId}
     getCheckInsByRoomId = async (inputData) => {
         let doc = {};
-        try {doc = await entities.CheckIn.findById({room_id : inputData.room_id});}
+        try {doc = await entities.CheckIn.find({room_id : inputData.room_id});}
         catch (error) {handleSaveError(error);}
         finally {return doc;}
     },
     // inputData = {days : int, nights : int}
     getCheckInsByDuration = async (inputData) => {
         let doc = {};
-        try {doc = await entities.CheckIn.findById(
+        try {doc = await entities.CheckIn.find(
             {duration : {days : inputData.days, nights : inputData.nights}}
         );}
         catch (error) {handleSaveError(error);}

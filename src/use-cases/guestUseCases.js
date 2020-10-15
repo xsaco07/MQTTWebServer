@@ -46,7 +46,7 @@ module.exports = {
     // inputData = {guest_id : ObjectId}
     getGuestById : async (inputData) => {
         let doc = {};
-        try {doc = await entities.Guest.findById({_id : inputData.guest_id});}
+        try {doc = await entities.Guest.findById(inputData.guest_id);}
         catch (error) {handleSaveError(error);}
         finally {return doc;}
     },
