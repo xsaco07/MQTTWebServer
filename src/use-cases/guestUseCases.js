@@ -32,10 +32,10 @@ module.exports = {
             room_id : inputData.room_id
         });
         const guestDocument = factories.buildGuestEntity(finalObject);
-        guestDocument.save((err) => {
+        guestDocument.save((err, doc) => {
             if(err) handleSaveError(err);
+            else return doc;
         });
-        return guestDocument;
     },
     // inputData = {}
     getGuests : async () => {

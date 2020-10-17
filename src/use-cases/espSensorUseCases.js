@@ -12,8 +12,9 @@ module.exports = {
     // inputData = {sensorName : String, room_id : ObjectId}
     newEspSensor : async () => {
         const sensorDocument = factories.buildEspSensorEntity(inputData);
-        sensorDocument.save((err) => {
-            handleSaveError(err);
+        sensorDocument.save((err, doc) => {
+            if(err) handleSaveError(err);
+            else return doc;
         });
     },
     // inputData = {}

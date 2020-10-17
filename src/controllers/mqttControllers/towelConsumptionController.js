@@ -19,8 +19,9 @@ module.exports = {
         const finalObject = {sensor_id : sensorObject._id, infoPacket};
         const towelConsumptionDocument = buildTowelConsumptionEntity(finalObject);
         //Save document
-        towelConsumptionDocument.save((err) => {
+        towelConsumptionDocument.save((err, doc) => {
             if(err) handleError(err);
+            else console.log(`Doc saved: ${doc}`);
         });
     },
     getDocs : async () => {

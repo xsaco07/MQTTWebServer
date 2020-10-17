@@ -9,7 +9,7 @@ const handleSaveError = (err) => {
 
 module.exports = {
     // Method = POST
-    // Action = sensor/new
+    // Action = sensor/new/
     // Req.body = {sensorName: String, room_id : ObjectId}
     new : async (req, res, next) => {
         const sensorInfo = req.body;

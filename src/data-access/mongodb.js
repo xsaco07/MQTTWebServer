@@ -9,6 +9,17 @@ const connectionOptions = {
     useCreateIndex: true
 };
 
-const makeDB = async () => {return await mongoose.connect(url, connectionOptions);};
+const makeDB = async () => {
+    try {
+        await mongoose.connect(url, connectionOptions);
+        console.log('Database connected');   
+    } catch (error) {console.log(`Error connecting to the database: ${error}`);}
+};
+const closeDB = async () => {
+    try {
+        await mongoose.disconnect();
+        console.log('Database disconnected');   
+    } catch (error) {console.log(`Error disconnecting the database: ${error}`);}   
+};
 
-module.exports = makeDB;
+module.exports = {makeDB, closeDB};

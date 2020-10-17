@@ -17,8 +17,9 @@ module.exports = {
         const finalObject = {'sensor_id' : sensorObject._id, infoPacket};
         const waterConsumptionDocument = buildWaterConsumptionEntity(Object.freeze(finalObject));
         //Save document
-        waterConsumptionDocument.save((err) => {
+        waterConsumptionDocument.save((err, doc) => {
             if(err) handleError(err);
+            else console.log(`Doc saved: ${doc}`);
         });
     },
     getDocs : async () => {

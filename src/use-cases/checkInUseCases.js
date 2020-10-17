@@ -20,7 +20,8 @@ module.exports = {
         };
         const checkInDocument = factories.buildCheckInEntity(finalObject);
         checkInDocument.save((err) => {
-            handleSaveError(err);
+            if(err) handleSaveError(err);
+            else return doc;
         });
     },
     // inputData = {}

@@ -1,26 +1,24 @@
-const makeDB = require('../../data-access/mongodb');
+const { makeDB, closeDB } = require('../../data-access/mongodb');
 const { getTotalTowelsConsumptionByRoomId } = require('./towelConsumptionController');
 const towelsController = require('./towelConsumptionController');
 const waterController = require('./waterConsumptionController');
 
-makeDB()
-.then(() => {console.log(`Database connection success!`);})
-.catch((err) => {console.log(`An error has occured: ${err}`);});
+makeDB();
 
 const saveTowelsDoc = async () => {
-    const date = new Date('2020-09-12 21:58:00 UTC');
     const message = `{"sensorName" : "ESPSensor02",
     "towels" : 2,
     "weight" : 1000,
     "consumption" : 240,
-    "date" : "${date.toLocaleString()}"}`;
-    console.log(`Message : ${message}`);
-    await towelsController.saveDoc(message)
+    "date" : "2020-10-17 14:42:00 UTC"}`;
+    await towelsController.saveDoc(message);
 };
+
+saveTowelsDoc();
 
 const getTowelsDocs = async () => {
     const docs = await towelsController.getDocs();
-    console.log(docs);
+    console.log(docs.length);
 };
 
 const getTowelsDocsByDates = async () => {
@@ -40,11 +38,10 @@ const getTowelsDocsBySensorName = async () => {
 //------------------------------------------------------------------
 
 const saveWaterDoc = async () => {
-    const date = new Date('2020-11-12 21:58:00 UTC');
     const message = `{"sensorName" : "ESPSensor04",
     "consumption" : 240,
     "seconds" : 800,
-    "date" : "${date.toLocaleString()}"}`;
+    "date" : "2020-10-17 14:42:00 UTC"}`;
     console.log(`Message : ${message}`);
     await waterController.saveDoc(message);
 };
@@ -71,8 +68,6 @@ const getWaterDocsBySensorName = async () => {
 //-----------------------------------------------------------
 
 const totals = async () => {
-    //console.log(await towelsController.getTotalTowelsConsumptionByRoomId('5f82022e584db00f057e0b9c'));
+    console.log(await towelsController.getTotalTowelsConsumptionByRoomId('5f82022e584db00f057e0b9c'));
     console.log(await waterController.getTotalWaterConsumptionByRoomId('5f82022e584db00f057e0b9f'));
 };
-
-totals();

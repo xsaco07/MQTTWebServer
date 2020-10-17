@@ -24,8 +24,9 @@ module.exports = {
         inputData.totalTowelsConsumption = totalTowelsConsumption;
 
         const checkOutDocument = factories.buildCheckOutEntity(finalObject);
-        checkOutDocument.save((err) => {
-            handleSaveError(err);
+        checkOutDocument.save((err, doc) => {
+            if(err) handleSaveError(err);
+            else return doc;
         });
     },
     // inputData = {}

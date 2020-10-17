@@ -13,10 +13,10 @@ module.exports = {
     // inputData = {roomNumber: int, capacity: int}
     newRoom : async (inputData) => {
         const roomDocument = factories.buildRoomEntity(inputData);
-        roomDocument.save((err) => {
+        roomDocument.save((err, doc) => {
             if(err) handleSaveError(err);
+            else return doc;
         });
-        return roomDocument;
     },
     // inputData = {}
     getRooms : async () => {
