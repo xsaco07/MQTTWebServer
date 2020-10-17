@@ -35,6 +35,7 @@ module.exports = {
         guestDocument.save((err) => {
             if(err) handleSaveError(err);
         });
+        return guestDocument;
     },
     // inputData = {}
     getGuests : async () => {

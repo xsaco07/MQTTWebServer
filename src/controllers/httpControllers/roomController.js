@@ -1,4 +1,3 @@
-const entities = require('../../entities/entities');
 const utils = require('../../utils');
 const roomUseCases = require('../../use-cases/roomUseCases');
 
@@ -10,13 +9,14 @@ const handleSaveError = (err) => {
 
 module.exports = {
     // Method = POST
-    // Action = newRoom/
+    // Action = room/new/
     // Req.body = {roomNumber: int, capacity: int}
-    newRoom : async (req, res, next) => {
-        const roomDocument = new entities.Room(req.body);
+    new : async (req, res, next) => {
+        const roomDocument = req.body;
+        const savedObject = {};
         try {
-            await roomUseCases.newRoom(roomDocument);   
-            res.status(201).json({roomDocument});
+            savedObject = await roomUseCases.newRoom(roomDocument);   
+            res.status(201).json({savedObject});
         } catch (error) {
             console.log(`An error has occured while saving a Room`);
             console.log(`Error: ${err}`);
@@ -26,7 +26,7 @@ module.exports = {
     // Method = GET
     // Action = room/
     // Params = {}
-    getRooms : async (req, res, next) => {
+    getAll : async (req, res, next) => {
         try {
             const docs = await roomUseCases.getRooms();
             if(docs.length == 0) res.status(204).json({error : 'Resources not found'});
@@ -38,7 +38,7 @@ module.exports = {
     // Method = GET
     // Action = /rooms/room_number/:roomNumber/
     // Params =  {roomNumber : int}
-    getRoomByNumber : async (req, res, next) => {
+    getByNumber : async (req, res, next) => {
         try {
             const roomNumber = req.params.roomNumber;
             const doc = await roomUseCases.getRoomByNumber({roomNumber});
@@ -54,7 +54,7 @@ module.exports = {
     // Method = GET
     // Action = rooms/capacity/:capacity/
     // Params =  {capacity : int}
-    getRoomsByCapacity : async (req, res, next) => {
+    getByCapacity : async (req, res, next) => {
         try {
             const capacity = req.params.capacity;
             const docs = await roomUseCases.getRoomsByCapacity({capacity});
@@ -68,7 +68,7 @@ module.exports = {
     // Method = GET
     // Action = rooms/occupancy/:occupancyState/
     // Req.body =  {occupancyState : true}
-    getRoomsByOccupancyState : async (req, res, next) => {
+    getByOccupancyState : async (req, res, next) => {
         try {
             const occupancyState = req.params.occupancyState;
             const docs = await roomUseCases.getRoomsByOccupancyState({occupancyState});

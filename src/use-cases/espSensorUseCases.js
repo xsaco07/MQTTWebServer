@@ -9,7 +9,7 @@ const handleSaveError = (err) => {
 };
 
 module.exports = {
-    // inputData = {sensorName : String, state : boolean, room_id : ObjectId}
+    // inputData = {sensorName : String, room_id : ObjectId}
     newEspSensor : async () => {
         const sensorDocument = factories.buildEspSensorEntity(inputData);
         sensorDocument.save((err) => {

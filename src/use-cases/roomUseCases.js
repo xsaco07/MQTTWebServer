@@ -16,6 +16,7 @@ module.exports = {
         roomDocument.save((err) => {
             if(err) handleSaveError(err);
         });
+        return roomDocument;
     },
     // inputData = {}
     getRooms : async () => {
@@ -23,7 +24,6 @@ module.exports = {
         try {docs = await entities.Room.find({});} 
         catch (error) {handleSaveError(error);}
         finally {return docs;}
-        
     },
     // inputData = {room_id : ObjectId}
     getRoomById : async (inputData) => {

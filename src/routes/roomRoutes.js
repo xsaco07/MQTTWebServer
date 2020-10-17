@@ -6,15 +6,15 @@ router.get('/', (req, res, next) => {
     res.send('Hello world');
 });
 
-router.get('/room/', roomController.getRooms);
+router.get('/room/', roomController.getAll);
 
-router.get('/room/room_number/:roomNumber/', roomController.getRoomByNumber);
+router.get('/room/room_number/:roomNumber/', roomController.getByNumber);
 
-router.get('/room/capacity/:capacity/', roomController.getRoomsByCapacity);
+router.get('/room/capacity/:capacity/', roomController.getByCapacity);
 
-router.get('/room/occupancy/:occupancyState/', roomController.getRoomsByOccupancyState);
+router.get('/room/occupancy/:occupancyState/', roomController.getByOccupancyState);
 
-router.post('/room/new/', roomController.newRoom);
+router.post('/room/new/', roomController.new);
 
 module.exports = router;
 
