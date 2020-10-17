@@ -1,6 +1,8 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
 const checkInUseCases = require('../use-cases/checkInUseCases');
+const towelConsumptionUseCases = require('../controllers/mqttControllers/towelConsumptionController');
+const waterConsumptionUseCases = require('../controllers/mqttControllers/waterConsumptionController');
 
 const handleSaveError = (err) => {
     console.log(`CheckOut Use Case`);
@@ -13,11 +15,14 @@ module.exports = {
     // inputData = {checkIn_id : ObjectId, date : Date}
     newCheckOut : async (inputData) => {
         const boundCheckIn = checkInUseCases.getCheckInById(inputData.checkIn_id);
-        // TODO : implement below methods in Totals use cases
-        // const totalWaterConsumption = towelConsumptionUseCases.getTotalWaterConsumption(boundCheckIn.room_id);
-        // const totalTowelsConsumption = towelConsumptionUseCases.getTotalTowelConsumption(boundCheckIn.room_id);
+        const totalWaterConsumption = 
+            waterConsumptionUseCases.getTotalWaterConsumptionByRoomId(boundCheckIn.room_id);
+        const totalTowelsConsumption = 
+            towelConsumptionUseCases.getTotalTowelsConsumptionByRoomId(boundCheckIn.room_id);
+
         inputData.totalWaterConsumption = totalWaterConsumption;
         inputData.totalTowelsConsumption = totalTowelsConsumption;
+
         const checkOutDocument = factories.buildCheckOutEntity(finalObject);
         checkOutDocument.save((err) => {
             handleSaveError(err);

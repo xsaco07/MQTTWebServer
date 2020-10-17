@@ -7,7 +7,7 @@ const checkOutSchema = {
         ref : 'CheckIn',
         required : true
     },
-    totalWaterConsume : {
+    totalWaterConsumption : {
         consumption : {
             type : Number,
             required : true,
@@ -19,7 +19,7 @@ const checkOutSchema = {
             default : 0
         }
     },
-    totalTowelsConsume : {
+    totalTowelsConsumption : {
         towels : {
             type : Number,
             required : true,
