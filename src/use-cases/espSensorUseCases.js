@@ -10,38 +10,45 @@ const handleSaveError = (err) => {
 
 module.exports = {
     // inputData = {sensorName : String, state : boolean, room_id : ObjectId}
-    newEspSensor = async () => {
+    newEspSensor : async () => {
         const sensorDocument = factories.buildEspSensorEntity(inputData);
         sensorDocument.save((err) => {
             handleSaveError(err);
         });
     },
     // inputData = {}
-    getEspSensors = async (inputData) => {
+    getEspSensors : async (inputData) => {
         let docs = [];
         try {docs = await entities.EspSensor.find({});} 
         catch (error) {handleSaveError(error);}
         finally {return docs;}
     },
     // inputData = {sensor_id : ObjectId}
-    getEspSensorById = async (inputData) => {
+    getEspSensorById : async (inputData) => {
         let doc = {};
         try {doc = await entities.EspSensor.findById(inputData.sensor_id);} 
         catch (error) {handleSaveError(error);}
-        finally {return doc;}
+        finally {return doc[0];}
     },
     // inputData = {sensorName : String}
-    getEspSensorByName = async (inputData) => {
+    getEspSensorByName : async (inputData) => {
         let doc = {};
         try {doc = await entities.EspSensor.find({sensorName : inputData.sensorName});} 
         catch (error) {handleSaveError(error);}
         finally {return doc;}
     },
     // inputData = {sensorState : boolean}
-    getEspSensorByState = async (inputData) => {
+    getEspSensorByState : async (inputData) => {
         let docs = [];
         try {docs = await entities.EspSensor.find({sensorState : inputData.sensorState});} 
         catch (error) {handleSaveError(error);}
         finally {return doc;}
+    },
+    // inputData = {room_id : ObjectId}
+    getEspSensorByRoomId : async (inputData) => {
+        let doc = {};
+        try {doc = await entities.EspSensor.find({room_id : inputData.room_id});} 
+        catch (error) {handleSaveError(error);}
+        finally {return doc[0];}
     }
 };

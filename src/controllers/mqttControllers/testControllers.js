@@ -1,6 +1,7 @@
 const makeDB = require('../../data-access/mongodb');
-const towelsController = require('./towelsConsumeController');
-const waterController = require('./waterConsumeController');
+const { getTotalTowelsConsumptionByRoomId } = require('./towelConsumptionController');
+const towelsController = require('./towelConsumptionController');
+const waterController = require('./waterConsumptionController');
 
 makeDB()
 .then(() => {console.log(`Database connection success!`);})
@@ -66,3 +67,12 @@ const getWaterDocsBySensorName = async () => {
     const docs = await waterController.getDocsBySensorName(sensorName);
     console.log(docs);
 };
+
+//-----------------------------------------------------------
+
+const totals = async () => {
+    //console.log(await towelsController.getTotalTowelsConsumptionByRoomId('5f82022e584db00f057e0b9c'));
+    console.log(await waterController.getTotalWaterConsumptionByRoomId('5f82022e584db00f057e0b9f'));
+};
+
+totals();

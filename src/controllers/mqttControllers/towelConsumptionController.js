@@ -1,6 +1,9 @@
 const entities = require('../../entities/entities');
+const utils = require('../../utils');
+const espSensorUseCases = require('../../use-cases/espSensorUseCases');
 
 const {buildTowelConsumptionEntity} = require('../../entities/towelConsumptionEntity');
+const {buildTotalTowelsConsumptionEntity} = require('../../entities/totalTowelsConsumptionEntity');
 
 const handleError = (err) => {
     console.log(`An error has occured while tryng to performe a TowelConsumption model operation`);
@@ -13,8 +16,8 @@ module.exports = {
         // Search and assign sensor id based on sensor name
         const sensorObject = await entities.EspSensor.findOne({sensorName : infoPacket.sensorName}, '_id');
         //Build entity
-        const finalObject = {'sensor_id' : sensorObject._id, infoPacket};
-        const towelConsumptionDocument = buildTowelConsumptionEntity(Object.freeze(finalObject));
+        const finalObject = {sensor_id : sensorObject._id, infoPacket};
+        const towelConsumptionDocument = buildTowelConsumptionEntity(finalObject);
         //Save document
         towelConsumptionDocument.save((err) => {
             if(err) handleError(err);
@@ -25,8 +28,15 @@ module.exports = {
         if(docs.length == 0) console.log(`Docs not found`);
         return docs;
     },
+    getDocById : async (towelConsumption_id) => {
+        const doc = await entities.TowelConsumption.findById(towelConsumption_id);
+        if(utils.isEmpty(doc)) console.log(`Doc not found according to input: ${towelConsumption_id}`);
+        return doc;
+    },
     getDocsByDateRange : async (date1, date2) => {
-        const docs = await entities.TowelConsumption.find({"infoPacket.date" : { $gte: date1, $lte: date2}});
+        const docs = await entities.TowelConsumption.find({
+            "infoPacket.date" : { $gte: date1, $lte: date2}
+        });
         if(docs.length == 0) console.log(`Docs not found according to input: ${date1}, ${date2}`);
         return docs;
     },
@@ -34,5 +44,18 @@ module.exports = {
         const docs = await entities.TowelConsumption.find({"infoPacket.sensorName" : sensorName});
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
+    },
+    getTotalTowelsConsumptionByRoomId : async (room_id) => {
+        const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
+        const totals = await entities.TowelConsumption.aggregate()
+        .match({"infoPacket.sensorName" : espSensorDoc.sensorName})
+        .group({
+            _id : "$infoPacket.sensorName", 
+            towels : {$sum : "$infoPacket.towels"},
+            weight : {$sum : "$infoPacket.weight"},
+            consumption : {$sum : "$infoPacket.consumption"}
+        });
+        if(totals.length > 0) return buildTotalTowelsConsumptionEntity(totals[0]);
+        return totals;
     }
 };

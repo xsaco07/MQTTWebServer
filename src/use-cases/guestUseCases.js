@@ -48,7 +48,7 @@ module.exports = {
         let doc = {};
         try {doc = await entities.Guest.findById(inputData.guest_id);}
         catch (error) {handleSaveError(error);}
-        finally {return doc;}
+        finally {return doc[0];}
     },
     // inputData = {name : String, lastName1 : String, lastName2 : String}
     getGuestByFullName : async (inputData) => {

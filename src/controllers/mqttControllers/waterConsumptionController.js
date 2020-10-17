@@ -1,5 +1,7 @@
 const entities = require('../../entities/entities');
+const espSensorUseCases = require('../../use-cases/espSensorUseCases');
 const {buildWaterConsumptionEntity} = require('../../entities/waterConsumptionEntity');
+const {buildTotalWaterConsumptionEntity} = require('../../entities/totalWaterConsumptionEntity');
 
 const handleError = (err) => {
     console.log(`An error has occured while tryng to performe a TowelConsumption model operation`);
@@ -24,6 +26,11 @@ module.exports = {
         if(docs.length == 0) console.log(`Docs not found`);
         return docs;
     },
+    getDocById : async (waterConsumption_id) => {
+        const doc = await entities.WaterConsumption.findById(waterConsumption_id);
+        if(utils.isEmpty(doc)) console.log(`Doc not found according to input: ${waterConsumption_id}`);
+        return doc;
+    },
     getDocsByDate : async (date) => {
         const docs = await entities.WaterConsumption.find({date : date});
         if(docs.length == 0) console.log(`Docs not found according to input: ${date}`);
@@ -38,5 +45,17 @@ module.exports = {
         const docs = await entities.WaterConsumption.find({"infoPacket.sensorName" : sensorName});
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
+    },
+    getTotalWaterConsumptionByRoomId : async (room_id) => {
+        const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
+        const totals = await entities.WaterConsumption.aggregate()
+        .match({"infoPacket.sensorName" : espSensorDoc.sensorName})
+        .group({
+            _id : "$infoPacket.sensorName", 
+            consumption : {$sum : "$infoPacket.consumption"},
+            seconds : {$sum : "$infoPacket.seconds"}
+        });
+        if(totals.length > 0) return buildTotalWaterConsumptionEntity(totals[0]);
+        return totals;
     }
 };

@@ -30,7 +30,7 @@ module.exports = {
         let doc = {};
         try {doc = await entities.Room.findById(inputData.room_id);} 
         catch (error) {handleSaveError(error);}
-        finally {return doc;}
+        finally {return doc[0];}
     },
     // inputData = {roomNumber : int}
     getRoomByNumber : async (inputData) => {

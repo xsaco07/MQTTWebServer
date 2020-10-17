@@ -10,7 +10,7 @@ const handleSaveError = (err) => {
 
 module.exports = {
     // inputData = {room_id : ObjectId, guest_id : ObjectId, days : int, nights : int, date : Date}
-    newCheckIn = async (inputData) => {
+    newCheckIn : async (inputData) => {
         const duration = {days, nights};
         const finalObject = {
             room_id : inputData.room_id,
@@ -24,29 +24,29 @@ module.exports = {
         });
     },
     // inputData = {}
-    getCheckIns = async () => {
+    getCheckIns : async () => {
         let docs = [];
         try {docs = await entities.CheckIn.find({});} 
         catch (error) {handleSaveError(error);}
         finally {return docs;}
     },
     // inputData = {checkIn_id : ObjectId}
-    getCheckInById = async (inputData) => {
+    getCheckInById : async (inputData) => {
         let doc = {};
         try {doc = await entities.CheckIn.findById(inputData.room_id);}
         catch (error) {handleSaveError(error);}
-        finally {return doc;}
+        finally {return doc[0];}
 
     },
     // inputData = {room_id : ObjectId}
-    getCheckInsByRoomId = async (inputData) => {
+    getCheckInsByRoomId : async (inputData) => {
         let doc = {};
         try {doc = await entities.CheckIn.find({room_id : inputData.room_id});}
         catch (error) {handleSaveError(error);}
         finally {return doc;}
     },
     // inputData = {days : int, nights : int}
-    getCheckInsByDuration = async (inputData) => {
+    getCheckInsByDuration : async (inputData) => {
         let doc = {};
         try {doc = await entities.CheckIn.find(
             {duration : {days : inputData.days, nights : inputData.nights}}
@@ -55,7 +55,7 @@ module.exports = {
         finally {return doc;}
     },
     // inputData = {date1 : Date, date2 : Date2}
-    getCheckInsByDate = async (inputData) => {
+    getCheckInsByDate : async (inputData) => {
         let docs = [];
         try {docs = await entities.CheckIn.find({"infoPacket.date" : { $gte: date1, $lte: date2}});} 
         catch (error) {handleSaveError(error);}
