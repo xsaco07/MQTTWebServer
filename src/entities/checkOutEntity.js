@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const utils = require('../utils');
 const Schema = mongoose.Schema;
 
 const checkOutSchema = {
@@ -36,10 +37,19 @@ const checkOutSchema = {
             default : 0
         }
     },
+    totalConsumption : {
+        type : Number,
+        require : true,
+        default : this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
+    },
     date : {
         type : Date,
         required : true,
-        default : new Date()
+        default : () => {
+            let date = new Date();
+            date.setHours(date.getHours() - utils.offsetUTCHours);
+            return date;
+        }
     }
 
 }

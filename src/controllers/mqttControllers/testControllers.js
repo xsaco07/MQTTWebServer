@@ -9,8 +9,7 @@ const saveTowelsDoc = async () => {
     const message = `{"sensorName" : "ESPSensor02",
     "towels" : 2,
     "weight" : 1000,
-    "consumption" : 240,
-    "date" : "2020-10-17 14:42:00 UTC"}`;
+    "consumption" : 240}`;
     await towelsController.saveDoc(message);
 };
 

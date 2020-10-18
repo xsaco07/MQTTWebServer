@@ -1,6 +1,5 @@
-const entities = require('../../entities/entities');
-const roomController = require('../httpControllers/roomController');
 const guestUseCases = require('../../use-cases/guestUseCases');
+const checkInUseCases = require('../../use-cases/checkInUseCases');
 
 module.exports = {
     // Method = POST
@@ -29,25 +28,64 @@ module.exports = {
             room_id : req.body.room_id
         };
         // Save new guest
-        const guestDocument = guestUseCases.newGuest(guestInfo);
+        const guestDocument = await guestUseCases.newGuest(guestInfo);
+        
         const checkInInfo = {
             room_id : req.body.room_id,
-            guest_id : (await guestDocument)._id,
+            guest_id : guestDocument._id,
             duration : {
                 days : req.body.days,
                 nights : req.body.nights
             }
         };
+        const savedObject = {};
         try {
-            savedObject = await guestUseCases.newGuest(guestInfo);   
+            savedObject = await checkInUseCases.newCheckIn(checkInInfo);   
             res.status(201).json({savedObject});
         } catch (error) {
-            console.log(`An error has occured while saving a Guest`);
+            console.log(`An error has occured while saving a CheckIn`);
             console.log(`Error: ${err}`);
-            res.status(400).json({error : 'Guest not created'});
+            res.status(400).json({error : 'CheckIn not created'});
         }
     },
-    getAll,
-    getByRoomId,
-    getByDateRange
+    // Method = GET
+    // Action = checkIn/
+    // Params = {}
+    getAll : async (req, res, next) => {
+        try {
+            const docs = await checkInUseCases.getCheckIns();
+            if(docs.length == 0) res.status(204).json({error : 'Resources not found'});
+            else res.status(200).json(docs);
+        } catch (error) {
+            handleSaveError(error);
+        }
+    },
+    // Method = GET
+    // Action = checkIn/room_id/:room_id/
+    // Params = {room_id : ObjectId}
+    getByRoomId : async (req, res, next) => {
+        const room_id = req.params.room_id;
+        try {
+            const docs = await checkInUseCases.getCheckInsByRoomId({room_id});
+            if(docs.length == 0) 
+                res.status(204).json({error : 'Resources not found by room id', room_id});
+            else res.status(200).json(docs);
+        } catch (error) {
+            handleSaveError(error);
+        }
+    },
+    // Method = GET
+    // Action = checkIn/date1/:date1/date2/:date2
+    // Params = {date1 : String, date2 : String}
+    getByDateRange : async (req, res, next) => {
+        const date1 = req.params.date1;
+        const date2 = req.params.date2;
+        try {
+            const docs = await checkInUseCases.getCheckInsByDateRange({date1, date2});
+            if(docs.length == 0)
+                res.status(204).json({error : 'Resources not found by dates', date1, date2});
+        } catch (error) {
+            handleSaveError(error);
+        }
+    }
 }

@@ -9,14 +9,13 @@ const handleSaveError = (err) => {
 };
 
 module.exports = {
-    // inputData = {room_id : ObjectId, guest_id : ObjectId, days : int, nights : int, date : Date}
+    // inputData = {room_id : ObjectId, guest_id : ObjectId, days : int, nights : int}
     newCheckIn : async (inputData) => {
         const duration = {days, nights};
         const finalObject = {
             room_id : inputData.room_id,
             guest_id : inputData.guest_id,
-            duration,
-            date
+            duration
         };
         const checkInDocument = factories.buildCheckInEntity(finalObject);
         checkInDocument.save((err) => {
@@ -56,7 +55,7 @@ module.exports = {
         finally {return doc;}
     },
     // inputData = {date1 : Date, date2 : Date2}
-    getCheckInsByDate : async (inputData) => {
+    getCheckInsByDateRange : async (inputData) => {
         let docs = [];
         try {docs = await entities.CheckIn.find({"infoPacket.date" : { $gte: date1, $lte: date2}});} 
         catch (error) {handleSaveError(error);}

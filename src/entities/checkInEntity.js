@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const utils = require('../utils');
 const Schema = mongoose.Schema;
 
 const checkInSchema = {
@@ -25,7 +26,11 @@ const checkInSchema = {
     date : {
         type : Date,
         required : true,
-        default : Date.now().toLocaleString()
+        default : () => {
+            let date = new Date();
+            date.setHours(date.getHours() - utils.offsetUTCHours);
+            return date;
+        }
     }
 
 }

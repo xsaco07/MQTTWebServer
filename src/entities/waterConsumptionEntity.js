@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const utils = require('../utils');
 const Schema = mongoose.Schema;
 
 const waterConsumptionSchema = {
@@ -25,7 +26,11 @@ const waterConsumptionSchema = {
         date : {
             type : Date,
             required : true,
-            default : new Date()
+            default : () => {
+                let date = new Date();
+                date.setHours(date.getHours() - utils.offsetUTCHours);
+                return date;
+            }
         }   
     }
 
