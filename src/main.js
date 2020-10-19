@@ -4,7 +4,11 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const socketIo = require('socket.io');
+
+// Routes
 const roomRoutes = require('./routes/roomRoutes');
+const sensorRoutes = require('./routes/sensorRoutes');
+
 const makeDB = require('./data-access/mongodb');
 
 // Express settings
@@ -14,7 +18,8 @@ app.set('port', process.env.PORT || 3000);
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/', roomRoutes);
+app.use('/room', roomRoutes);
+app.use('/sensor', sensorRoutes);
 
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));

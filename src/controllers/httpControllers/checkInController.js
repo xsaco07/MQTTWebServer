@@ -61,6 +61,19 @@ module.exports = {
         }
     },
     // Method = GET
+    // Action = checkIn/_id/:_id/
+    // Params = {_id : ObjectId}
+    getById : async (req, res, next) => {
+        const _id = req.params._id;
+        try {
+            const doc = await checkInUseCases.getCheckInById(_id);
+            if(utils.isEmpty(doc)) res.status(204).json({error : 'Resource not found', _id});
+            else res.status(200).json(docs);
+        } catch (error) {
+            handleSaveError(error);
+        }
+    },
+    // Method = GET
     // Action = checkIn/room_id/:room_id/
     // Params = {room_id : ObjectId}
     getByRoomId : async (req, res, next) => {
