@@ -1,11 +1,5 @@
-const utils = require('../../utils');
+const {handleGetRequestError, handlePostRequestError} = require('../../utils/errorHandlers');
 const guestUseCases = require('../../use-cases/guestUseCases');
-
-const handleSaveError = (err) => {
-    console.log(`Guest Controller`);
-    console.log(`An error has occured while tryng to performe a Guest model operation`);
-    console.log(`Error: ${err}`);
-};
 
 module.exports = {
     // Method = POST
@@ -22,15 +16,10 @@ module.exports = {
     //}
     new : async (req, res, next) => {
         const guestInfo = req.body;
-        const savedObject = {};
         try {
-            savedObject = await guestUseCases.newGuest(guestInfo);   
-            res.status(201).json({savedObject});
-        } catch (error) {
-            console.log(`An error has occured while saving a Guest`);
-            console.log(`Error: ${err}`);
-            res.status(400).json({error : 'Guest not created'});
-        }
+            const savedObject = await guestUseCases.newGuest(guestInfo);   
+            res.status(201).json(savedObject);
+        } catch (error) { handlePostRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/
@@ -38,11 +27,9 @@ module.exports = {
     getAll : async (req, res, next) => {
         try {
             const docs = await guestUseCases.getGuests();
-            if(docs.length == 0) res.status(204).json({error : 'Resources not found'});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/_id/:_id/
@@ -51,11 +38,9 @@ module.exports = {
         const _id = req.params._id;
         try {
             const doc = await guestUseCases.getGuestById(_id);
-            if(utils.isEmpty(doc)) res.status(204).json({error : 'Resource not found', _id});
-            else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+            if(doc == null) res.status(204).end();
+            else res.status(200).json(doc);
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/name/:name/lastName1/:lm1/lastName2/:lm2
@@ -68,11 +53,9 @@ module.exports = {
         };
         try {
             const doc = await guestUseCases.getGuestByFullName(fullName);
-            if(utils.isEmpty(doc)) res.status(204).json({error : 'Resource not found', fullName});
-            else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+            if(doc == null) res.status(204).end();
+            else res.status(200).json(doc);
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/age/:age/
@@ -81,12 +64,9 @@ module.exports = {
         const age = req.params.age;
         try {
             const docs = await guestUseCases.getGuestsByAge(age);
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by age', age});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/age1/:age/age2/:age2
@@ -96,12 +76,9 @@ module.exports = {
         const age2 = req.params.age2;
         try {
             const docs = await guestUseCases.getGuestsByAgeRange(age1, age2);
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by age range', age1, age2});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/country/:country/
@@ -110,12 +87,9 @@ module.exports = {
         const country = req.params.country;
         try {
             const docs = await guestUseCases.getGuestsByCountry(country);
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by country', country});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/room_id/:room_id/
@@ -123,13 +97,10 @@ module.exports = {
     getByRoomId : async (req, res, next) => {
         const room_id = req.params.room_id;
         try {
-            const docs = await guestUseCases.getGuestByRoomId(room_id);
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by room id', room_id});
-            else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+            const doc = await guestUseCases.getGuestByRoomId(room_id);
+            if(doc == null) res.status(204).end();
+            else res.status(200).json(doc);
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = guest/roomNumber/:roomNumber/
@@ -138,11 +109,8 @@ module.exports = {
         const roomNumber = req.params.roomNumber;
         try {
             const docs = await guestUseCases.getGuestByRoomNumber(roomNumber);
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by room number', roomNumber});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }

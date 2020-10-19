@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const utils = require('../utils');
+const utils = require('../utils/utils');
 const Schema = mongoose.Schema;
 
 const checkOutSchema = {
@@ -40,7 +40,8 @@ const checkOutSchema = {
     totalConsumption : {
         type : Number,
         require : true,
-        default : this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
+        get : () => this.totalConsumption.consumption + this.totalWaterConsumption.consumption,
+        default : () => this.totalConsumption.consumption + this.totalWaterConsumption.consumption
     },
     date : {
         type : Date,

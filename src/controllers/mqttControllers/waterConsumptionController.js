@@ -47,7 +47,7 @@ module.exports = {
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
     },
-    getTotalWaterConsumptionByRoomId : async (room_id) => {
+    getTotalConsumptionByRoomId : async (room_id) => {
         const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
         const totals = await entities.WaterConsumption.aggregate()
         .match({"infoPacket.sensorName" : espSensorDoc.sensorName})

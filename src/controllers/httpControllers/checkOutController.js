@@ -9,12 +9,8 @@ module.exports = {
         const savedObject = {};
         try {
             savedObject = await checkOutUseCases.newCheckOut({checkIn_id});   
-            res.status(201).json({savedObject});
-        } catch (error) {
-            console.log(`An error has occured while saving a CheckOut`);
-            console.log(`Error: ${err}`);
-            res.status(400).json({error : 'CheckOut not created'});
-        }
+            res.status(201).json(savedObject);
+        } catch (error) { handlePostRequestError(error, res); }
     },
     // Method = GET
     // Action = checkOut/
@@ -22,11 +18,9 @@ module.exports = {
     getAll : async (req, res, next) => {
         try {
             const docs = await checkOutUseCases.getCheckOuts();
-            if(docs.length == 0) res.status(204).json({error : 'Resources not found'});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = checkOut/_id/:_id/
@@ -35,12 +29,9 @@ module.exports = {
         const _id = req.params._id;
         try {
             const docs = await checkOutUseCases.getCheckOutsById({_id});
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by id', _id});
+            if(doc == null) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = checkOut/checkIn_id/:checkIn_id/
@@ -48,13 +39,10 @@ module.exports = {
     getByCheckInId : async (req, res, next) => {
         const checkIn_id = req.params.checkIn_id;
         try {
-            const docs = await checkOutUseCases.getCheckOutsByCheckInId({checkIn_id});
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by checkIn id', checkIn_id});
-            else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+            const doc = await checkOutUseCases.getCheckOutsByCheckInId({checkIn_id});
+            if(doc == null) res.status(204).end();
+            else res.status(200).json(doc);
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = checkOut/date1/:date1/date2/:date2
@@ -64,10 +52,7 @@ module.exports = {
         const date2 = req.params.date2;
         try {
             const docs = await checkOutUseCases.getCheckOutsByDateRange({date1, date2});
-            if(docs.length == 0)
-                res.status(204).json({error : 'Resources not found by dates', date1, date2});
-        } catch (error) {
-            handleSaveError(error);
-        }
+            if(docs.length == 0) res.status(204).end();
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }

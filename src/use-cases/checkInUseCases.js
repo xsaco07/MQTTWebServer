@@ -1,9 +1,8 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
 
-const handleSaveError = (err) => {
+const handleDBOperationError = (err) => {
     console.log(`CheckIn Use Case`);
-    console.log(`An error has occured while tryng to performe a CheckIn model operation`);
     console.log(`Error: ${err}`);
     throw new Error(err);
 };
@@ -18,47 +17,47 @@ module.exports = {
             duration
         };
         const checkInDocument = factories.buildCheckInEntity(finalObject);
-        checkInDocument.save((err) => {
-            if(err) handleSaveError(err);
-            else return doc;
-        });
+
+        try { return await checkInDocument.save(); } 
+        catch (error) { handleDBOperationError(error); }
     },
     // inputData = {}
     getCheckIns : async () => {
-        let docs = [];
-        try {docs = await entities.CheckIn.find({});} 
-        catch (error) {handleSaveError(error);}
-        finally {return docs;}
+        try { return await entities.CheckIn.find({}); } 
+        catch (error) { handleDBOperationError(error); }
     },
     // inputData = {checkIn_id : ObjectId}
     getCheckInById : async (inputData) => {
-        let doc = {};
-        try {doc = await entities.CheckIn.findById(inputData.room_id);}
-        catch (error) {handleSaveError(error);}
-        finally {return doc[0];}
-
+        try { return await entities.CheckIn.findById(inputData.checkIn_id); } 
+        catch (error) { handleDBOperationError(error); }
     },
     // inputData = {room_id : ObjectId}
     getCheckInsByRoomId : async (inputData) => {
-        let doc = {};
-        try {doc = await entities.CheckIn.find({room_id : inputData.room_id});}
-        catch (error) {handleSaveError(error);}
-        finally {return doc;}
+        try { return await entities.CheckIn.find({room_id : inputData.room_id}); } 
+        catch (error) { handleDBOperationError(error); }
     },
     // inputData = {days : int, nights : int}
     getCheckInsByDuration : async (inputData) => {
-        let doc = {};
-        try {doc = await entities.CheckIn.find(
-            {duration : {days : inputData.days, nights : inputData.nights}}
-        );}
-        catch (error) {handleSaveError(error);}
-        finally {return doc;}
+        try {
+            return await entities.CheckIn.find({
+                duration : {
+                    days : inputData.days,
+                    nights : inputData.nights
+                }
+            });
+        } 
+        catch (error) { handleDBOperationError(error); }
     },
     // inputData = {date1 : Date, date2 : Date2}
     getCheckInsByDateRange : async (inputData) => {
-        let docs = [];
-        try {docs = await entities.CheckIn.find({"infoPacket.date" : { $gte: date1, $lte: date2}});} 
-        catch (error) {handleSaveError(error);}
-        finally {return docs;}
-    },
+        try { 
+            return await entities.CheckIn.find({
+                date : { 
+                    $gte: inputData.date1, 
+                    $lte: inputData.date2
+                }
+            });
+        } 
+        catch (error) { handleDBOperationError(error); }
+    }
 }

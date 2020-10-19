@@ -4,17 +4,14 @@ const Schema = mongoose.Schema;
 const roomSchema = {
     roomNumber : {
         type : Number,
-        required : true,
-        default : 0,
+        required : true
     },
     capacity : {
         type : Number,
-        required : true,
-        default : 0
+        required : true
     },
     occupancyState : {
         type : Boolean,
-        required : true,
         default : false
     }
 }

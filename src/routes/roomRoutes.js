@@ -4,6 +4,8 @@ const roomController = require('../controllers/httpControllers/roomController');
 
 router.get('/', roomController.getAll);
 
+router.get('/_id/:_id/', roomController.getById);
+
 router.get('/room_number/:roomNumber/', roomController.getByNumber);
 
 router.get('/capacity/:capacity/', roomController.getByCapacity);

@@ -41,12 +41,8 @@ module.exports = {
         const savedObject = {};
         try {
             savedObject = await checkInUseCases.newCheckIn(checkInInfo);   
-            res.status(201).json({savedObject});
-        } catch (error) {
-            console.log(`An error has occured while saving a CheckIn`);
-            console.log(`Error: ${err}`);
-            res.status(400).json({error : 'CheckIn not created'});
-        }
+            res.status(201).json(savedObject);
+        } catch (error) { handlePostRequestError(error, res); }
     },
     // Method = GET
     // Action = checkIn/
@@ -54,11 +50,9 @@ module.exports = {
     getAll : async (req, res, next) => {
         try {
             const docs = await checkInUseCases.getCheckIns();
-            if(docs.length == 0) res.status(204).json({error : 'Resources not found'});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = checkIn/_id/:_id/
@@ -67,11 +61,9 @@ module.exports = {
         const _id = req.params._id;
         try {
             const doc = await checkInUseCases.getCheckInById(_id);
-            if(utils.isEmpty(doc)) res.status(204).json({error : 'Resource not found', _id});
-            else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+            if(doc == null) res.status(204).end();
+            else res.status(200).json(doc);
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = checkIn/room_id/:room_id/
@@ -80,12 +72,9 @@ module.exports = {
         const room_id = req.params.room_id;
         try {
             const docs = await checkInUseCases.getCheckInsByRoomId({room_id});
-            if(docs.length == 0) 
-                res.status(204).json({error : 'Resources not found by room id', room_id});
+            if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
-        } catch (error) {
-            handleSaveError(error);
-        }
+        } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
     // Action = checkIn/date1/:date1/date2/:date2
@@ -95,10 +84,8 @@ module.exports = {
         const date2 = req.params.date2;
         try {
             const docs = await checkInUseCases.getCheckInsByDateRange({date1, date2});
-            if(docs.length == 0)
-                res.status(204).json({error : 'Resources not found by dates', date1, date2});
-        } catch (error) {
-            handleSaveError(error);
-        }
+            if(docs.length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }
