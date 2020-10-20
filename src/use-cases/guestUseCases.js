@@ -59,27 +59,22 @@ module.exports = {
     },
     // inputData = {age : int}
     getGuestsByAge : async (inputData) => {
-        try { return entities.Guest.find({age : inputData.age}); } 
+        try { return await entities.Guest.find({age : inputData.age}); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {age1 : int, age2 : int}
     getGuestsByAgeRange : async (inputData) => {
-        try { return entities.Guest.find({age : {$gte : inputData.age1, $lte : inputData.age2}}); } 
+        try { return await entities.Guest.find({age : {$gte : inputData.age1, $lte : inputData.age2}}); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {country : String}
     getGuestsByCountry : async (inputData) => {
-        try { return entities.Guest.find({country : inputData.country}); } 
+        try { return await entities.Guest.find({country : inputData.country}); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {room_id : ObjectId}
     getGuestByRoomId : async (inputData) => {
-        try { return entities.Guest.findOne({room_id : inputData.room_id}); } 
+        try { return await entities.Guest.findOne({room_id : inputData.room_id}); } 
         catch (error) { handleDBOperationError(error); }
-    },
-    // input Data = {roomNumber = int}
-    getGuestByRoomNumber : async (inputData) => {
-        const room = roomUseCases.getRoomByNumber({roomNumber : inputData.roomNumber});
-        return this.getGuestByRoomId({room_id : room._id});
     }
 }
