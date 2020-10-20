@@ -7,9 +7,8 @@ module.exports = {
     // Req.body = {sensorName: String, room_id : ObjectId}
     new : async (req, res, next) => {
         const sensorInfo = req.body;
-        const savedObject = {};
         try {
-            savedObject = await espSensorUseCases.newEspSensor(sensorInfo);   
+            const savedObject = await espSensorUseCases.newEspSensor(sensorInfo);   
             res.status(201).json(savedObject);
         } catch (error) { handlePostRequestError(error, res); }
     },
@@ -27,9 +26,9 @@ module.exports = {
     // Action = sensor/_id/:_id/
     // Params = {_id : ObjectId}
     getById : async (req, res, next) => {
-        const _id = req.params._id;
+        const sensor_id = req.params._id;
         try {
-            const doc = await espSensorUseCases.getEspSensorById(_id);
+            const doc = await espSensorUseCases.getEspSensorById({sensor_id});
             if(doc == null) res.status(204).end();
             else res.status(200).json(doc);
         } catch (error) { handleGetRequestError(error, res); }
@@ -40,7 +39,7 @@ module.exports = {
     getByName : async (req, res, next) => {
         const sensorName = req.params.name;
         try {
-            const doc = await espSensorUseCases.getEspSensorByName(sensorName);
+            const doc = await espSensorUseCases.getEspSensorByName({sensorName});
             if(doc == null) res.status(204).end();
             else res.status(200).json(doc);
         } catch (error) { handleGetRequestError(error, res); }
@@ -49,10 +48,9 @@ module.exports = {
     // Action = sensor/state/:state/
     // Params = {state : boolean}
     getByState : async (req, res, next) => {
-        // Convert string to boolean
-        const state = (req.params.state == 'true');
+        const state = req.params.state;
         try {
-            const docs = await espSensorUseCases.getEspSensorByState(state);
+            const docs = await espSensorUseCases.getEspSensorByState({state});
             if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
@@ -63,7 +61,7 @@ module.exports = {
     getByRoomId : async (req, res, next) => {
         const room_id = req.params.room_id;
         try {
-            const docs = await espSensorUseCases.getEspSensorByRoomId(room_id);
+            const docs = await espSensorUseCases.getEspSensorByRoomId({room_id});
             if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }

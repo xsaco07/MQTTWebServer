@@ -9,7 +9,7 @@ const handleDBOperationError = (err) => {
 
 module.exports = {
     // inputData = {sensorName : String, room_id : ObjectId}
-    newEspSensor : async () => {
+    newEspSensor : async (inputData) => {
         const sensorDocument = factories.buildEspSensorEntity(inputData);
         try { return await sensorDocument.save(); } 
         catch (error) { handleDBOperationError(error); }
@@ -29,9 +29,9 @@ module.exports = {
         try { return await entities.EspSensor.findOne({sensorName : inputData.sensorName}); } 
         catch (error) { handleDBOperationError(error); }
     },
-    // inputData = {sensorState : boolean}
+    // inputData = {state : boolean}
     getEspSensorByState : async (inputData) => {
-        try { return await entities.EspSensor.find({sensorState : inputData.sensorState}); } 
+        try { return await entities.EspSensor.find({state : inputData.state}); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {room_id : ObjectId}
