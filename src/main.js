@@ -8,6 +8,9 @@ const socketIo = require('socket.io');
 // Routes
 const roomRoutes = require('./routes/roomRoutes');
 const sensorRoutes = require('./routes/sensorRoutes');
+const checkInRoutes = require('./routes/checkInRoutes');
+const checkOutRoutes = require('./routes/checkOutRoutes');
+const guestRoutes = require('./routes/guestRoutes');
 
 const {makeDB} = require('./data-access/mongodb');
 
@@ -18,8 +21,13 @@ app.set('port', process.env.PORT || 3000);
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
+
+// Routes set up
 app.use('/room', roomRoutes);
 app.use('/sensor', sensorRoutes);
+app.use('/guest', guestRoutes);
+app.use('/checkIn', checkInRoutes);
+app.use('/checkOut', checkOutRoutes);
 
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));

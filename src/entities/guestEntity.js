@@ -15,39 +15,32 @@ const guestSchema = {
     fullName : {
         name : {
             type : String,
-            required : true,
-            default : 'Nameless_guest'
+            required : true
         },
         lastName1 : {
             type : String,
-            required : true,
-            default : ''
+            required : true
         },
         lastName2 : {
             type : String,
-            required : true,
             default : ''
         }
     },
     age : {
         type : Number,
-        required : true,
-        default : 0
+        required : true
     },
     country : {
         type : String,
-        required : true,
         default : 'No country'
     },
     email : {
         type : String,
-        required : false,
-        default : 'No_Email',
+        required : true,
         validate: [validateEmail, 'Please fill a valid email address']
     },
     phone : {
         type : String,
-        required : false,
         default : 'No_phone'
     }
 }

@@ -1,5 +1,5 @@
 const entities = require('../../entities/entities');
-const utils = require('../../utils');
+const utils = require('../../utils/utils');
 const espSensorUseCases = require('../../use-cases/espSensorUseCases');
 
 const {buildTowelConsumptionEntity} = require('../../entities/towelConsumptionEntity');

@@ -12,7 +12,7 @@ module.exports = {
     //    age : int,
     //    country : String
     //    email : String,
-    //    phoneNumber : String
+    //    phone : String
     //}
     new : async (req, res, next) => {
         const guestInfo = req.body;
@@ -35,9 +35,9 @@ module.exports = {
     // Action = guest/_id/:_id/
     // Params = {_id : ObjectId}
     getById : async (req, res, next) => {
-        const _id = req.params._id;
+        const guest_id = req.params._id;
         try {
-            const doc = await guestUseCases.getGuestById(_id);
+            const doc = await guestUseCases.getGuestById({guest_id});
             if(doc == null) res.status(204).end();
             else res.status(200).json(doc);
         } catch (error) { handleGetRequestError(error, res); }
@@ -63,7 +63,7 @@ module.exports = {
     getByAge : async (req, res, next) => {
         const age = req.params.age;
         try {
-            const docs = await guestUseCases.getGuestsByAge(age);
+            const docs = await guestUseCases.getGuestsByAge({age});
             if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
@@ -75,7 +75,7 @@ module.exports = {
         const age1 = req.params.age1;
         const age2 = req.params.age2;
         try {
-            const docs = await guestUseCases.getGuestsByAgeRange(age1, age2);
+            const docs = await guestUseCases.getGuestsByAgeRange({age1, age2});
             if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
@@ -86,7 +86,7 @@ module.exports = {
     getByCountry : async (req, res, next) => {
         const country = req.params.country;
         try {
-            const docs = await guestUseCases.getGuestsByCountry(country);
+            const docs = await guestUseCases.getGuestsByCountry({country});
             if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
@@ -97,20 +97,9 @@ module.exports = {
     getByRoomId : async (req, res, next) => {
         const room_id = req.params.room_id;
         try {
-            const doc = await guestUseCases.getGuestByRoomId(room_id);
+            const doc = await guestUseCases.getGuestByRoomId({room_id});
             if(doc == null) res.status(204).end();
             else res.status(200).json(doc);
-        } catch (error) { handleGetRequestError(error, res); }
-    },
-    // Method = GET
-    // Action = guest/roomNumber/:roomNumber/
-    // Params = {roomNumber : int}
-    getByRoomNumber : async (req, res, next) => {
-        const roomNumber = req.params.roomNumber;
-        try {
-            const docs = await guestUseCases.getGuestByRoomNumber(roomNumber);
-            if(docs.length == 0) res.status(204).end();
-            else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
     }
 }

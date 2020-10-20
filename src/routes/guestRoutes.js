@@ -16,8 +16,6 @@ router.get('/country/:country/', guestController.getByCountry);
 
 router.get('/room_id/:room_id/', guestController.getByRoomId);
 
-router.get('/roomNumber/:roomNumber/', guestController.getByRoomNumber);
-
-router.post('/new/', checkOutController.new);
+router.post('/new/', guestController.new);
 
 module.exports = router;

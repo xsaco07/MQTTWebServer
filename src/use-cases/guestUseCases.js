@@ -15,7 +15,7 @@ module.exports = {
     //              age : X, 
     //              country : '', 
     //              email : '',
-    //              phoneNumber : '',
+    //              phone : '',
     //              room_id : ObjectId}
     newGuest : async (inputData) => {
         const finalObject = Object.freeze({
@@ -27,7 +27,7 @@ module.exports = {
             age : inputData.age,
             country : inputData.country,
             email : inputData.email,
-            phoneNumber : inputData.phoneNumber,
+            phone : inputData.phone,
             room_id : inputData.room_id
         });
         const guestDocument = factories.buildGuestEntity(finalObject);
