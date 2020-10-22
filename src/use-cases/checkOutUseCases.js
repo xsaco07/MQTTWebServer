@@ -1,5 +1,6 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
+const utils = require('../utils/utils');
 const checkInUseCases = require('../use-cases/checkInUseCases');
 const towelConsumptionUseCases = require('../controllers/mqttControllers/towelConsumptionController');
 const waterConsumptionUseCases = require('../controllers/mqttControllers/waterConsumptionController');
@@ -17,23 +18,35 @@ module.exports = {
         let now = new Date();
             now.setHours(now.getHours() - utils.offsetUTCHours);
 
-        const boundCheckIn = checkInUseCases.getCheckInById(inputData.checkIn_id);
+        // Deactivate check-in and save
+        let boundCheckIn = await checkInUseCases.getCheckInById({checkIn_id : inputData.checkIn_id});
+        boundCheckIn.status = false;
+        await boundCheckIn.save();
 
-        const totalWater = waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
+        let totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             boundCheckIn.room_id,
             boundCheckIn.date,
             now);
 
-        const totalTowels = towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
+        console.log(totalWater);
+
+        let totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             boundCheckIn.room_id,
             boundCheckIn.date,
             now);
+
+        console.log(totalTowels);
+        
+        if(totalWater.length == 0) totalWater = {};
+        if(totalTowels.length == 0) totalTowels = {};
 
         inputData.totalWaterConsumption = totalWater;
         inputData.totalTowelsConsumption = totalTowels;
         inputData.date = now;
 
         const checkOutDocument = factories.buildCheckOutEntity(inputData);
+        
+        console.log(checkOutDocument);
 
         try { return await checkOutDocument.save(); } 
         catch (error) { handleDBOperationError(error); }

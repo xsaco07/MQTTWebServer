@@ -1,4 +1,5 @@
 const checkOutUseCases = require('../../use-cases/checkOutUseCases');
+const {handleGetRequestError, handlePostRequestError} = require('../../utils/errorHandlers');
 
 module.exports = {
     // Method = POST
@@ -6,9 +7,8 @@ module.exports = {
     // Req.body = {checIn_id : ObjectId}
     new : async (req, res, next) => {
         const checkIn_id = req.body.checkIn_id;
-        const savedObject = {};
         try {
-            savedObject = await checkOutUseCases.newCheckOut({checkIn_id});   
+            const savedObject = await checkOutUseCases.newCheckOut({checkIn_id});   
             res.status(201).json(savedObject);
         } catch (error) { handlePostRequestError(error, res); }
     },

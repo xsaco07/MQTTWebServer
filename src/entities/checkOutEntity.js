@@ -3,7 +3,7 @@ const utils = require('../utils/utils');
 const Schema = mongoose.Schema;
 
 const checkOutSchema = {
-    checIn_id : {
+    checkIn_id : {
         type : Schema.Types.ObjectId,
         ref : 'CheckIn',
         required : true
@@ -11,32 +11,32 @@ const checkOutSchema = {
     totalWaterConsumption : {
         consumption : {
             type : Number,
-            required : true,
             default : 0
         },
         seconds : {
             type : Number,
-            required : true,
             default : 0
         }
     },
     totalTowelsConsumption : {
         towels : {
             type : Number,
-            required : true
+            default : 0
         },
         weight : {
             type : Number,
-            required : true
+            default : 0
         },
         consumption : {
             type : Number,
-            required : true
+            default : 0
         }
     },
     totalConsumption : {
         type : Number,
-        default : () => this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
+        default : function() {
+            return this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
+        }
     },
     date : {
         type : Date,

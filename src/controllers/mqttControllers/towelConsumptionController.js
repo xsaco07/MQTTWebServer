@@ -50,8 +50,8 @@ module.exports = {
     // That period of time is defined by the check-in date and the check-out date
     getTotalConsumptionByPeriodAndRoomId : async (room_id, checkInDate, checkOutDate) => {
         const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
-        const totals = await entities.TowelConsumption.aggregate()
-        .match({ $and: [
+        const total = await entities.TowelConsumption.aggregate()
+        .match({ $and : [
             {"infoPacket.sensorName" : espSensorDoc.sensorName},
             {date : { $gte: checkInDate, $lte: checkOutDate}}
         ]})
@@ -61,7 +61,7 @@ module.exports = {
             weight : {$sum : "$infoPacket.weight"},
             consumption : {$sum : "$infoPacket.consumption"}
         });
-        if(totals.length > 0) return buildTotalTowelsConsumptionEntity(totals[0]);
-        return totals;
+        if(total.length > 0) return buildTotalTowelsConsumptionEntity(total[0]);
+        return total;
     }
 };

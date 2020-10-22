@@ -47,9 +47,11 @@ module.exports = {
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
     },
+    // Count the total consumption measured by a sensor in a room for the given period of time
+    // That period of time is defined by the check-in date and the check-out date
     getTotalConsumptionByPeriodAndRoomId : async (room_id, checkInDate, checkOutDate) => {
         const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
-        const totals = await entities.WaterConsumption.aggregate()
+        const total = await entities.WaterConsumption.aggregate()
         .match({ $and : [
             {"infoPacket.sensorName" : espSensorDoc.sensorName},
             {date : { $gte: checkInDate, $lte: checkOutDate}}
@@ -59,7 +61,7 @@ module.exports = {
             consumption : {$sum : "$infoPacket.consumption"},
             seconds : {$sum : "$infoPacket.seconds"}
         });
-        if(totals.length > 0) return buildTotalWaterConsumptionEntity(totals[0]);
-        return totals;
+        if(total.length > 0) return buildTotalWaterConsumptionEntity(total[0]);
+        return total;
     }
 };
