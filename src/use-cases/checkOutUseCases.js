@@ -13,12 +13,25 @@ const handleDBOperationError = (err) => {
 module.exports = {
     // inputData = {checkIn_id : ObjectId}
     newCheckOut : async (inputData) => {
+
+        let now = new Date();
+            now.setHours(now.getHours() - utils.offsetUTCHours);
+
         const boundCheckIn = checkInUseCases.getCheckInById(inputData.checkIn_id);
-        const totalWater = waterConsumptionUseCases.getTotalConsumptionByRoomId(boundCheckIn.room_id);
-        const totalTowels = towelConsumptionUseCases.getTotalConsumptionByRoomId(boundCheckIn.room_id);
+
+        const totalWater = waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
+            boundCheckIn.room_id,
+            boundCheckIn.date,
+            now);
+
+        const totalTowels = towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
+            boundCheckIn.room_id,
+            boundCheckIn.date,
+            now);
 
         inputData.totalWaterConsumption = totalWater;
         inputData.totalTowelsConsumption = totalTowels;
+        inputData.date = now;
 
         const checkOutDocument = factories.buildCheckOutEntity(inputData);
 

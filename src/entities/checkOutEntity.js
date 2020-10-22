@@ -23,29 +23,23 @@ const checkOutSchema = {
     totalTowelsConsumption : {
         towels : {
             type : Number,
-            required : true,
-            default : 0
+            required : true
         },
         weight : {
             type : Number,
-            required : true,
-            default : 0
+            required : true
         },
         consumption : {
             type : Number,
-            required : true,
-            default : 0
+            required : true
         }
     },
     totalConsumption : {
         type : Number,
-        require : true,
-        get : () => this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption,
         default : () => this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
     },
     date : {
         type : Date,
-        required : true,
         default : () => {
             let date = new Date();
             date.setHours(date.getHours() - utils.offsetUTCHours);

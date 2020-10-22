@@ -47,10 +47,13 @@ module.exports = {
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
     },
-    getTotalConsumptionByRoomId : async (room_id) => {
+    getTotalConsumptionByPeriodAndRoomId : async (room_id, checkInDate, checkOutDate) => {
         const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
         const totals = await entities.WaterConsumption.aggregate()
-        .match({"infoPacket.sensorName" : espSensorDoc.sensorName})
+        .match({ $and : [
+            {"infoPacket.sensorName" : espSensorDoc.sensorName},
+            {date : { $gte: checkInDate, $lte: checkOutDate}}
+        ]})
         .group({
             _id : "$infoPacket.sensorName", 
             consumption : {$sum : "$infoPacket.consumption"},

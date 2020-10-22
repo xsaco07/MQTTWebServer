@@ -46,10 +46,15 @@ module.exports = {
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;
     },
-    getTotalConsumptionByRoomId : async (room_id) => {
+    // Count the total consumption measured by a sensor in a room for the given period of time
+    // That period of time is defined by the check-in date and the check-out date
+    getTotalConsumptionByPeriodAndRoomId : async (room_id, checkInDate, checkOutDate) => {
         const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
         const totals = await entities.TowelConsumption.aggregate()
-        .match({"infoPacket.sensorName" : espSensorDoc.sensorName})
+        .match({ $and: [
+            {"infoPacket.sensorName" : espSensorDoc.sensorName},
+            {date : { $gte: checkInDate, $lte: checkOutDate}}
+        ]})
         .group({
             _id : "$infoPacket.sensorName", 
             towels : {$sum : "$infoPacket.towels"},
