@@ -1,5 +1,7 @@
 const guestUseCases = require('../../use-cases/guestUseCases');
+const espSensorUseCases = require('../../use-cases/espSensorUseCases');
 const checkInUseCases = require('../../use-cases/checkInUseCases');
+const {handleGetRequestError, handlePostRequestError} = require('../../utils/errorHandlers');
 
 module.exports = {
     // Method = POST
@@ -17,31 +19,41 @@ module.exports = {
     //    nights : int
     // }
     new : async (req, res, next) => {
-        const guestInfo = {
-            name : req.body.name,
-            lastName1 : req.body.lastName1,
-            lastName2 : req.body.lastName2,
-            age : req.body.age,
-            country : req.body.country,
-            email : req.body.email,
-            phone : req.body.phone,
-            room_id : req.body.room_id
-        };
-        // Save new guest
-        const guestDocument = await guestUseCases.newGuest(guestInfo);
-        
-        const checkInInfo = {
-            room_id : req.body.room_id,
-            guest_id : guestDocument._id,
-            duration : {
-                days : req.body.days,
-                nights : req.body.nights
-            }
-        };
-        const savedObject = {};
         try {
-            savedObject = await checkInUseCases.newCheckIn(checkInInfo);   
+
+            const room_id = req.body.room_id;
+            // Save new guest
+            const guestInfo = {
+                name : req.body.name,
+                lastName1 : req.body.lastName1,
+                lastName2 : req.body.lastName2,
+                age : req.body.age,
+                country : req.body.country,
+                email : req.body.email,
+                phone : req.body.phone,
+                room_id
+            };
+            const guestDocument = await guestUseCases.newGuest(guestInfo);
+
+            // Save checkIn object
+            const checkInInfo = {
+                room_id,
+                guest_id : guestDocument._id,
+                duration : {
+                    days : req.body.days,
+                    nights : req.body.nights
+                }
+            };
+            const savedObject = await checkInUseCases.newCheckIn(checkInInfo);  
+
+            // Set room sensor as active
+            let sensorDocument = await espSensorUseCases.getEspSensorByRoomId({room_id});
+            sensorDocument.state = true;
+            await sensorDocument.save();
+
+            // Send response
             res.status(201).json(savedObject);
+
         } catch (error) { handlePostRequestError(error, res); }
     },
     // Method = GET
@@ -58,9 +70,9 @@ module.exports = {
     // Action = checkIn/_id/:_id/
     // Params = {_id : ObjectId}
     getById : async (req, res, next) => {
-        const _id = req.params._id;
+        const checkIn_id = req.params._id;
         try {
-            const doc = await checkInUseCases.getCheckInById(_id);
+            const doc = await checkInUseCases.getCheckInById({checkIn_id});
             if(doc == null) res.status(204).end();
             else res.status(200).json(doc);
         } catch (error) { handleGetRequestError(error, res); }
@@ -72,6 +84,17 @@ module.exports = {
         const room_id = req.params.room_id;
         try {
             const docs = await checkInUseCases.getCheckInsByRoomId({room_id});
+            if(docs.length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action = checkIn/status/:status/
+    // Params = {status : Boolean}
+    getByStatus : async (req, res, next) => {
+        const status = req.params.status;
+        try {
+            const docs = await checkInUseCases.getCheckInByStatus({status});
             if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }

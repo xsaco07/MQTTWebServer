@@ -14,23 +14,24 @@ const checkInSchema = {
     duration : {
         days : {
             type : Number,
-            required : false,
-            default : 0
+            required : true
         },
         nights : {
             type : Number,
-            required : false,
-            default : this.days
+            default : function() {return this.duration.days - 1;}
         }
     },
     date : {
         type : Date,
-        required : true,
         default : () => {
             let date = new Date();
             date.setHours(date.getHours() - utils.offsetUTCHours);
             return date;
         }
+    },
+    status : {
+        type : Boolean,
+        default : true
     }
 
 }

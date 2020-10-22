@@ -40,8 +40,8 @@ const checkOutSchema = {
     totalConsumption : {
         type : Number,
         require : true,
-        get : () => this.totalConsumption.consumption + this.totalWaterConsumption.consumption,
-        default : () => this.totalConsumption.consumption + this.totalWaterConsumption.consumption
+        get : () => this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption,
+        default : () => this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
     },
     date : {
         type : Date,

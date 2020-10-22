@@ -36,7 +36,7 @@ module.exports = {
     },
     // inputData = {room_id : ObjectId}
     getEspSensorByRoomId : async (inputData) => {
-        try { return await entities.EspSensor.find({room_id : inputData.room_id}); } 
+        try { return await entities.EspSensor.findOne({room_id : inputData.room_id}); } 
         catch (error) { handleDBOperationError(error); }
     }
 };

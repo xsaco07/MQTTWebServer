@@ -8,14 +8,14 @@ const handleDBOperationError = (err) => {
 };
 
 module.exports = {
-    // inputData = {room_id : ObjectId, guest_id : ObjectId, days : int, nights : int}
+    // inputData = {room_id : ObjectId, guest_id : ObjectId, duration : {days : int, nights : int}}
     newCheckIn : async (inputData) => {
-        const duration = {days, nights};
         const finalObject = {
             room_id : inputData.room_id,
             guest_id : inputData.guest_id,
-            duration
+            duration : inputData.duration
         };
+
         const checkInDocument = factories.buildCheckInEntity(finalObject);
 
         try { return await checkInDocument.save(); } 
@@ -34,6 +34,11 @@ module.exports = {
     // inputData = {room_id : ObjectId}
     getCheckInsByRoomId : async (inputData) => {
         try { return await entities.CheckIn.find({room_id : inputData.room_id}); } 
+        catch (error) { handleDBOperationError(error); }
+    },
+    // inputData = {status : Boolean}
+    getCheckInByStatus : async (inputData) => {
+        try { return await entities.CheckIn.find({status : inputData.status}); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {days : int, nights : int}
