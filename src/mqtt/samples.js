@@ -1,17 +1,17 @@
 // MQTT Subscibe Messages Examples
 const serverTowelsTopic = {
     "sensorName" : "ESPCN01",
-    "toallas" : 4,
-    "pesoGR" : 1300,
-    "consumoML" : 500,
-    "fecha" : "2020-10-12"
+    "towels" : 4,
+    "weight" : 1300,
+    "consumption" : 500,
+    "date" : "2020-10-12"
 }
 
 const serverWaterConsumeTopic = {
     "sensorName" : "ESPCN03",
-    "consumoML" : 500,
+    "consumption" : 500,
     "seconds" : 128,
-    "fecha" : "2020-10-12"
+    "date" : "2020-10-12"
 }
 
 // MQTT Publish Messages Examples

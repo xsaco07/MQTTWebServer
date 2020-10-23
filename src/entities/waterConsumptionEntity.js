@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const utils = require('../utils/utils');
 const Schema = mongoose.Schema;
 
 const waterConsumptionSchema = {
@@ -12,7 +13,7 @@ const waterConsumptionSchema = {
             type : String,
             required : true,
         },
-        consume : {
+        consumption : {
             type : Number,
             required : true,
             default : 0.00
@@ -25,7 +26,11 @@ const waterConsumptionSchema = {
         date : {
             type : Date,
             required : true,
-            default : Date.now()
+            default : () => {
+                let date = new Date();
+                date.setHours(date.getHours() - utils.offsetUTCHours);
+                return date;
+            }
         }   
     }
 
@@ -34,8 +39,7 @@ const waterConsumptionSchema = {
 const WaterConsumption = mongoose.model(
     'WaterConsumption', 
     new Schema(waterConsumptionSchema),
-    'waterConumptions');
+    'waterConsumptions');
 
 module.exports.WaterConsumption = WaterConsumption;
-module.exports.buildWaterConsumptionEntity = (waterConsumptionObject) 
-    => new WaterConsumption(Object.freeze(waterConsumptionObject));
+module.exports.buildWaterConsumptionEntity = (waterConsumptionObject) => new WaterConsumption(Object.freeze(waterConsumptionObject));

@@ -4,12 +4,10 @@ const Schema = mongoose.Schema;
 const espSensorSchema = {
     sensorName : {
         type : String,
-        required : true,
-        default : 'Nameless_sensor'
+        required : true
     },
     state : {
         type : Boolean,
-        required : true,
         default : false
     },
     room_id : {

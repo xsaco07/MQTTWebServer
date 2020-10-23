@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const utils = require('../utils/utils');
 const Schema = mongoose.Schema;
 
 const checkInSchema = {
@@ -13,19 +14,24 @@ const checkInSchema = {
     duration : {
         days : {
             type : Number,
-            required : false,
-            default : 0
+            required : true
         },
         nights : {
             type : Number,
-            required : false,
-            default : 0
+            default : function() {return this.duration.days - 1;}
         }
     },
     date : {
         type : Date,
-        required : true,
-        default : Date.now()
+        default : () => {
+            let date = new Date();
+            date.setHours(date.getHours() - utils.offsetUTCHours);
+            return date;
+        }
+    },
+    status : {
+        type : Boolean,
+        default : true
     }
 
 }

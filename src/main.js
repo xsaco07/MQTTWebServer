@@ -4,7 +4,15 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const socketIo = require('socket.io');
-const mqttClient = require('./mqtt/mqtt');
+
+// Routes
+const roomRoutes = require('./routes/roomRoutes');
+const sensorRoutes = require('./routes/sensorRoutes');
+const checkInRoutes = require('./routes/checkInRoutes');
+const checkOutRoutes = require('./routes/checkOutRoutes');
+const guestRoutes = require('./routes/guestRoutes');
+
+const {makeDB} = require('./data-access/mongodb');
 
 // Express settings
 const app = express();
@@ -14,8 +22,18 @@ app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.json());
 app.use(cors());
 
+// Routes set up
+app.use('/room', roomRoutes);
+app.use('/sensor', sensorRoutes);
+app.use('/guest', guestRoutes);
+app.use('/checkIn', checkInRoutes);
+app.use('/checkOut', checkOutRoutes);
+
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));
+
+// Mongo connection
+makeDB();
 
 // Start listening
 const server = app.listen(app.get('port'), () => {
@@ -31,34 +49,3 @@ io.on('connection', (socket) => {
     });
 });
 
-function towelsMessageReceived(towelsMessage){
-    const obj = JSON.parse(towelsMessage);
-    console.log(`Message parsed: ${obj}`);
-    // post to API
-}
-
-function flowMeterMessageReceived(flowMeterMessage){
-    const obj = JSON.parse(flowMeterMessage);
-    console.log(`Message parsed: ${obj}`);
-    // post to API
-}
-
-function startListeningMqtt(){
-    mqttClient.on("message", (topic, message, packet) => {
-        switch(topic){
-            case mqttClient.TOPICS.towelsTopic:
-                towelsMessageReceived(message);
-                break;
-            case mqttClient.TOPICS.waterConsumeTopic:
-                flowMeterMessageReceived(message);
-                break;
-            default: break;
-        }
-    });
-}
-
-function setUpMqtt(){
-    mqttClient.connectClient();
-    mqttClient.subscribeToTopics();
-    startListeningMqtt();
-}

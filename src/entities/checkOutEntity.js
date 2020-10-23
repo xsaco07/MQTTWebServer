@@ -1,41 +1,50 @@
 const mongoose = require('mongoose');
+const utils = require('../utils/utils');
 const Schema = mongoose.Schema;
 
 const checkOutSchema = {
-    room_id : {
+    checkIn_id : {
         type : Schema.Types.ObjectId,
-        ref : 'Room'
+        ref : 'CheckIn',
+        required : true
     },
-    guest_id : {
-        type : Schema.Types.ObjectId,
-        ref : 'Guest'
-    },
-    duration : {
-        days : {
+    totalWaterConsumption : {
+        consumption : {
             type : Number,
-            required : false,
             default : 0
         },
-        nights : {
+        seconds : {
             type : Number,
-            required : false,
             default : 0
         }
     },
-    totalWaterConsume : {
-        type : Number,
-        required : true,
-        default : 0
+    totalTowelsConsumption : {
+        towels : {
+            type : Number,
+            default : 0
+        },
+        weight : {
+            type : Number,
+            default : 0
+        },
+        consumption : {
+            type : Number,
+            default : 0
+        }
     },
-    totalTowelsConsume : {
+    totalConsumption : {
         type : Number,
-        required : true,
-        default : 0
+        default : function() {
+            return this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
+        }
     },
     date : {
         type : Date,
-        required : true,
-        default : Date.now()
+        default : () => {
+            let date = new Date();
+            date.setHours(date.getHours() - utils.offsetUTCHours);
+            return date;
+        }
     }
 
 }

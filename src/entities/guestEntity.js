@@ -7,39 +7,42 @@ var validateEmail = (email) => {
 };
 
 const guestSchema = {
-    credencials : {
+    room_id : {
+        type : Schema.Types.ObjectId,
+        required: true,
+        ref : 'Room'
+    },
+    fullName : {
         name : {
             type : String,
-            required : true,
-            default : 'Nameless_guest'
+            required : true
         },
         lastName1 : {
             type : String,
-            required : true,
-            default : ''
+            required : true
         },
         lastName2 : {
             type : String,
-            required : true,
             default : ''
         }
     },
+    age : {
+        type : Number,
+        required : true
+    },
+    country : {
+        type : String,
+        default : 'No country'
+    },
     email : {
         type : String,
-        required : false,
-        default : 'No_Email',
+        required : true,
         validate: [validateEmail, 'Please fill a valid email address']
     },
-    phoneNumner : {
+    phone : {
         type : String,
-        required : false,
-        default : 'No_phoneNumber'
-    },
-    room_id : {
-        type : Schema.Types.ObjectId,
-        ref : 'Room'
-    },
-
+        default : 'No_phone'
+    }
 }
 
 const Guest = mongoose.model('Guest', new Schema(guestSchema), 'guests');
