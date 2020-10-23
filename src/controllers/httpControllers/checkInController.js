@@ -100,7 +100,7 @@ module.exports = {
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
-    // Action = checkIn/date1/:date1/date2/:date2
+    // Action = checkIn/date1/:date1/:date2
     // Params = {date1 : String, date2 : String}
     getByDateRange : async (req, res, next) => {
         const date1 = req.params.date1;

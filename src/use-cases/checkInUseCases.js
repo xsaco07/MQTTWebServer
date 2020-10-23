@@ -1,5 +1,6 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
+const roomUseCases = require('../use-cases/roomUseCases');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckIn Use Case`);
@@ -16,9 +17,15 @@ module.exports = {
             duration : inputData.duration
         };
 
-        const checkInDocument = factories.buildCheckInEntity(finalObject);
+        try {
+            // Update room occupancyState 
+            const checkInDocument = factories.buildCheckInEntity(finalObject);
+            let roomDocument = await roomUseCases.getRoomById({room_id : inputData.room_id});
+            roomDocument.occupancyState = true;
+            await roomDocument.save();
 
-        try { return await checkInDocument.save(); } 
+            return await checkInDocument.save(); 
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {}

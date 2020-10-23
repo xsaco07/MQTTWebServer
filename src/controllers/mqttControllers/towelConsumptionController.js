@@ -62,6 +62,6 @@ module.exports = {
             consumption : {$sum : "$infoPacket.consumption"}
         });
         if(total.length > 0) return buildTotalTowelsConsumptionEntity(total[0]);
-        return total;
+        return {};
     }
 };

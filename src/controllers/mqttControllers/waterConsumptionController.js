@@ -62,6 +62,6 @@ module.exports = {
             seconds : {$sum : "$infoPacket.seconds"}
         });
         if(total.length > 0) return buildTotalWaterConsumptionEntity(total[0]);
-        return total;
+        return {};
     }
 };

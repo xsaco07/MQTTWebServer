@@ -1,7 +1,9 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
 const utils = require('../utils/utils');
+
 const checkInUseCases = require('../use-cases/checkInUseCases');
+const roomUseCases = require('../use-cases/roomUseCases');
 const towelConsumptionUseCases = require('../controllers/mqttControllers/towelConsumptionController');
 const waterConsumptionUseCases = require('../controllers/mqttControllers/waterConsumptionController');
 
@@ -23,30 +25,26 @@ module.exports = {
         boundCheckIn.status = false;
         await boundCheckIn.save();
 
+        // Update associated room occupancy state
+        let boundRoom = await roomUseCases.getRoomById({room_id : boundCheckIn.room_id});
+        boundRoom.occupancyState = false;
+        await boundRoom.save();
+
         let totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             boundCheckIn.room_id,
             boundCheckIn.date,
             now);
-
-        console.log(totalWater);
 
         let totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             boundCheckIn.room_id,
             boundCheckIn.date,
             now);
 
-        console.log(totalTowels);
-        
-        if(totalWater.length == 0) totalWater = {};
-        if(totalTowels.length == 0) totalTowels = {};
-
         inputData.totalWaterConsumption = totalWater;
         inputData.totalTowelsConsumption = totalTowels;
         inputData.date = now;
 
         const checkOutDocument = factories.buildCheckOutEntity(inputData);
-        
-        console.log(checkOutDocument);
 
         try { return await checkOutDocument.save(); } 
         catch (error) { handleDBOperationError(error); }
@@ -58,19 +56,22 @@ module.exports = {
     },
     // inputData = {_id : ObjectId}
     getCheckOutsById : async (inputData) => {
-        try { return await entities.CheckIn.findById(inputData._id); } 
+        try { return await entities.CheckOut.findById(inputData._id); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {checkIn_id : ObjectId}
     getCheckOutsByCheckInId : async (inputData) => {
-        try { return await entities.CheckIn.findOne({checkIn_id : inputData.checkIn_id}); } 
+        try { return await entities.CheckOut.findOne({checkIn_id : inputData.checkIn_id}); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {date1 : Date, date2 : Date2}
     getCheckOutsByDateRange : async (inputData) => {
         try {
-            await entities.CheckIn.find({
-                date : { $gte: inputData.date1, $lte: inputData.date2}
+            return await entities.CheckOut.find({
+                date : { 
+                    $gte: inputData.date1, 
+                    $lte: inputData.date2
+                }
             });
         } 
         catch (error) { handleDBOperationError(error); }

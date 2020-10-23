@@ -28,9 +28,9 @@ module.exports = {
     getById : async (req, res, next) => {
         const _id = req.params._id;
         try {
-            const docs = await checkOutUseCases.getCheckOutsById({_id});
+            const doc = await checkOutUseCases.getCheckOutsById({_id});
             if(doc == null) res.status(204).end();
-            else res.status(200).json(docs);
+            else res.status(200).json(doc);
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
@@ -45,7 +45,7 @@ module.exports = {
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
-    // Action = checkOut/date1/:date1/date2/:date2
+    // Action = checkOut/date1/:date1/:date2
     // Params = {date1 : String, date2 : String}
     getByDateRange : async (req, res, next) => {
         const date1 = req.params.date1;
@@ -53,6 +53,7 @@ module.exports = {
         try {
             const docs = await checkOutUseCases.getCheckOutsByDateRange({date1, date2});
             if(docs.length == 0) res.status(204).end();
+            else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
     }
 }

@@ -8,7 +8,7 @@ router.get('/_id/:_id/', checkOutController.getById);
 
 router.get('/checkIn_id/:checkIn_id/', checkOutController.getByCheckInId);
 
-router.get('/date1/:date1/date2/:date2', checkOutController.getByDateRange);
+router.get('/date/:date1/:date2', checkOutController.getByDateRange);
 
 router.post('/new/', checkOutController.new);
 
