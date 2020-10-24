@@ -12,7 +12,11 @@ const checkInRoutes = require('./routes/checkInRoutes');
 const checkOutRoutes = require('./routes/checkOutRoutes');
 const guestRoutes = require('./routes/guestRoutes');
 
+// DB
 const {makeDB} = require('./data-access/mongodb');
+
+// MQTT
+const mqtt = require('./mqtt/mqtt');
 
 // Express settings
 const app = express();
@@ -38,6 +42,8 @@ makeDB();
 // Start listening
 const server = app.listen(app.get('port'), () => {
     console.log(`Listening on port ${app.get('port')}`);
+    mqtt.connectClient();
+    mqtt.startListeningMqtt();
 });
 
 // Init websockets

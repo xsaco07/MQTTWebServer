@@ -1,29 +1,35 @@
-// Requiring MQTT module
+// Requiring
 const MQTT = require('mqtt');
-const { exit } = require('process');
-const saveTowelConsumption = require('../controllers/mqttControllers/towelsConsumeController');
-const saveTowelConsumption = require('../controllers/mqttControllers/waterConsumeController');
-const mqttClient = MQTT.connect("");
+const useCases = require('../use-cases/useCases');
+const factories = require('../entities/factories');
+const errorHandlers = require('../utils/errorHandlers');
+
+// MQTT credentials
+const USER = 'ecoServer';
+const PASSW = 'ecoServerPassword'
+const SERVER = 'outstanding-translator.cloudmqtt.com'
+const PORT = 1883;
+const URL_CONNECTION = `mqtt://${USER}:${PASSW}@${SERVER}:${PORT}`
+const mqttClient = MQTT.connect(URL_CONNECTION);
 
 // Defining topics
 const rootTopic = "ecoH2o/";
-const rootServerTopic = `${rootTopic}/server/`
-const towelsTopic = `${rootServerTopic}towelsConsumption/`;
-const waterConsumeTopic = `${rootServerTopic}waterConsumption/`;
+const rootServerTopic = `${rootTopic}sensor/`
+const towelConsumptionTopic = `${rootServerTopic}towelsConsumption/`;
+const waterConsumptionTopic = `${rootServerTopic}waterConsumption/`;
 
 TOPICS = {
-    "rootTopic" : rootTopic,
-    "rootServerTopic" : rootServerTopic,
-    "towelsTopic" : towelsTopic,
-    "waterConsumeTopic" : waterConsumeTopic
+    rootTopic,
+    rootServerTopic,
+    towelConsumptionTopic,
+    waterConsumptionTopic
 }
-
-const errorHandler = (error) => console.log(`An error has occured: ${error}`);
 
 // Connect mqtt client and subscribe it to the topics
 function connectClient(){
     mqttClient.on("connect", () => {
         console.log("Connected to MQTT server");
+        subscribeToTopics();
     });
     mqttClient.on("error", (error) => {
         console.log("Error received: " + error);
@@ -32,24 +38,49 @@ function connectClient(){
 }
 
 function subscribeToTopics(){
-    mqttClient.subscribe(TOPICS.rootTopic, errorHandler);
-    mqttClient.subscribe(TOPICS.rootServerTopic, errorHandler);
-    mqttClient.subscribe(TOPICS.towelsTopic, errorHandler);
-    mqttClient.subscribe(TOPICS.waterConsumeTopic, errorHandler);
+    mqttClient.subscribe(TOPICS.rootTopic, errorHandlers.suscriptionErrorHandler);
+    mqttClient.subscribe(TOPICS.rootServerTopic, errorHandlers.suscriptionErrorHandler);
+    mqttClient.subscribe(TOPICS.towelConsumptionTopic, errorHandlers.suscriptionErrorHandler);
+    mqttClient.subscribe(TOPICS.waterConsumptionTopic, errorHandlers.suscriptionErrorHandler);
 }
 
 function startListeningMqtt(){
-    mqttClient.on("message", (topic, message, packet) => {
+    console.log('Listening to mqtt messages');
+    mqttClient.on('message', (topic, message, packet) => {
         switch(topic){
-            case mqttClient.TOPICS.towelsTopic:
-                saveTowelConsumption(message);
+            case TOPICS.towelConsumptionTopic: 
+                handleTowelConsumptionMessage(message, packet);
                 break;
-            case mqttClient.TOPICS.waterConsumeTopic:
-                flowMeterMessageReceived(message);
+            case TOPICS.waterConsumptionTopic : 
+                handleWaterConsumptionMessage(message, packet);
                 break;
-            default: break;
         }
     });
+}
+
+async function handleTowelConsumptionMessage(message, packet) {
+    console.log(`Towel message received`);
+    try {
+        const infoPacket = JSON.parse(message);
+        console.log(infoPacket);
+        const sensorName = infoPacket.sensorName;
+        const sensorDocument = await useCases.espSensorUseCases.getEspSensorByName({sensorName});
+        const towelConsumptionObjectData = factories.buildTowelConsumptionEntity({
+            sensor_id : sensorDocument._id,
+            infoPacket
+        });
+        const savedObject = await towelConsumptionObjectData.save();
+        console.log('Towel consumption object saved');
+        console.log(savedObject);
+    } catch (error) {
+        errorHandlers.handleMQTTMessageInError(error);
+    }
+
+}
+
+function handleWaterConsumptionMessage(message, packet) {
+    console.log(`Water message received: ${message.toString()}`);
+    console.log(JSON.parse(message));
 }
 
 module.exports.mqttClient = mqttClient;

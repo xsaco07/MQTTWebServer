@@ -1,6 +1,6 @@
 // MQTT Subscibe Messages Examples
 const serverTowelsTopic = {
-    "sensorName" : "ESPCN01",
+    "sensorName" : "ESPSensor-01",
     "towels" : 4,
     "weight" : 1300,
     "consumption" : 500,
