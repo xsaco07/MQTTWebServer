@@ -8,7 +8,7 @@ const serverTowelsTopic = {
 }
 
 const serverWaterConsumeTopic = {
-    "sensorName" : "ESPCN03",
+    "sensorName" : "ESPSensor-01",
     "consumption" : 500,
     "seconds" : 128,
     "date" : "2020-10-12"

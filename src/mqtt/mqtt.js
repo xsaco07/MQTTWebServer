@@ -44,7 +44,7 @@ function subscribeToTopics(){
     mqttClient.subscribe(TOPICS.waterConsumptionTopic, errorHandlers.suscriptionErrorHandler);
 }
 
-function startListeningMqtt(){
+function listenToMQTTMessages(){
     console.log('Listening to mqtt messages');
     mqttClient.on('message', (topic, message, packet) => {
         switch(topic){
@@ -78,13 +78,27 @@ async function handleTowelConsumptionMessage(message, packet) {
 
 }
 
-function handleWaterConsumptionMessage(message, packet) {
-    console.log(`Water message received: ${message.toString()}`);
-    console.log(JSON.parse(message));
+async function handleWaterConsumptionMessage(message, packet) {
+    console.log(`Water message received`);
+    try {
+        const infoPacket = JSON.parse(message);
+        console.log(infoPacket);
+        const sensorName = infoPacket.sensorName;
+        const sensorDocument = await useCases.espSensorUseCases.getEspSensorByName({sensorName});
+        const towelConsumptionObjectData = factories.buildWaterConsumptionEntity({
+            sensor_id : sensorDocument._id,
+            infoPacket
+        });
+        const savedObject = await towelConsumptionObjectData.save();
+        console.log('Water consumption object saved');
+        console.log(savedObject);
+    } catch (error) {
+        errorHandlers.handleMQTTMessageInError(error);
+    }
 }
 
 module.exports.mqttClient = mqttClient;
 module.exports.connectClient = connectClient;
 module.exports.subscribeToTopics = subscribeToTopics;
-module.exports.startListeningMqtt = startListeningMqtt;
+module.exports.listenToMQTTMessages = listenToMQTTMessages;
 module.exports.TOPICS = TOPICS;

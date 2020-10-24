@@ -43,7 +43,7 @@ makeDB();
 const server = app.listen(app.get('port'), () => {
     console.log(`Listening on port ${app.get('port')}`);
     mqtt.connectClient();
-    mqtt.startListeningMqtt();
+    mqtt.listenToMQTTMessages();
 });
 
 // Init websockets
