@@ -1,23 +1,11 @@
 // Todo: implement this logic
 const isValidObject = (object) => true;
 
-module.exports.buildTotalsEntity = (
-    sensorName,
-    totalFlowMetersWaterConsume,
-    totalTowelsWaterConsume,
-    totalWaterConsume,
-    totalWaterConsumeTime,
-    totalWeight,
-    totalTowels
-) => {
+module.exports.buildTotalsEntity = (totalTowels, totalWater) => {
     const object = Object.freeze({
-        sensorName,
-        totalFlowMetersWaterConsume,
-        totalTowelsWaterConsume,
-        totalWaterConsume,
-        totalWaterConsumeTime,
-        totalWeight,
-        totalTowels
+        towels : totalTowels,
+        water : totalWater,
+        total : totalTowels.consumption + totalWater.consumption
     });
     if(isValidObject(object)) return object;
 };

@@ -7,6 +7,7 @@ const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntit
 const {buildWaterConsumptionEntity} = require('../entities/waterConsumptionEntity');
 const {buildTotalTowelsConsumptionEntity} = require('../entities/totalTowelsConsumptionEntity');
 const {buildTotalWaterConsumptionEntity} = require('../entities/totalWaterConsumptionEntity');
+const {buildTotalsEntity} = require('../entities/totalsEntity');
 
 module.exports = {
     buildCheckInEntity,
@@ -17,5 +18,6 @@ module.exports = {
     buildTowelConsumptionEntity,
     buildWaterConsumptionEntity,
     buildTotalTowelsConsumptionEntity,
-    buildTotalWaterConsumptionEntity
+    buildTotalWaterConsumptionEntity,
+    buildTotalsEntity
 }

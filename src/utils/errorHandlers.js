@@ -13,7 +13,7 @@ const handleMQTTMessageInError = (err) => {
     console.log(`${err}`);
 }
 
-const suscriptionErrorHandler = (err, granted) => {
+const handleSuscriptionError = (err, granted) => {
     if(err) console.log(`An error has occured: ${err}`);
     else {
         console.log(`Suscription successfull`);
@@ -21,9 +21,15 @@ const suscriptionErrorHandler = (err, granted) => {
     }
 };
 
+const handlePublishMessageError = (err, topic, message) => {
+    console.log(`Error ocurred while publishing <${message}> to <${topic}>`);
+    console.log(`${err}`);
+};
+
 module.exports = {
     handleGetRequestError, 
     handlePostRequestError, 
     handleMQTTMessageInError, 
-    suscriptionErrorHandler
+    handleSuscriptionError,
+    handlePublishMessageError
 }
