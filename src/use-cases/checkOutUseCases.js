@@ -1,11 +1,9 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
 const utils = require('../utils/utils');
-
-const checkInUseCases = require('../use-cases/checkInUseCases');
-const roomUseCases = require('../use-cases/roomUseCases');
-const towelConsumptionUseCases = require('../controllers/mqttControllers/towelConsumptionController');
-const waterConsumptionUseCases = require('../controllers/mqttControllers/waterConsumptionController');
+const useCases = require('../use-cases/useCases');
+const mqtt = require('./../mqtt/mqtt');
+const {TOTALS_LIST} = require('../utils/lastTotalsList');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckOut Use Case`);
@@ -13,29 +11,58 @@ const handleDBOperationError = (err) => {
     throw new Error(err);
 };
 
+// Resets the values to 0 for the totals object
+const resetTotalObject = async (room_id) => {
+    let boundSensor = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
+    TOTALS_LIST[boundSensor.sensorName].reset();
+    return boundSensor;
+};
+
+// Returns the updated checkIn document
+const turnOffCheckInState = async (checkIn_id) => {
+    let boundCheckIn = await useCases.checkInUseCases.getCheckInById({checkIn_id});
+    boundCheckIn.status = false;
+    return await boundCheckIn.save();
+};
+
+// Returns the updated room document
+const turnOffRoomState = async (room_id) => {
+    let boundRoom = await useCases.roomUseCases.getRoomById({room_id});
+    boundRoom.occupancyState = false;
+    return await boundRoom.save();
+};
+
+// Use mqtt module to publish back that the state is now turned off
+const turnOffSensorState = async (sensorDoc) => {
+    sensorDoc.status = false;
+    await sensorDoc.save();
+    const stateObject = factories.buildSensorStateEntity(false);
+    mqtt.publishStateMessage(sensorDoc.sensorName, stateObject);
+};
+
 module.exports = {
     // inputData = {checkIn_id : ObjectId}
     newCheckOut : async (inputData) => {
 
+        // Get current date is the first step in case 
+        // other operations take too much to execute
         let now = new Date();
-            now.setHours(now.getHours() - utils.offsetUTCHours);
+        now.setHours(now.getHours() - utils.offsetUTCHours);
 
-        // Deactivate check-in and save
-        let boundCheckIn = await checkInUseCases.getCheckInById({checkIn_id : inputData.checkIn_id});
-        boundCheckIn.status = false;
-        await boundCheckIn.save();
+        const checkInDoc = await turnOffCheckInState(inputData.checkIn_id);
 
-        // Update associated room occupancy state
-        let boundRoom = await roomUseCases.getRoomById({room_id : boundCheckIn.room_id});
-        boundRoom.occupancyState = false;
-        await boundRoom.save();
+        const roomDoc = await turnOffRoomState(checkInDoc.room_id);
+        
+        const sensorDoc = await resetTotalObject(roomDoc._id);
 
-        let totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
+        await turnOffSensorState(sensorDoc);
+
+        let totalWater = await useCases.waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             boundCheckIn.room_id,
             boundCheckIn.date,
             now);
 
-        let totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
+        let totalTowels = await useCases.towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             boundCheckIn.room_id,
             boundCheckIn.date,
             now);

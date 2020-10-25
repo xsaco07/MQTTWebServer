@@ -3,7 +3,8 @@ const MQTT = require('mqtt');
 const useCases = require('../use-cases/useCases');
 const factories = require('../entities/factories');
 const errorHandlers = require('../utils/errorHandlers');
-const {LastTotals} = require('../utils/lastTotals');
+const {Total} = require('../utils/Total');
+const {TOTALS_LIST} = require('../utils/lastTotalsList');
 
 // MQTT credentials
 const USER = 'ecoServer';
@@ -71,10 +72,9 @@ function listenToMQTTMessages(){
 async function handleTowelConsumptionMessage(message, packet) {
     console.log(`Towel message received`);
     let infoPacket = {};
-    let sensorName = '';
     try {
         infoPacket = JSON.parse(message);
-        sensorName = infoPacket.sensorName;
+        const sensorName = infoPacket.sensorName;
         const sensorDocument = await useCases.espSensorUseCases.getEspSensorByName({sensorName});
         const towelConsumptionObjectData = factories.buildTowelConsumptionEntity({
             sensor_id : sensorDocument._id,
@@ -87,22 +87,16 @@ async function handleTowelConsumptionMessage(message, packet) {
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
     finally {
         updateTowelTotals(infoPacket);
-        returnTotalsToSensor(sensorName);
+        returnTotalsToSensor(infoPacket.sensorName);
     }
-}
-
-function returnTotalsToSensor(sensorName){
-    const totalsObject = LastTotals.LAST_TOTALS;
-    publishTotalsMessage(sensorName, totalsObject);
 }
 
 async function handleWaterConsumptionMessage(message, packet) {
     console.log(`Water message received`);
     let infoPacket = {};
-    let sensorName = '';
     try {
         infoPacket = JSON.parse(message);
-        sensorName = infoPacket.sensorName;
+        const sensorName = infoPacket.sensorName;
         const sensorDocument = await useCases.espSensorUseCases.getEspSensorByName({sensorName});
         const towelConsumptionObjectData = factories.buildWaterConsumptionEntity({
             sensor_id : sensorDocument._id,
@@ -115,7 +109,7 @@ async function handleWaterConsumptionMessage(message, packet) {
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
     finally { 
         updateWaterTotals(infoPacket);
-        returnTotalsToSensor(sensorName);
+        returnTotalsToSensor(infoPacket.sensorName);
     }
 }
 
@@ -134,7 +128,13 @@ function publishTotalsMessage(sensorName, totalsObject){
 }
 
 function updateTowelTotals(infoPacket){
-    LastTotals.increseTowelsTotals(
+    // Check if object was already created
+    let currentTotalObject = TOTALS_LIST[infoPacket.sensorName];
+    if(currentTotalObject == null){
+        currentTotalObject = new Total(infoPacket.sensorName);
+        TOTALS_LIST[infoPacket.sensorName] = currentTotalObject;
+    }
+    currentTotalObject.increseTowelsTotals(
         infoPacket.consumption,
         infoPacket.towels,
         infoPacket.weight
@@ -142,10 +142,21 @@ function updateTowelTotals(infoPacket){
 }
 
 function updateWaterTotals(infoPacket){
-    LastTotals.increaseWaterTotals(
+    // Check if object was already created
+    let currentTotalObject = TOTALS_LIST[infoPacket.sensorName];
+    if(currentTotalObject == null){
+        currentTotalObject = new Total(infoPacket.sensorName);
+        TOTALS_LIST[infoPacket.sensorName] = currentTotalObject;
+    }
+    currentTotalObject.increaseWaterTotals(
         infoPacket.consumption,
         infoPacket.seconds
     );
+}
+
+function returnTotalsToSensor(sensorName){
+    const totalsObject = TOTALS_LIST[sensorName].LAST_TOTALS;
+    publishTotalsMessage(sensorName, totalsObject);
 }
 
 module.exports.mqttClient = mqttClient;
