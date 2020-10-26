@@ -41,6 +41,13 @@ const totalSchema = {
                 required : true,
                 default : 0.00
             }
+        },
+        totalConsumption : {
+            type : Number,
+            required : true,
+            default : function(){
+                return this.totals.water.consumption + this.totals.towels.consumption;
+            }
         }
     }
 }
