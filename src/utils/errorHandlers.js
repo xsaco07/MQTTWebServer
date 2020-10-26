@@ -22,8 +22,11 @@ const handleSuscriptionError = (err, granted) => {
 };
 
 const handlePublishMessageError = (err, topic, message) => {
-    console.log(`Error ocurred while publishing <${message}> to <${topic}>`);
-    console.log(`${err}`);
+    if(err) {
+        console.log(`Error ocurred while publishing <${message}> to <${topic}>`);
+        console.log(`${err}`);
+    }
+    else console.log(`Success publishing <${message}> to <${topic}>`);
 };
 
 module.exports = {

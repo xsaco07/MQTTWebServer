@@ -1,6 +1,9 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
-const roomUseCases = require('../use-cases/roomUseCases');
+const useCases = require('../use-cases/useCases');
+const mqtt = require('./../mqtt/mqtt');
+const {Total} = require('../utils/Total');
+const { TOTALS_LIST } = require('../utils/lastTotalsList');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckIn Use Case`);
@@ -8,22 +11,48 @@ const handleDBOperationError = (err) => {
     throw new Error(err);
 };
 
+// Update room occupancyState 
+// Returns the updated room document
+const turnOnRoomState = async (room_id) => {
+    // Update room occupancyState 
+    let roomDocument = await useCases.roomUseCases.getRoomById({room_id});
+    roomDocument.occupancyState = true;
+    return await roomDocument.save();
+};
+
+// Creates a new local Total object associated to a sensor
+// Returns sensor document
+const createTotalObject = async (room_id) => {
+    const boundSensor = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
+    const currentTotalObject = new Total(boundSensor.sensorName);
+    TOTALS_LIST[boundSensor.sensorName] = currentTotalObject;
+    console.log(TOTALS_LIST);
+    return boundSensor;
+};
+
+// Use mqtt module to publish-back the sensor state now turned on
+const turnOnSensorState = async (sensorDoc) => {
+    sensorDoc.status = false;
+    await sensorDoc.save();
+    const stateObject = factories.buildSensorStateEntity(true);
+    mqtt.publishStateMessage(sensorDoc.sensorName, stateObject);
+};
+
 module.exports = {
     // inputData = {room_id : ObjectId, guest_id : ObjectId, duration : {days : int, nights : int}}
     newCheckIn : async (inputData) => {
-        const finalObject = {
-            room_id : inputData.room_id,
-            guest_id : inputData.guest_id,
-            duration : inputData.duration
-        };
-
         try {
-            // Update room occupancyState 
-            const checkInDocument = factories.buildCheckInEntity(finalObject);
-            let roomDocument = await roomUseCases.getRoomById({room_id : inputData.room_id});
-            roomDocument.occupancyState = true;
-            await roomDocument.save();
+            const finalObject = {
+                room_id : inputData.room_id,
+                guest_id : inputData.guest_id,
+                duration : inputData.duration
+            };
 
+            const roomDoc = await turnOnRoomState(inputData.room_id);
+            const sensorDoc = await createTotalObject(roomDoc._id);
+            turnOnSensorState(sensorDoc);
+
+            const checkInDocument = factories.buildCheckInEntity(finalObject);
             return await checkInDocument.save(); 
         } 
         catch (error) { handleDBOperationError(error); }

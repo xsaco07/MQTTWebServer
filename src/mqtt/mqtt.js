@@ -1,10 +1,10 @@
 // Requiring
 const MQTT = require('mqtt');
-const useCases = require('../use-cases/useCases');
+const espSensorUseCases = require('../use-cases/espSensorUseCases');
 const factories = require('../entities/factories');
 const errorHandlers = require('../utils/errorHandlers');
-const {Total} = require('../utils/Total');
 const {TOTALS_LIST} = require('../utils/lastTotalsList');
+const { Total } = require('../utils/Total');
 
 // MQTT credentials
 const USER = 'ecoServer';
@@ -73,22 +73,26 @@ async function handleTowelConsumptionMessage(message, packet) {
     console.log(`Towel message received`);
     let infoPacket = {};
     try {
+
         infoPacket = JSON.parse(message);
+
+        console.log(infoPacket);
+
         const sensorName = infoPacket.sensorName;
-        const sensorDocument = await useCases.espSensorUseCases.getEspSensorByName({sensorName});
+        const sensorDocument = await espSensorUseCases.getEspSensorByName({sensorName});
         const towelConsumptionObjectData = factories.buildTowelConsumptionEntity({
             sensor_id : sensorDocument._id,
             infoPacket
         });
         const savedObject = await towelConsumptionObjectData.save();
+
         console.log('Towel consumption object saved');
         console.log(savedObject);
-    } 
-    catch (error) { errorHandlers.handleMQTTMessageInError(error); }
-    finally {
+
         updateTowelTotals(infoPacket);
         returnTotalsToSensor(infoPacket.sensorName);
-    }
+    } 
+    catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
 
 async function handleWaterConsumptionMessage(message, packet) {
@@ -97,7 +101,7 @@ async function handleWaterConsumptionMessage(message, packet) {
     try {
         infoPacket = JSON.parse(message);
         const sensorName = infoPacket.sensorName;
-        const sensorDocument = await useCases.espSensorUseCases.getEspSensorByName({sensorName});
+        const sensorDocument = await espSensorUseCases.getEspSensorByName({sensorName});
         const towelConsumptionObjectData = factories.buildWaterConsumptionEntity({
             sensor_id : sensorDocument._id,
             infoPacket
@@ -114,15 +118,19 @@ async function handleWaterConsumptionMessage(message, packet) {
 }
 
 function publishStateMessage(sensorName, stateObject){
-    const topic = `${rootTopic}/server/${sensorName}/${PUB_TOPICS.sensorStateTopic}`;
+    const topic = `${rootTopic}server/${sensorName}/${PUB_TOPICS.sensorStateTopic}`;
     const message = JSON.stringify(stateObject);
+    console.log(`Publish Topic >> ${topic}`);
+    console.log(`Publish Message >> ${message}`);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
 
 function publishTotalsMessage(sensorName, totalsObject){
-    const topic = `${rootTopic}/server/${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
+    const topic = `${rootTopic}server/${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
     const message = JSON.stringify(totalsObject);
+    console.log(`Topic >> ${topic}`);
+    console.log(`Message >> ${message}`);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
@@ -130,10 +138,11 @@ function publishTotalsMessage(sensorName, totalsObject){
 function updateTowelTotals(infoPacket){
     // Check if object was already created
     let currentTotalObject = TOTALS_LIST[infoPacket.sensorName];
-    if(currentTotalObject == null){
+    if(currentTotalObject == null) {
         currentTotalObject = new Total(infoPacket.sensorName);
         TOTALS_LIST[infoPacket.sensorName] = currentTotalObject;
     }
+    console.log(TOTALS_LIST);
     currentTotalObject.increseTowelsTotals(
         infoPacket.consumption,
         infoPacket.towels,
@@ -144,7 +153,7 @@ function updateTowelTotals(infoPacket){
 function updateWaterTotals(infoPacket){
     // Check if object was already created
     let currentTotalObject = TOTALS_LIST[infoPacket.sensorName];
-    if(currentTotalObject == null){
+    if(currentTotalObject == null) {
         currentTotalObject = new Total(infoPacket.sensorName);
         TOTALS_LIST[infoPacket.sensorName] = currentTotalObject;
     }

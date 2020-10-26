@@ -12,12 +12,15 @@ const handleDBOperationError = (err) => {
 };
 
 // Resets the values to 0 for the totals object
+// Returns sensor document
 const resetTotalObject = async (room_id) => {
-    let boundSensor = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
+    const boundSensor = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
     TOTALS_LIST[boundSensor.sensorName].reset();
+    console.log(TOTALS_LIST);
     return boundSensor;
 };
 
+// Updates checkIn active state 
 // Returns the updated checkIn document
 const turnOffCheckInState = async (checkIn_id) => {
     let boundCheckIn = await useCases.checkInUseCases.getCheckInById({checkIn_id});
@@ -25,6 +28,7 @@ const turnOffCheckInState = async (checkIn_id) => {
     return await boundCheckIn.save();
 };
 
+// Updates room occupancyState 
 // Returns the updated room document
 const turnOffRoomState = async (room_id) => {
     let boundRoom = await useCases.roomUseCases.getRoomById({room_id});
@@ -32,7 +36,7 @@ const turnOffRoomState = async (room_id) => {
     return await boundRoom.save();
 };
 
-// Use mqtt module to publish back that the state is now turned off
+// Use mqtt module to publish-back the sensor state is now turned off
 const turnOffSensorState = async (sensorDoc) => {
     sensorDoc.status = false;
     await sensorDoc.save();
@@ -44,7 +48,7 @@ module.exports = {
     // inputData = {checkIn_id : ObjectId}
     newCheckOut : async (inputData) => {
 
-        // Get current date is the first step in case 
+        // Getting current date is the first step in case 
         // other operations take too much to execute
         let now = new Date();
         now.setHours(now.getHours() - utils.offsetUTCHours);
@@ -55,7 +59,7 @@ module.exports = {
         
         const sensorDoc = await resetTotalObject(roomDoc._id);
 
-        await turnOffSensorState(sensorDoc);
+        turnOffSensorState(sensorDoc);
 
         let totalWater = await useCases.waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             boundCheckIn.room_id,
