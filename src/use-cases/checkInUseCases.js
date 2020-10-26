@@ -2,8 +2,6 @@ const entities = require('../entities/entities');
 const factories = require('../entities/factories');
 const useCases = require('../use-cases/useCases');
 const mqtt = require('./../mqtt/mqtt');
-const {Total} = require('../utils/Total');
-const { TOTALS_LIST } = require('../utils/lastTotalsList');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckIn Use Case`);
@@ -23,11 +21,7 @@ const turnOnRoomState = async (room_id) => {
 // Creates a new local Total object associated to a sensor
 // Returns sensor document
 const createTotalObject = async (room_id) => {
-    const boundSensor = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
-    const currentTotalObject = new Total(boundSensor.sensorName);
-    TOTALS_LIST[boundSensor.sensorName] = currentTotalObject;
-    console.log(TOTALS_LIST);
-    return boundSensor;
+
 };
 
 // Use mqtt module to publish-back the sensor state now turned on

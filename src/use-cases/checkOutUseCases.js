@@ -3,7 +3,6 @@ const factories = require('../entities/factories');
 const utils = require('../utils/utils');
 const useCases = require('../use-cases/useCases');
 const mqtt = require('./../mqtt/mqtt');
-const {TOTALS_LIST} = require('../utils/lastTotalsList');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckOut Use Case`);
@@ -14,10 +13,7 @@ const handleDBOperationError = (err) => {
 // Resets the values to 0 for the totals object
 // Returns sensor document
 const resetTotalObject = async (room_id) => {
-    const boundSensor = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
-    TOTALS_LIST[boundSensor.sensorName].reset();
-    console.log(TOTALS_LIST);
-    return boundSensor;
+
 };
 
 // Updates checkIn active state 

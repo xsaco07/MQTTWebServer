@@ -3,8 +3,6 @@ const MQTT = require('mqtt');
 const espSensorUseCases = require('../use-cases/espSensorUseCases');
 const factories = require('../entities/factories');
 const errorHandlers = require('../utils/errorHandlers');
-const {TOTALS_LIST} = require('../utils/lastTotalsList');
-const { Total } = require('../utils/Total');
 
 // MQTT credentials
 const USER = 'ecoServer';
@@ -129,43 +127,22 @@ function publishStateMessage(sensorName, stateObject){
 function publishTotalsMessage(sensorName, totalsObject){
     const topic = `${rootTopic}server/${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
     const message = JSON.stringify(totalsObject);
-    console.log(`Topic >> ${topic}`);
-    console.log(`Message >> ${message}`);
+    console.log(`Publish Topic >> ${topic}`);
+    console.log(`Publish Message >> ${message}`);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
 
 function updateTowelTotals(infoPacket){
-    // Check if object was already created
-    let currentTotalObject = TOTALS_LIST[infoPacket.sensorName];
-    if(currentTotalObject == null) {
-        currentTotalObject = new Total(infoPacket.sensorName);
-        TOTALS_LIST[infoPacket.sensorName] = currentTotalObject;
-    }
-    console.log(TOTALS_LIST);
-    currentTotalObject.increseTowelsTotals(
-        infoPacket.consumption,
-        infoPacket.towels,
-        infoPacket.weight
-    );
+
 }
 
 function updateWaterTotals(infoPacket){
-    // Check if object was already created
-    let currentTotalObject = TOTALS_LIST[infoPacket.sensorName];
-    if(currentTotalObject == null) {
-        currentTotalObject = new Total(infoPacket.sensorName);
-        TOTALS_LIST[infoPacket.sensorName] = currentTotalObject;
-    }
-    currentTotalObject.increaseWaterTotals(
-        infoPacket.consumption,
-        infoPacket.seconds
-    );
+
 }
 
 function returnTotalsToSensor(sensorName){
-    const totalsObject = TOTALS_LIST[sensorName].LAST_TOTALS;
-    publishTotalsMessage(sensorName, totalsObject);
+    
 }
 
 module.exports.mqttClient = mqttClient;

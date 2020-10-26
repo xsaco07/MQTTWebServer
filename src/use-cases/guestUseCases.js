@@ -1,6 +1,5 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
-const roomUseCases = require('../use-cases/roomUseCases');
 
 const handleDBOperationError = (err) => {
     console.log(`Guest Use Case`);

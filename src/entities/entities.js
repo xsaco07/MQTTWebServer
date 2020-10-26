@@ -5,6 +5,7 @@ const {Guest} = require('../entities/guestEntity');
 const {Room} = require('../entities/roomEntity');
 const {TowelConsumption} = require('../entities/towelConsumptionEntity');
 const {WaterConsumption} = require('../entities/waterConsumptionEntity');
+const {Total} = require('./totalEntity');
 
 module.exports = {
     CheckIn,
@@ -13,5 +14,6 @@ module.exports = {
     Guest,
     Room,
     TowelConsumption,
-    WaterConsumption
+    WaterConsumption,
+    Total
 }
