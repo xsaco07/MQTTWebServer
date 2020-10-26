@@ -79,7 +79,7 @@ async function handleTowelConsumptionMessage(message, packet) {
             sensor_id : sensorDocument._id,
             infoPacket
         });
-        const savedObject = await towelConsumptionObjectData.save();
+        await towelConsumptionObjectData.save();
         console.log('Towel consumption object saved');
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
@@ -97,7 +97,7 @@ async function handleWaterConsumptionMessage(message, packet) {
             sensor_id : sensorDocument._id,
             infoPacket
         });
-        const savedObject = await towelConsumptionObjectData.save();
+        await towelConsumptionObjectData.save();
         console.log('Water consumption object saved');
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }

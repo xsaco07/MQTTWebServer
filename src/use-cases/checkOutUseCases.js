@@ -1,8 +1,12 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
 const utils = require('../utils/utils');
-const useCases = require('../use-cases/useCases');
+const roomUseCases = require('../use-cases/roomUseCases');
+const checkInUseCases = require('../use-cases/checkInUseCases');
+const towelConsumptionController = require('../controllers/mqttControllers/towelConsumptionController');
+const waterConsumptionController = require('../controllers/mqttControllers/waterConsumptionController');
 const mqtt = require('./../mqtt/mqtt');
+const espSensorUseCases = require('./espSensorUseCases');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckOut Use Case`);
@@ -10,16 +14,10 @@ const handleDBOperationError = (err) => {
     throw new Error(err);
 };
 
-// Resets the values to 0 for the totals object
-// Returns sensor document
-const resetTotalObject = async (room_id) => {
-
-};
-
 // Updates checkIn active state 
 // Returns the updated checkIn document
 const turnOffCheckInState = async (checkIn_id) => {
-    let boundCheckIn = await useCases.checkInUseCases.getCheckInById({checkIn_id});
+    let boundCheckIn = await checkInUseCases.getCheckInById({checkIn_id});
     boundCheckIn.status = false;
     return await boundCheckIn.save();
 };
@@ -27,7 +25,7 @@ const turnOffCheckInState = async (checkIn_id) => {
 // Updates room occupancyState 
 // Returns the updated room document
 const turnOffRoomState = async (room_id) => {
-    let boundRoom = await useCases.roomUseCases.getRoomById({room_id});
+    let boundRoom = await roomUseCases.getRoomById({room_id});
     boundRoom.occupancyState = false;
     return await boundRoom.save();
 };
@@ -53,18 +51,18 @@ module.exports = {
 
         const roomDoc = await turnOffRoomState(checkInDoc.room_id);
         
-        const sensorDoc = await resetTotalObject(roomDoc._id);
+        const sensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id : roomDoc._id});
 
         turnOffSensorState(sensorDoc);
 
-        let totalWater = await useCases.waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
-            boundCheckIn.room_id,
-            boundCheckIn.date,
+        let totalWater = await waterConsumptionController.getTotalConsumptionByPeriodAndRoomId(
+            checkInDoc.room_id,
+            checkInDoc.date,
             now);
 
-        let totalTowels = await useCases.towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
-            boundCheckIn.room_id,
-            boundCheckIn.date,
+        let totalTowels = await towelConsumptionController.getTotalConsumptionByPeriodAndRoomId(
+            checkInDoc.room_id,
+            checkInDoc.date,
             now);
 
         inputData.totalWaterConsumption = totalWater;

@@ -1,6 +1,7 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
-const useCases = require('../use-cases/useCases');
+const roomUseCases = require('../use-cases/roomUseCases');
+const espSensorUseCases = require('../use-cases/espSensorUseCases');
 const mqtt = require('./../mqtt/mqtt');
 
 const handleDBOperationError = (err) => {
@@ -13,7 +14,7 @@ const handleDBOperationError = (err) => {
 // Returns the updated room document
 const turnOnRoomState = async (room_id) => {
     // Update room occupancyState 
-    let roomDocument = await useCases.roomUseCases.getRoomById({room_id});
+    let roomDocument = await roomUseCases.getRoomById({room_id});
     roomDocument.occupancyState = true;
     return await roomDocument.save();
 };
@@ -23,7 +24,7 @@ const turnOnRoomState = async (room_id) => {
 const createTotalObject = async (checkIn_id, room_id) => {
     console.log(checkIn_id);
     console.log(room_id);
-    const sensorDoc = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
+    const sensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
     const totalObject = factories.buildTotalEntity({
         checkIn_id,
         sensor_id : sensorDoc._id
