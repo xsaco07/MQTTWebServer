@@ -8,10 +8,13 @@ const handleDBOperationError = (err) => {
 };
 
 module.exports = {
-    // inputData = {checkIn_id : ObjectId}
+    // inputData = {checkIn_id : ObjectId, sensor_id : ObjectId}
     newTotal : async (inputData) => {
         // Just need check In id because the other values by default should start in 0
-        const totalDocument = factories.buildTotalEntity({checkIn_id : inputData.checkIn_id});
+        const totalDocument = factories.buildTotalEntity({
+            checkIn_id : inputData.checkIn_id,
+            sensor_id : inputData.sensor_id
+        });
         try { return await totalDocument.save(); } 
         catch (error) { handleDBOperationError(error); }
     },
@@ -28,6 +31,11 @@ module.exports = {
     // inputData = {checkIn_id : ObjectId}
     getTotalByCheckInId : async (inputData) => {
         try { return await entities.Total.find({checkIn_id : inputData.checkIn_id});} 
+        catch (error) { handleDBOperationError(error); }
+    },
+    // inputData = {sensor_id : ObjectId}
+    getTotalBySensorId : async (inputData) => {
+        try { return await entities.Total.find({sensor_id : inputData.sensor_id});} 
         catch (error) { handleDBOperationError(error); }
     },
 }

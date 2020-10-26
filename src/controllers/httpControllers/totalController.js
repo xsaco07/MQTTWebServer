@@ -43,5 +43,16 @@ module.exports = {
             if(doc == null) res.status(204).end();
             else res.status(200).json(doc);
         } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action = /total/sensor_id/:sensor_id/
+    // Params =  {_id : ObjectId}
+    getBySensorId : async (req, res, next) => {
+        try {
+            const sensor_id = req.params._id;
+            const doc = await totalUseCases.getTotalBySensorId({sensor_id});
+            if(doc == null) res.status(204).end();
+            else res.status(200).json(doc);
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }

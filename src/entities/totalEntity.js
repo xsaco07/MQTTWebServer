@@ -7,6 +7,11 @@ const totalSchema = {
         required: true,
         ref : 'CheckIn'
     },
+    sensor_id : {
+        type : Schema.Types.ObjectId,
+        required: true,
+        ref : 'EspSensor'
+    },
     totals : {
         towels : {
             consumption : {

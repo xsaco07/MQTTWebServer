@@ -18,10 +18,18 @@ const turnOnRoomState = async (room_id) => {
     return await roomDocument.save();
 };
 
-// Creates a new local Total object associated to a sensor
+// Creates a Total document given the checkIn id
 // Returns sensor document
-const createTotalObject = async (room_id) => {
-
+const createTotalObject = async (checkIn_id, room_id) => {
+    console.log(checkIn_id);
+    console.log(room_id);
+    const sensorDoc = await useCases.espSensorUseCases.getEspSensorByRoomId({room_id});
+    const totalObject = factories.buildTotalEntity({
+        checkIn_id,
+        sensor_id : sensorDoc._id
+    });
+    await totalObject.save();
+    return sensorDoc;
 };
 
 // Use mqtt module to publish-back the sensor state now turned on
@@ -36,18 +44,21 @@ module.exports = {
     // inputData = {room_id : ObjectId, guest_id : ObjectId, duration : {days : int, nights : int}}
     newCheckIn : async (inputData) => {
         try {
+            // Build and save object
             const finalObject = {
                 room_id : inputData.room_id,
                 guest_id : inputData.guest_id,
                 duration : inputData.duration
             };
-
+            const checkInDocument = factories.buildCheckInEntity(finalObject);
+            const savedObject = await checkInDocument.save();
+            
+            // Actions post save
             const roomDoc = await turnOnRoomState(inputData.room_id);
-            const sensorDoc = await createTotalObject(roomDoc._id);
+            const sensorDoc = await createTotalObject(savedObject._id, roomDoc._id);
             turnOnSensorState(sensorDoc);
 
-            const checkInDocument = factories.buildCheckInEntity(finalObject);
-            return await checkInDocument.save(); 
+            return savedObject;
         } 
         catch (error) { handleDBOperationError(error); }
     },
