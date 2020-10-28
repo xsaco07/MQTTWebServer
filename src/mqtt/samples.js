@@ -1,6 +1,6 @@
 // MQTT Subscibe Messages Examples
 const serverTowelsTopic = {
-    "sensorName" : "ESPCN01",
+    "sensorName" : "ESPSensor-01",
     "towels" : 4,
     "weight" : 1300,
     "consumption" : 500,
@@ -8,7 +8,7 @@ const serverTowelsTopic = {
 }
 
 const serverWaterConsumeTopic = {
-    "sensorName" : "ESPCN03",
+    "sensorName" : "ESPSensor-01",
     "consumption" : 500,
     "seconds" : 128,
     "date" : "2020-10-12"
@@ -16,16 +16,18 @@ const serverWaterConsumeTopic = {
 
 // MQTT Publish Messages Examples
 const espStateTopic = {
-    "sensorName" : "ESPCN03",
     "state" : true
 }
 
 const espTotalsTopic = {
-    "sensorName" : "ESPCN06",
-    "totalTowelsWaterConsume" : 1561,
-    "totalFlowMetersWaterConsume" : 32110,
-    "totalWaterConsume" : 32.11,
-    "totalWaterConsumeTime" : 18533,
-    "totalWeight" : 1695,
-    "totalTowels" : 65
+    "towels" : {
+        "consumption" : 1561,
+        "weight" : 1695,
+        "towels" : 65
+    },
+    "water" : {
+        "consumption" : 32110,
+        "seconds" : 18533,
+    },
+    "total" : 35000
 }

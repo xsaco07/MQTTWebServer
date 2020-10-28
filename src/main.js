@@ -11,8 +11,13 @@ const sensorRoutes = require('./routes/sensorRoutes');
 const checkInRoutes = require('./routes/checkInRoutes');
 const checkOutRoutes = require('./routes/checkOutRoutes');
 const guestRoutes = require('./routes/guestRoutes');
+const totalRoutes = require('./routes/totalRoutes');
 
+// DB
 const {makeDB} = require('./data-access/mongodb');
+
+// MQTT
+const mqtt = require('./mqtt/mqtt');
 
 // Express settings
 const app = express();
@@ -28,6 +33,7 @@ app.use('/sensor', sensorRoutes);
 app.use('/guest', guestRoutes);
 app.use('/checkIn', checkInRoutes);
 app.use('/checkOut', checkOutRoutes);
+app.use('/total', totalRoutes);
 
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));
@@ -38,6 +44,8 @@ makeDB();
 // Start listening
 const server = app.listen(app.get('port'), () => {
     console.log(`Listening on port ${app.get('port')}`);
+    mqtt.connectClient();
+    mqtt.listenToMQTTMessages();
 });
 
 // Init websockets
