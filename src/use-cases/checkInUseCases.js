@@ -35,7 +35,7 @@ const createTotalObject = async (checkIn_id, room_id) => {
 
 // Use mqtt module to publish-back the sensor state now turned on
 const turnOnSensorState = async (sensorDoc) => {
-    sensorDoc.status = false;
+    sensorDoc.status = true;
     await sensorDoc.save();
     const stateObject = factories.buildSensorStateEntity(true);
     mqtt.publishStateMessage(sensorDoc.sensorName, stateObject);

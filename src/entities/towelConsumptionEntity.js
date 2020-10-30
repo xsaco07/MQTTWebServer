@@ -30,7 +30,6 @@ const towelConsumptionSchema = {
         },
         date : {
             type : Date,
-            required : true,
             default : () => {
                 let date = new Date();
                 date.setHours(date.getHours() - utils.offsetUTCHours);
@@ -41,10 +40,9 @@ const towelConsumptionSchema = {
 
 }
 
-const TowelConsumption = mongoose.model(
-    'TowelConsumptions', 
-    new Schema(towelConsumptionSchema), 
-    'towelConsumptions');
+const schema = new Schema(towelConsumptionSchema);
+
+const TowelConsumption = mongoose.model('TowelConsumptions', schema, 'towelConsumptions');
 
 module.exports.TowelConsumption = TowelConsumption;
 module.exports.buildTowelConsumptionEntity = (towelConsumptionObject) => new TowelConsumption(Object.freeze(towelConsumptionObject));

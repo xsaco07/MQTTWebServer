@@ -1,9 +1,13 @@
 // Requiring
 const MQTT = require('mqtt');
+const entities = require('../entities/entities')
 const espSensorUseCases = require('../use-cases/espSensorUseCases');
+const guestUseCases = require('../use-cases/guestUseCases');
 const totalUseCases = require('../use-cases/totalUseCases');
-const factories = require('../entities/factories');
+const towelConsumptionUseCases = require('../use-cases/towelConsumptionUseCases');
+const waterConsumptionUseCases = require('../use-cases/waterConsumptionUseCases');
 const errorHandlers = require('../utils/errorHandlers');
+const sockets = require('../socketEvents/sockets');
 
 // MQTT credentials
 const USER = 'ecoServer';
@@ -70,38 +74,25 @@ function listenToMQTTMessages(){
 
 async function handleTowelConsumptionMessage(message, packet) {
     console.log(`Towel message received`);
-    let infoPacket = {};
+    let parsedMessage = {};
     try {
-        infoPacket = JSON.parse(message);
-        const sensorName = infoPacket.sensorName;
-        const sensorDocument = await espSensorUseCases.getEspSensorByName({sensorName});
-        const towelConsumptionObjectData = factories.buildTowelConsumptionEntity({
-            sensor_id : sensorDocument._id,
-            infoPacket
-        });
-        await towelConsumptionObjectData.save();
-        console.log('Towel consumption object saved');
+        parsedMessage = JSON.parse(message);
+        const savedObject = await towelConsumptionUseCases.saveDoc(parsedMessage);
+        updateTowelTotals(parsedMessage);
+        updateTowelsXAgeChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
-    finally { updateTowelTotals(infoPacket); }
 }
 
 async function handleWaterConsumptionMessage(message, packet) {
     console.log(`Water message received`);
-    let infoPacket = {};
+    let parsedMessage = {};
     try {
-        infoPacket = JSON.parse(message);
-        const sensorName = infoPacket.sensorName;
-        const sensorDocument = await espSensorUseCases.getEspSensorByName({sensorName});
-        const towelConsumptionObjectData = factories.buildWaterConsumptionEntity({
-            sensor_id : sensorDocument._id,
-            infoPacket
-        });
-        await towelConsumptionObjectData.save();
-        console.log('Water consumption object saved');
+        parsedMessage = JSON.parse(message);
+        await waterConsumptionUseCases.saveDoc(parsedMessage);
+        updateWaterTotals(parsedMessage);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
-    finally { updateWaterTotals(infoPacket); }
 }
 
 function publishStateMessage(sensorName, stateObject){
@@ -151,6 +142,33 @@ async function updateWaterTotals(infoPacket){
     const updatedDocument = await totalDocument.save();
     publishTotalsMessage(sensorDocument.sensorName, updatedDocument.totals);
 }
+
+
+const updateTowelsXAgeChart = async (towelConsumptionDoc) => {
+
+    console.log("Call socket to emit message");
+
+    const sensorDoc = await espSensorUseCases.getEspSensorById({
+        sensor_id : towelConsumptionDoc.sensor_id
+    });
+
+    let checkInDoc = {};
+    try { 
+        checkInDoc = await entities.CheckIn.findOne({room_id : sensorDoc.room_id, status : true});
+        console.log(checkInDoc);
+    } 
+    catch (error) { 
+        console.log(`Error: ${err}`);
+        throw new Error(err);
+    }
+
+    const guestDoc = await guestUseCases.getGuestById({
+        guest_id : checkInDoc.guest_id
+    });
+
+    sockets.emitTowelsXAge(guestDoc.age, towelConsumptionDoc.infoPacket.consumption);
+};
+
 
 module.exports.mqttClient = mqttClient;
 module.exports.connectClient = connectClient;

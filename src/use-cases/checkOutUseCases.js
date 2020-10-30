@@ -5,8 +5,8 @@ const roomUseCases = require('../use-cases/roomUseCases');
 const checkInUseCases = require('../use-cases/checkInUseCases');
 const espSensorUseCases = require('./espSensorUseCases');
 const totalUseCases = require('./totalUseCases');
-const towelConsumptionController = require('../controllers/mqttControllers/towelConsumptionController');
-const waterConsumptionController = require('../controllers/mqttControllers/waterConsumptionController');
+const towelConsumptionUseCases = require('./towelConsumptionUseCases');
+const waterConsumptionUseCases = require('./waterConsumptionUseCases');
 const mqtt = require('./../mqtt/mqtt');
 
 const handleDBOperationError = (err) => {
@@ -66,12 +66,12 @@ module.exports = {
 
         let totalDoc = await totalUseCases.getTotalByCheckInId({checkIn_id : checkInDoc._id});
 
-        let totalWater = await waterConsumptionController.getTotalConsumptionByPeriodAndRoomId(
+        let totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             checkInDoc.room_id,
             checkInDoc.date,
             now);
 
-        let totalTowels = await towelConsumptionController.getTotalConsumptionByPeriodAndRoomId(
+        let totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
             checkInDoc.room_id,
             checkInDoc.date,
             now);

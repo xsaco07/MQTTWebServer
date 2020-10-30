@@ -1,3 +1,5 @@
+var socket = io();
+
 var canvasContext = document.getElementById('towelsXAge').getContext('2d');
 
 var towelsXAge = new Chart(canvasContext, {
@@ -6,7 +8,7 @@ var towelsXAge = new Chart(canvasContext, {
         labels: ['< 20','20 - 30','31 - 40','41 - 50','51 - 60','61 - 70', '> 70'],
         datasets: [{
             label: '# de Toallas',
-            data: [1200, 19454, 3254, 5545, 104544, 45566, 233],
+            data: [0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(1,34,65,0.5)',
             borderWidth: 2
         }]
@@ -17,4 +19,10 @@ var towelsXAge = new Chart(canvasContext, {
             text: "Consumo de toallas por edad"
         }
     }
+});
+
+socket.on('towelsXAge', function(data){
+    console.log(data);
+    towelsXAge.data.datasets[0].data[data.index] += data.consumption;
+    towelsXAge.update();
 });

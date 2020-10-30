@@ -1,7 +1,7 @@
-const entities = require('../../entities/entities');
-const espSensorUseCases = require('../../use-cases/espSensorUseCases');
-const {buildWaterConsumptionEntity} = require('../../entities/waterConsumptionEntity');
-const {buildTotalWaterConsumptionEntity} = require('../../entities/totalWaterConsumptionEntity');
+const entities = require('../entities/entities');
+const espSensorUseCases = require('./espSensorUseCases');
+const {buildWaterConsumptionEntity} = require('../entities/waterConsumptionEntity');
+const {buildTotalWaterConsumptionEntity} = require('../entities/totalWaterConsumptionEntity');
 
 const handleError = (err) => {
     console.log(`An error has occured while tryng to performe a TowelConsumption model operation`);

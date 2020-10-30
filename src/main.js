@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const socketIo = require('socket.io');
+const socket = require('./socketEvents/sockets');
 
 // Routes
 const roomRoutes = require('./routes/roomRoutes');
@@ -46,14 +46,11 @@ const server = app.listen(app.get('port'), () => {
     console.log(`Listening on port ${app.get('port')}`);
     mqtt.connectClient();
     mqtt.listenToMQTTMessages();
+    socket.connect(server);
 });
 
-// Init websockets
-const io = socketIo(server);
-io.on('connection', (socket) => {
-    console.log("New connection");
-    socket.on('disconnect', () => {
-        console.log(`User ${socket.id} disconnected`);
-    });
-});
-
+/* const madge = require('madge');
+ 
+madge('src/main.js').then((res) => {
+    console.log(res.circular());
+}); */
