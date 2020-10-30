@@ -60,8 +60,6 @@ module.exports = {
             consumption : {$sum : "$infoPacket.consumption"},
             seconds : {$sum : "$infoPacket.seconds"}
         });
-        console.log('Total water consumption object: ');
-        console.log(total);
         if(total.length > 0) return buildTotalWaterConsumptionEntity(total[0]);
         return {};
     }

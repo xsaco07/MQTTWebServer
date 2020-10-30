@@ -3,10 +3,11 @@ const factories = require('../entities/factories');
 const utils = require('../utils/utils');
 const roomUseCases = require('../use-cases/roomUseCases');
 const checkInUseCases = require('../use-cases/checkInUseCases');
+const espSensorUseCases = require('./espSensorUseCases');
+const totalUseCases = require('./totalUseCases');
 const towelConsumptionController = require('../controllers/mqttControllers/towelConsumptionController');
 const waterConsumptionController = require('../controllers/mqttControllers/waterConsumptionController');
 const mqtt = require('./../mqtt/mqtt');
-const espSensorUseCases = require('./espSensorUseCases');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckOut Use Case`);
@@ -32,13 +33,21 @@ const turnOffRoomState = async (room_id) => {
 
 // Use mqtt module to publish-back the sensor state is now turned off
 const turnOffSensorState = async (sensorDoc) => {
-    sensorDoc.status = false;
+    sensorDoc.state = false;
     await sensorDoc.save();
     const stateObject = factories.buildSensorStateEntity(false);
     mqtt.publishStateMessage(sensorDoc.sensorName, stateObject);
 };
 
+// Check if the totals object data match with the las count performed
+const totalsMatch = (totalDoc, totalWater, totalTowels) => {
+    return totalDoc.totals.towels.consumption == totalTowels.consumption
+    && totalDoc.totals.water.consumption == totalWater.consumption
+    && totalDoc.totals.totalConsumption == totalTowels.consumption + totalWater.consumption
+};
+
 module.exports = {
+
     // inputData = {checkIn_id : ObjectId}
     newCheckOut : async (inputData) => {
 
@@ -55,6 +64,8 @@ module.exports = {
 
         turnOffSensorState(sensorDoc);
 
+        let totalDoc = await totalUseCases.getTotalByCheckInId({checkIn_id : checkInDoc._id});
+
         let totalWater = await waterConsumptionController.getTotalConsumptionByPeriodAndRoomId(
             checkInDoc.room_id,
             checkInDoc.date,
@@ -64,9 +75,19 @@ module.exports = {
             checkInDoc.room_id,
             checkInDoc.date,
             now);
+        
+        // Replace totals for the last count of consumption if totals dont match
+        // The last count of consumption has the priority
+        if(!totalsMatch(totalDoc, totalWater, totalTowels)) {
+            console.log('Not matched!');
+            totalDoc.totals = {
+                towels : totalTowels,
+                water : totalWater
+            };
+            await totalDoc.save();
+        }
 
-        inputData.totalWaterConsumption = totalWater;
-        inputData.totalTowelsConsumption = totalTowels;
+        inputData.total_id = totalDoc._id;
         inputData.date = now;
 
         const checkOutDocument = factories.buildCheckOutEntity(inputData);

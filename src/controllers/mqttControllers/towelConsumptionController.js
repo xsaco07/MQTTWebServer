@@ -60,8 +60,6 @@ module.exports = {
             weight : {$sum : "$infoPacket.weight"},
             consumption : {$sum : "$infoPacket.consumption"}
         });
-        console.log('Total towel consumption object: ');
-        console.log(total);
         if(total.length > 0) return buildTotalTowelsConsumptionEntity(total[0]);
         return {};
     }
