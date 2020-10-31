@@ -11,7 +11,7 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        
+
         let socket = io();
         const towelConsumptionEndPoint = 'http://localhost:3000/towelConsumption/guest/';
         const waterConsumptionEndPoint = 'http://localhost:3000/waterConsumption/guest/';
@@ -49,6 +49,15 @@
             return index;
         };
 
+        const getCountryIndex = (country, chart) => {
+            let index = 0;
+            for (const element of chart.data.labels) {
+                if(country == element) return index; 
+                index ++;
+            }
+            return -1;
+        };
+
         function loadTowelCharts(data) {
             loadTowelsXAgeChart(data);
             loadTowelsXCountryChart(data);
@@ -56,6 +65,7 @@
 
         function loadWaterCharts(data) {
             loadWaterXAgeChart(data);
+            loadWaterXCountryChart(data);
         }
 
     </script>
@@ -64,6 +74,7 @@
         <canvas id="towelsXAge"></canvas>
         <canvas id="towelsXCountry"></canvas>
         <canvas id="waterXAge"></canvas>
+        <canvas id="waterXCountry"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -72,5 +83,6 @@
     <script src="./charts/towelsXAge.js"></script>
     <script src="./charts/towelsXCountry.js"></script>
     <script src="./charts/waterXAge.js"></script>
+    <script src="./charts/waterXCountry.js"></script>
 </body>
 </html>
