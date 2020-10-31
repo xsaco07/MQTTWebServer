@@ -5,7 +5,15 @@ const constants = require('../utils/constants');
 let io = null;
 
 const getAgeIndex = (age) => {
-    return Math.floor((age / constants.AGE_RANKS)-2);
+    index = 0;
+    if(age < 20) index = 0;
+    else if (age >= 20 && age <= 30) index = 1;
+    else if(age >= 31 && age <= 40) index = 2;
+    else if(age >= 41 && age <= 50) index = 3;
+    else if(age >= 51 && age <= 60) index = 4;
+    else if(age >= 61 && age <= 70) index = 5;
+    else if(age > 70) index = 6;
+    return index;
 };
 
 module.exports = {

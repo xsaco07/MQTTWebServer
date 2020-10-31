@@ -112,7 +112,6 @@ module.exports = {
                 
             }));
 
-            console.log(result);
             return result;
 
         } catch (error) { handleDBOperationError(error); }
