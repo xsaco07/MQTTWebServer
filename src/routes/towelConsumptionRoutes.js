@@ -12,6 +12,6 @@ router.get('/total/room/:room_id/date/:date1/:date2/', towelConsumptionControlle
 
 router.get('/date/:date1/:date2/', towelConsumptionController.getByDateRange);
 
-router.get('/guest/', towelConsumptionController.getTowelConsumptionForAllGuest);
+router.get('/guest/', towelConsumptionController.getConsumptionForAllGuests);
 
 module.exports = router;

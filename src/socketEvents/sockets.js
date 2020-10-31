@@ -36,6 +36,17 @@ module.exports = {
         io.emit('towelsXAge', message);
     },
 
+    emitTowelsXCountry : async(country, towels, consumption) => {
+        console.log('Emitting towelsXCountry message through socket...');
+        const message = {
+            country,
+            towels,
+            consumption
+        };
+        console.log(message);
+        io.emit('towelsXCountry', message);
+    },
+
     emitWaterXAge : (age, consumption) => {
         console.log('Emitting waterXAge message through socket...');
         const message = {
@@ -46,15 +57,14 @@ module.exports = {
         io.emit('waterXAge', message);
     },
 
-    emitTowelsXCountry : async(country, towels, consumption) => {
-        console.log('Emitting towelsXCountry message through socket...');
+    emitWaterXCountry : (country, consumption) => {
+        console.log('Emitting waterXCountry message through socket...');
         const message = {
             country,
-            towels,
             consumption
         };
         console.log(message);
-        io.emit('towelsXCountry', message);
+        io.emit('waterXCountry', message);
     }
 
 };

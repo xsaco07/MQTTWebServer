@@ -1,5 +1,4 @@
 const entities = require('../entities/entities');
-const utils = require('../utils/utils');
 const espSensorUseCases = require('./espSensorUseCases');
 const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntity');
 const {buildTotalTowelsConsumptionEntity} = require('../entities/totalTowelsConsumptionEntity');
@@ -78,7 +77,7 @@ module.exports = {
     },
     // Returns a list of every guest 
     // inputData = {}
-    getTowelConsumptionByGuest : async () => {
+    getConsumptionForAllGuests : async () => {
         
         try {
 

@@ -3,9 +3,10 @@ const espSensorUseCases = require('./espSensorUseCases');
 const {buildWaterConsumptionEntity} = require('../entities/waterConsumptionEntity');
 const {buildTotalWaterConsumptionEntity} = require('../entities/totalWaterConsumptionEntity');
 
-const handleError = (err) => {
-    console.log(`An error has occured while tryng to performe a TowelConsumption model operation`);
+const handleDBOperationError = (err) => {
+    console.log(`Water Consumption Use Case`);
     console.log(`Error: ${err}`);
+    throw new Error(err);
 };
 
 module.exports = {
@@ -22,40 +23,99 @@ module.exports = {
         catch (error) { handleDBOperationError(error); }
 
     },
+    // inputData = {}
     getWaterConsumptions : async () => {
-        const docs = await entities.WaterConsumption.find({});
-        if(docs.length == 0) console.log(`Docs not found`);
-        return docs;
+        try { return await entities.WaterConsumption.find({}); } 
+        catch (error) { handleDBOperationError(error); }
     },
-    getWaterConsumptionById : async (waterConsumption_id) => {
-        const doc = await entities.WaterConsumption.findById(waterConsumption_id);
-        if(utils.isEmpty(doc)) console.log(`Doc not found according to input: ${waterConsumption_id}`);
-        return doc;
+    // inputData = {_id : ObjectId}
+    getWaterConsumptionById : async (inputData) => {
+        try { return await entities.WaterConsumption.findById(inputData.waterConsumption_id); } 
+        catch (error) { handleDBOperationError(error); }
     },
-    getWaterConsumptionsByDateRange : async (date1, date2) => {
-        const docs = await entities.WaterConsumption.find({"infoPacket.date" : { $gte: date1, $lte: date2}});
-        if(docs.length == 0) console.log(`Docs not found according to input: ${date}`);
-        return docs;
+    // inputData = {date1 : Date, date2 : Date}
+    getWaterConsumptionsByDateRange : async (inputData) => {
+        try { 
+            return await entities.WaterConsumption.find({
+                "infoPacket.date" : { $gte: inputData.date1, $lte: inputData.date2}
+            });
+        } 
+        catch (error) { handleDBOperationError(error); }
     },
-    getWaterConsumptionBySensorName : async (sensorName) => {
-        const docs = await entities.WaterConsumption.find({"infoPacket.sensorName" : sensorName});
-        if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
-        return docs;
+    // inputData = {sensorName : String}
+    getWaterConsumptionBySensorName : async (inputData) => {
+        try {
+            return await entities.WaterConsumption.find({
+                "infoPacket.sensorName" : inputData.sensorName
+            });
+        } catch (error) { handleDBOperationError(error); }
     },
     // Count the total consumption measured by a sensor in a room for the given period of time
-    getTotalConsumptionByPeriodAndRoomId : async (room_id, date1, date2) => {
-        const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
-        const total = await entities.WaterConsumption.aggregate()
-        .match({ $and : [
-            {"infoPacket.sensorName" : espSensorDoc.sensorName},
-            {"infoPacket.date" : { $gte: date1, $lte: date2}}
-        ]})
-        .group({
-            _id : "$infoPacket.sensorName", 
-            consumption : {$sum : "$infoPacket.consumption"},
-            seconds : {$sum : "$infoPacket.seconds"}
-        });
-        if(total.length > 0) return buildTotalWaterConsumptionEntity(total[0]);
-        return {};
+    // inputData = {room_id : ObjectId, date1 : Date, date2 : Date}
+    getTotalConsumptionByPeriodAndRoomId : async (inputData) => {
+        try {
+            const espSensorDoc = await espSensorUseCases.getEspSensorByRoomId(
+                {room_id : inputData.room_id}
+            );
+            const total = await entities.WaterConsumption.aggregate()
+            .match({ $and : [
+                {"infoPacket.sensorName" : espSensorDoc.sensorName},
+                {"infoPacket.date" : { 
+                    $gte: new Date(inputData.date1), 
+                    $lte: new Date(inputData.date2)
+                }}
+            ]})
+            .group({
+                _id : "$infoPacket.sensorName", 
+                consumption : {$sum : "$infoPacket.consumption"},
+                seconds : {$sum : "$infoPacket.seconds"}
+            });
+            if(total.length > 0) return buildTotalWaterConsumptionEntity(total[0]);
+            return null;
+        } catch (error) { handleDBOperationError(error); }
+    },
+    // Returns a list of every guest 
+    // inputData = {}
+    getConsumptionForAllGuests : async () => {
+        
+        try {
+
+            let result = {};
+            
+            // Get all towelConsumptions registered
+            const waterConsumptions = await entities.WaterConsumption.find({}, 'sensor_id infoPacket');
+            
+            await Promise.all(waterConsumptions.map(async (doc) => {
+
+                // Get the respective room_id for the towelConsumption from the EspSensor
+                const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
+
+                // Get the respective CheckIn document based on the closest-smaller-date and room_id
+                const checkInDoc = await entities.CheckIn.findOne({
+                    room_id : sensorDoc.room_id,
+                    date : {$lt : doc.infoPacket.date}
+                }, 'guest_id').sort({date : 'desc'}).limit(1);
+
+                // Get the guest data using CheckIn guest_id exluding the db id
+                const guestDoc = await entities.Guest.findById(checkInDoc.guest_id, 'country age');
+
+                // For each guest save the consumption
+                if(result[guestDoc._id] == null) {
+                    result[guestDoc._id] = {
+                        guest : guestDoc,
+                        seconds : doc.infoPacket.seconds,
+                        consumption : doc.infoPacket.consumption
+                    };
+                }
+                else {
+                    result[guestDoc._id].consumption += doc.infoPacket.consumption;
+                    result[guestDoc._id].seconds += doc.infoPacket.seconds;
+                } 
+                
+            }));
+
+            return result;
+
+        } catch (error) { handleDBOperationError(error); }
     }
 };

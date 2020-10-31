@@ -1,10 +1,9 @@
 let towelsXCountry = null;
 
 const loadTowelsXCountryChart = (serverData) => {
-    console.log(serverData);
     const canvasContext = document.getElementById('towelsXCountry').getContext('2d');
     towelsXCountry = new Chart(canvasContext, {
-        type: 'bar',
+        type: 'horizontalBar',
         data: {
             labels: [],
             datasets: [{

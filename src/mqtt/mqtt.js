@@ -79,8 +79,9 @@ async function handleTowelConsumptionMessage(message) {
         parsedMessage = JSON.parse(message);
         const savedObject = await towelConsumptionUseCases.newTowelConsumption(parsedMessage);
         updateTowelTotals(parsedMessage);
-        updateTowelsXAgeChart(savedObject);
-        updateTowelsXCountryChart(savedObject);
+        const guestDoc = await getGuestByConsumption(savedObject);
+        updateTowelsXAgeChart(savedObject, guestDoc);
+        updateTowelsXCountryChart(savedObject, guestDoc);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -92,6 +93,9 @@ async function handleWaterConsumptionMessage(message) {
         parsedMessage = JSON.parse(message);
         const savedObject = await waterConsumptionUseCases.newWaterConsumption(parsedMessage);
         updateWaterTotals(parsedMessage);
+        const guestDoc = await getGuestByConsumption(savedObject);
+        updateWaterXAgeChart(savedObject, guestDoc);
+        updateWaterXCountryChart(savedObject, guestDoc);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -144,49 +148,51 @@ async function updateWaterTotals(infoPacket){
     publishTotalsMessage(sensorDocument.sensorName, updatedDocument.totals);
 }
 
-
-const updateTowelsXAgeChart = async (towelConsumptionDoc) => {
-    console.log("Call socket to emit message");
-    const sensorDoc = await espSensorUseCases.getEspSensorById({
-        sensor_id : towelConsumptionDoc.sensor_id
-    });
+const getGuestByConsumption = async (consumptionDoc) => {
+    let sensorDoc = {};
     let checkInDoc = {};
+    let guestDoc = {};
     try { 
+        sensorDoc = await espSensorUseCases.getEspSensorById({sensor_id : consumptionDoc.sensor_id});
         checkInDoc = await entities.CheckIn.findOne({room_id : sensorDoc.room_id, status : true});
+        guestDoc = await guestUseCases.getGuestById({guest_id : checkInDoc.guest_id});
+        return guestDoc;
     } 
     catch (error) { 
         console.log(`Error: ${err}`);
         throw new Error(err);
     }
-    const guestDoc = await guestUseCases.getGuestById({
-        guest_id : checkInDoc.guest_id
-    });
+};
+
+const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
+    console.log("Call socket to emit message");
     sockets.emitTowelsXAge(
         guestDoc.age, 
         towelConsumptionDoc.infoPacket.towels,
         towelConsumptionDoc.infoPacket.consumption);
 };
 
-const updateTowelsXCountryChart = async (towelConsumptionDoc) => {
+const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
     console.log("Call socket to emit message");
-    const sensorDoc = await espSensorUseCases.getEspSensorById({
-        sensor_id : towelConsumptionDoc.sensor_id
-    });
-    let checkInDoc = {};
-    try { 
-        checkInDoc = await entities.CheckIn.findOne({room_id : sensorDoc.room_id, status : true});
-    } 
-    catch (error) { 
-        console.log(`Error: ${err}`);
-        throw new Error(err);
-    }
-    const guestDoc = await guestUseCases.getGuestById({
-        guest_id : checkInDoc.guest_id
-    });
     sockets.emitTowelsXCountry(
         guestDoc.country, 
         towelConsumptionDoc.infoPacket.towels,
         towelConsumptionDoc.infoPacket.consumption);
+};
+
+const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {
+    console.log("Call socket to emit message");
+    console.log(waterConsumptionDoc);
+    sockets.emitWaterXAge(
+        guestDoc.age,
+        waterConsumptionDoc.infoPacket.consumption);
+};
+
+const updateWaterXCountryChart = async (waterConsumptionDoc, guestDoc) => {
+    console.log("Call socket to emit message");
+    sockets.emitWaterXCountry(
+        guestDoc.country,
+        waterConsumptionDoc.infoPacket.consumption);
 };
 
 module.exports.mqttClient = mqttClient;
