@@ -18,18 +18,24 @@ module.exports = {
         });
     },
 
-    emitTowelsXAge : async (age, consumption) => {
-
+    emitTowelsXAge : async (age, towels) => {
         console.log('Emitting message through socket...');
-        
+        const message = {
+            index : getAgeIndex(age),
+            towels
+        };
+        console.log(message);
+        io.emit('towelsXAge', message);
+    },
+
+    emitWaterXAge : async (age, consumption) => {
+        console.log('Emitting message through socket...');
         const message = {
             index : getAgeIndex(age),
             consumption
         };
-
         console.log(message);
-
-        io.emit('towelsXAge', message);
+        io.emit('waterXAge', message);
     }
 
 };

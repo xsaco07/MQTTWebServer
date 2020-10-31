@@ -95,7 +95,7 @@ module.exports = {
         } 
         catch (error) { handleDBOperationError(error); }
     },
-    // inputData = {date1 : Date, date2 : Date2}
+    // inputData = {date1 : Date, date2 : Date}
     getCheckInsByDateRange : async (inputData) => {
         try { 
             return await entities.CheckIn.find({

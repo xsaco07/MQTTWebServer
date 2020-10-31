@@ -15,18 +15,15 @@ const towelConsumptionSchema = {
         },
         towels : {
             type : Number,
-            require : true, 
-            default : 0
+            require : true,
         },
         weight : {
             type : Number,
             required : true,
-            default : 0.00
         },
         consumption : {
             type : Number,
             requird : true,
-            default : 0.00
         },
         date : {
             type : Date,

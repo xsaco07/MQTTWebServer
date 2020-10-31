@@ -66,15 +66,17 @@ module.exports = {
 
         let totalDoc = await totalUseCases.getTotalByCheckInId({checkIn_id : checkInDoc._id});
 
-        let totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
-            checkInDoc.room_id,
-            checkInDoc.date,
-            now);
+        let totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId({
+            room_id : checkInDoc.room_id,
+            date1 : checkInDoc.date,
+            date2 : now
+        });
 
-        let totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId(
-            checkInDoc.room_id,
-            checkInDoc.date,
-            now);
+        let totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId({
+            room_id : checkInDoc.room_id,
+            date1 : checkInDoc.date,
+            date2 : now
+        });
         
         // Replace totals for the last count of consumption if totals dont match
         // The last count of consumption has the priority

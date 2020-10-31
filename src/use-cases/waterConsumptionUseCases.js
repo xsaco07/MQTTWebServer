@@ -9,40 +9,35 @@ const handleError = (err) => {
 };
 
 module.exports = {
-    saveDoc : async (message) => {
-        const infoPacket = JSON.parse(message);
-        // Search and assign sensor id based on sensor name
-        const sensorObject = await entities.EspSensor.findOne({sensorName : infoPacket.sensorName}, '_id');
-        //Build entity
-        const finalObject = {'sensor_id' : sensorObject._id, infoPacket};
-        const waterConsumptionDocument = buildWaterConsumptionEntity(Object.freeze(finalObject));
-        //Save document
-        waterConsumptionDocument.save((err, doc) => {
-            if(err) handleError(err);
-            else console.log(`Doc saved: ${doc}`);
-        });
+    newWaterConsumption : async (parsedMessage) => {
+        try {
+            const sensorName = parsedMessage.sensorName;
+            const sensorDocument = await espSensorUseCases.getEspSensorByName({sensorName});
+            const waterConsumptionDocument = buildWaterConsumptionEntity({
+                sensor_id : sensorDocument._id,
+                infoPacket : parsedMessage
+            });
+            return await waterConsumptionDocument.save();
+        } 
+        catch (error) { handleDBOperationError(error); }
+
     },
-    getDocs : async () => {
+    getWaterConsumptions : async () => {
         const docs = await entities.WaterConsumption.find({});
         if(docs.length == 0) console.log(`Docs not found`);
         return docs;
     },
-    getDocById : async (waterConsumption_id) => {
+    getWaterConsumptionById : async (waterConsumption_id) => {
         const doc = await entities.WaterConsumption.findById(waterConsumption_id);
         if(utils.isEmpty(doc)) console.log(`Doc not found according to input: ${waterConsumption_id}`);
         return doc;
     },
-    getDocsByDate : async (date) => {
-        const docs = await entities.WaterConsumption.find({date : date});
-        if(docs.length == 0) console.log(`Docs not found according to input: ${date}`);
-        return docs;
-    },
-    getDocsByDateRange : async (date1, date2) => {
+    getWaterConsumptionsByDateRange : async (date1, date2) => {
         const docs = await entities.WaterConsumption.find({"infoPacket.date" : { $gte: date1, $lte: date2}});
         if(docs.length == 0) console.log(`Docs not found according to input: ${date}`);
         return docs;
     },
-    getDocsBySensorName : async (sensorName) => {
+    getWaterConsumptionBySensorName : async (sensorName) => {
         const docs = await entities.WaterConsumption.find({"infoPacket.sensorName" : sensorName});
         if(docs.length == 0) console.log(`Docs not found according to input: ${sensorName}`);
         return docs;

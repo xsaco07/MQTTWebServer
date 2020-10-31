@@ -23,6 +23,6 @@ var towelsXAge = new Chart(canvasContext, {
 
 socket.on('towelsXAge', function(data){
     console.log(data);
-    towelsXAge.data.datasets[0].data[data.index] += data.consumption;
+    towelsXAge.data.datasets[0].data[data.index] += data.towels;
     towelsXAge.update();
 });

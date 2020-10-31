@@ -12,6 +12,7 @@ const checkInRoutes = require('./routes/checkInRoutes');
 const checkOutRoutes = require('./routes/checkOutRoutes');
 const guestRoutes = require('./routes/guestRoutes');
 const totalRoutes = require('./routes/totalRoutes');
+const towelConsumptionRoutes = require('./routes/towelConsumptionRoutes');
 
 // DB
 const {makeDB} = require('./data-access/mongodb');
@@ -34,6 +35,7 @@ app.use('/guest', guestRoutes);
 app.use('/checkIn', checkInRoutes);
 app.use('/checkOut', checkOutRoutes);
 app.use('/total', totalRoutes);
+app.use('/towelConsumption', towelConsumptionRoutes);
 
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));
