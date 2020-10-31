@@ -48,8 +48,9 @@ const server = app.listen(app.get('port'), () => {
     console.log(`Listening on port ${app.get('port')}`);
     mqtt.connectClient();
     mqtt.listenToMQTTMessages();
-    socket.connect(server);
 });
+
+socket.connect(server);
 
 /* const madge = require('madge');
  

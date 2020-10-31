@@ -1,7 +1,5 @@
 const socketIo = require('socket.io');
 
-const constants = require('../utils/constants');
-
 let io = null;
 
 const getAgeIndex = (age) => {
@@ -19,6 +17,7 @@ const getAgeIndex = (age) => {
 module.exports = {
 
     connect : (server) => {
+        console.log('Connecting socket...');
         io = socketIo(server);
         io.on('connection', (socket) => {
             console.log("New connection");
@@ -26,24 +25,36 @@ module.exports = {
         });
     },
 
-    emitTowelsXAge : async (age, towels) => {
-        console.log('Emitting message through socket...');
+    emitTowelsXAge : (age, towels, consumption) => {
+        console.log('Emitting towelsXAge message through socket...');
         const message = {
             index : getAgeIndex(age),
-            towels
+            towels,
+            consumption
         };
         console.log(message);
         io.emit('towelsXAge', message);
     },
 
-    emitWaterXAge : async (age, consumption) => {
-        console.log('Emitting message through socket...');
+    emitWaterXAge : (age, consumption) => {
+        console.log('Emitting waterXAge message through socket...');
         const message = {
             index : getAgeIndex(age),
             consumption
         };
         console.log(message);
         io.emit('waterXAge', message);
+    },
+
+    emitTowelsXCountry : async(country, towels, consumption) => {
+        console.log('Emitting towelsXCountry message through socket...');
+        const message = {
+            country,
+            towels,
+            consumption
+        };
+        console.log(message);
+        io.emit('towelsXCountry', message);
     }
 
 };

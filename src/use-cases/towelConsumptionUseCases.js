@@ -105,10 +105,14 @@ module.exports = {
                 if(result[guestDoc._id] == null) {
                     result[guestDoc._id] = {
                         guest : guestDoc,
+                        towels : doc.infoPacket.towels,
                         consumption : doc.infoPacket.consumption
                     };
                 }
-                else result[guestDoc._id].consumption += doc.infoPacket.consumption;
+                else {
+                    result[guestDoc._id].consumption += doc.infoPacket.consumption;
+                    result[guestDoc._id].towels += doc.infoPacket.towels;
+                } 
                 
             }));
 

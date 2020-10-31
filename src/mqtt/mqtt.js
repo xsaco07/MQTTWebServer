@@ -80,6 +80,7 @@ async function handleTowelConsumptionMessage(message) {
         const savedObject = await towelConsumptionUseCases.newTowelConsumption(parsedMessage);
         updateTowelTotals(parsedMessage);
         updateTowelsXAgeChart(savedObject);
+        updateTowelsXCountryChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -91,7 +92,6 @@ async function handleWaterConsumptionMessage(message) {
         parsedMessage = JSON.parse(message);
         const savedObject = await waterConsumptionUseCases.newWaterConsumption(parsedMessage);
         updateWaterTotals(parsedMessage);
-        updateWaterXAgeChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -161,13 +161,16 @@ const updateTowelsXAgeChart = async (towelConsumptionDoc) => {
     const guestDoc = await guestUseCases.getGuestById({
         guest_id : checkInDoc.guest_id
     });
-    sockets.emitTowelsXAge(guestDoc.age, towelConsumptionDoc.infoPacket.consumption);
+    sockets.emitTowelsXAge(
+        guestDoc.age, 
+        towelConsumptionDoc.infoPacket.towels,
+        towelConsumptionDoc.infoPacket.consumption);
 };
 
-const updateWaterXAgeChart = async (waterConsumptionDoc) => {
+const updateTowelsXCountryChart = async (towelConsumptionDoc) => {
     console.log("Call socket to emit message");
     const sensorDoc = await espSensorUseCases.getEspSensorById({
-        sensor_id : waterConsumptionDoc.sensor_id
+        sensor_id : towelConsumptionDoc.sensor_id
     });
     let checkInDoc = {};
     try { 
@@ -180,7 +183,10 @@ const updateWaterXAgeChart = async (waterConsumptionDoc) => {
     const guestDoc = await guestUseCases.getGuestById({
         guest_id : checkInDoc.guest_id
     });
-    sockets.emitTowelsXAge(guestDoc.age, waterConsumptionDoc.infoPacket.towels);
+    sockets.emitTowelsXCountry(
+        guestDoc.country, 
+        towelConsumptionDoc.infoPacket.towels,
+        towelConsumptionDoc.infoPacket.consumption);
 };
 
 module.exports.mqttClient = mqttClient;
