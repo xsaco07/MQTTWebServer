@@ -13,26 +13,42 @@
     <script>
 
         let socket = io();
-        const towelConsumptionEndPoint = 'http://localhost:3000/towelConsumption/guest/';
-        const waterConsumptionEndPoint = 'http://localhost:3000/waterConsumption/guest/';
+        const towelByGuestEndPoint = 'http://localhost:3000/towelConsumption/guest/';
+        const waterByGuestEndPoint = 'http://localhost:3000/waterConsumption/guest/';
+        const towelByDayEndPoint = 'http://localhost:3000/towelConsumption/day/';
 
         window.addEventListener('load', async function () {
 
             try {
 
-                let towelJsonData = {};
-                let waterJsonData = {};
+                let towelsByGuestJsonData = {};
+                let waterByGuestJsonData = {};
+                let towelsByDayJsonData = {};
 
-                const [towelResponse, waterResponse] = await Promise.all([
-                    fetch(towelConsumptionEndPoint),
-                    fetch(waterConsumptionEndPoint)
+                const [
+                    towelByGuestResponse, 
+                    waterByGuestResponse, 
+                    towelByDayResponse
+                ] = await Promise.all([
+                    fetch(towelByGuestEndPoint),
+                    fetch(waterByGuestEndPoint),
+                    fetch(towelByDayEndPoint)
                 ]);
 
-                if(towelResponse.status == 200) towelJsonData = await towelResponse.json();
-                if(waterResponse.status == 200) waterJsonData = await waterResponse.json();
-
-                loadTowelCharts(towelJsonData);
-                loadWaterCharts(waterJsonData);
+                if(towelByGuestResponse.status == 200) {
+                    towelsByGuestJsonData = await towelByGuestResponse.json();
+                    loadTowelsXAgeChart(towelsByGuestJsonData);
+                    loadTowelsXCountryChart(towelsByGuestJsonData);
+                }
+                if(waterByGuestResponse.status == 200) {
+                    waterByGuestJsonData = await waterByGuestResponse.json();
+                    loadWaterXAgeChart(waterByGuestJsonData);
+                    loadWaterXCountryChart(waterByGuestJsonData);
+                }
+                if(towelByDayResponse.status == 200) {
+                    towelsByDayJsonData = await towelByDayResponse.json();
+                    loadTowelsXDayChart(towelsByDayJsonData);
+                }
 
             } catch (error) { console.log(`Error: ${error}`); }
         }, false);
@@ -49,24 +65,14 @@
             return index;
         };
 
-        const getCountryIndex = (country, chart) => {
+        const getElementIndex = (element, chart) => {
             let index = 0;
-            for (const element of chart.data.labels) {
-                if(country == element) return index; 
+            for (const label of chart.data.labels) {
+                if(element == label) return index; 
                 index ++;
             }
             return -1;
         };
-
-        function loadTowelCharts(data) {
-            loadTowelsXAgeChart(data);
-            loadTowelsXCountryChart(data);
-        }
-
-        function loadWaterCharts(data) {
-            loadWaterXAgeChart(data);
-            loadWaterXCountryChart(data);
-        }
 
     </script>
 
@@ -75,6 +81,7 @@
         <canvas id="towelsXCountry"></canvas>
         <canvas id="waterXAge"></canvas>
         <canvas id="waterXCountry"></canvas>
+        <canvas id="towelsXDay"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -84,5 +91,6 @@
     <script src="./charts/towelsXCountry.js"></script>
     <script src="./charts/waterXAge.js"></script>
     <script src="./charts/waterXCountry.js"></script>
+    <script src="./charts/towelsXDay.js"></script>
 </body>
 </html>

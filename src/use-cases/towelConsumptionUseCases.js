@@ -1,5 +1,7 @@
 const entities = require('../entities/entities');
 const espSensorUseCases = require('./espSensorUseCases');
+const constants = require('../utils/constants');
+const utils = require('../utils/utils');
 const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntity');
 const {buildTotalTowelsConsumptionEntity} = require('../entities/totalTowelsConsumptionEntity');
 
@@ -118,5 +120,38 @@ module.exports = {
             return result;
 
         } catch (error) { handleDBOperationError(error); }
+    },
+
+    // Returns towel consumptions by day for the last utils.LAST_DAYS days
+    // inputData = {}
+    getConsumptionByDay : async () => {
+        try {
+
+            // start by getting current date
+            let date1 = new Date();
+            // set date to midnight
+            date1.setHours(24,0,0,0);
+            // substract N days
+            date1.setDate(date1.getDate() - constants.LAST_DAYS);
+
+            // start by getting current date
+            let date2 = new Date();
+            // set date to midnight
+            date2.setHours(24,0,0,0);
+
+            const total = await entities.TowelConsumption.aggregate()
+            .match({"infoPacket.date" : { $gte: date1, $lt: date2}})
+            .group({
+                // Each row will be grouped by the day
+                _id : { $dateToString: { format: "%Y-%m-%d", date: "$infoPacket.date" } }, 
+                towels : {$sum : "$infoPacket.towels"},
+                weight : {$sum : "$infoPacket.weight"},
+                consumption : {$sum : "$infoPacket.consumption"}
+            });
+            if(total.length > 0) return total;
+            return null;
+        } catch (error) { handleDBOperationError(error); }   
     }
+
+
 };

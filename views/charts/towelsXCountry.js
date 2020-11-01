@@ -30,7 +30,7 @@ const loadTowelsXCountryChart = (serverData) => {
 
     for (guestData of Object.values(serverData)){
         const guestCountry = guestData.guest.country;
-        let index = getCountryIndex(guestCountry, towelsXCountry);
+        let index = getElementIndex(guestCountry, towelsXCountry);
         if(index == -1){
             towelsXCountry.data.labels.push(guestCountry);
             towelsXCountry.data.datasets[0].data.push(guestData.towels);
@@ -42,7 +42,7 @@ const loadTowelsXCountryChart = (serverData) => {
 };
 
 socket.on('towelsXCountry', function(data){
-    let index = getCountryIndex(data.country, towelsXCountry);
+    let index = getElementIndex(data.country, towelsXCountry);
     if(index == -1){
         towelsXCountry.data.labels.push(data.country);
         towelsXCountry.data.datasets[0].data.push(data.towels);

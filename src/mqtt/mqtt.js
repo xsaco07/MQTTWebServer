@@ -78,10 +78,11 @@ async function handleTowelConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await towelConsumptionUseCases.newTowelConsumption(parsedMessage);
-        updateTowelTotals(parsedMessage);
         const guestDoc = await getGuestByConsumption(savedObject);
+        updateTowelTotals(parsedMessage);
         updateTowelsXAgeChart(savedObject, guestDoc);
         updateTowelsXCountryChart(savedObject, guestDoc);
+        updateTowelsXDayChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -178,6 +179,14 @@ const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
         guestDoc.country, 
         towelConsumptionDoc.infoPacket.towels,
         towelConsumptionDoc.infoPacket.consumption);
+};
+
+const updateTowelsXDayChart = (towelConsumptionDoc) => {
+    const date = towelConsumptionDoc.infoPacket.datetoISOString().slice(0,10);
+    sockets.emitTowelsXDay(
+        towelConsumptionDoc.infoPacket.towels,
+        date
+    );
 };
 
 const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {

@@ -30,7 +30,7 @@ const loadWaterXCountryChart = (serverData) => {
 
     for (guestData of Object.values(serverData)){
         const guestCountry = guestData.guest.country;
-        let index = getCountryIndex(guestCountry, waterXCountry);
+        let index = getElementIndex(guestCountry, waterXCountry);
         if(index == -1){
             waterXCountry.data.labels.push(guestCountry);
             waterXCountry.data.datasets[0].data.push(guestData.consumption);
@@ -42,7 +42,7 @@ const loadWaterXCountryChart = (serverData) => {
 };
 
 socket.on('waterXCountry', function(data){
-    let index = getCountryIndex(data.country, waterXCountry);
+    let index = getElementIndex(data.country, waterXCountry);
     if(index == -1){
         waterXCountry.data.labels.push(data.country);
         waterXCountry.data.datasets[0].data.push(data.consumption);
