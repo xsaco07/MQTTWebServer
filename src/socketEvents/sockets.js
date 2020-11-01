@@ -69,6 +69,18 @@ module.exports = {
         io.emit('towelsXHour', message);
     },
 
+    emitTowelsXRoom : (towels, consumption, roomNumber, roomOccupancyState) => {
+        console.log('Emitting towelsXRoom message through socket...');
+        const message = {
+            towels,
+            consumption,
+            roomOccupancyState,
+            _id : roomNumber
+        };
+        console.log(message);
+        io.emit('towelsXRoom', message);
+    },
+
     emitWaterXAge : (age, consumption) => {
         console.log('Emitting waterXAge message through socket...');
         const message = {

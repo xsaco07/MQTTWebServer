@@ -182,7 +182,6 @@ module.exports = {
                 consumption : {$sum : "$infoPacket.consumption"},
                 seconds : {$sum : "$infoPacket.seconds"}
             });
-            console.log(total);
             if(total.length > 0) return total;
             return null;
             

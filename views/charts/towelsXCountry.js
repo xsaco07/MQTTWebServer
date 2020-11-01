@@ -34,7 +34,6 @@ const loadTowelsXCountryChart = (serverData) => {
         if(index == -1){
             towelsXCountry.data.labels.push(guestCountry);
             towelsXCountry.data.datasets[0].data.push(guestData.towels);
-            index = towelsXCountry.data.datasets[0].data.length - 1;
         }
         else towelsXCountry.data.datasets[0].data[index] += guestData.towels;
     }

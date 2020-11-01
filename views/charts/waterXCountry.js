@@ -34,7 +34,6 @@ const loadWaterXCountryChart = (serverData) => {
         if(index == -1){
             waterXCountry.data.labels.push(guestCountry);
             waterXCountry.data.datasets[0].data.push(guestData.consumption);
-            index = waterXCountry.data.datasets[0].data.length - 1;
         }
         else waterXCountry.data.datasets[0].data[index] += guestData.consumption;
     }

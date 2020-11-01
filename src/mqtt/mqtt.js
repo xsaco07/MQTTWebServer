@@ -85,6 +85,7 @@ async function handleTowelConsumptionMessage(message) {
         updateTowelsXCountryChart(savedObject, guestDoc);
         updateTowelsXDayChart(savedObject);
         updateTowelsXHourChart(savedObject);
+        updateTowelsXRoomChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -152,6 +153,7 @@ async function updateWaterTotals(infoPacket){
     publishTotalsMessage(sensorDocument.sensorName, updatedDocument.totals);
 }
 
+// Based on a towelConsumptionDocument returns the guest who consume
 const getGuestByConsumption = async (consumptionDoc) => {
     let sensorDoc = {};
     let checkInDoc = {};
@@ -207,6 +209,18 @@ const updateTowelsXHourChart = (towelConsumptionDoc) => {
         towelConsumptionDoc.infoPacket.consumption,
         hour
     );
+};
+
+const updateTowelsXRoomChart = async (towelConsumptionDoc) => {
+    console.log("Updating towelsXRoom chart");
+    const sensorDoc = await entities.EspSensor.findById(towelConsumptionDoc.sensor_id, 'room_id');
+    const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+    sockets.emitTowelsXRoom(
+        towelConsumptionDoc.infoPacket.towels,
+        towelConsumptionDoc.infoPacket.consumption,
+        roomDoc.roomNumber,
+        roomDoc.occupancyState
+    )
 };
 
 const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {

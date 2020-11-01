@@ -17,7 +17,8 @@ const addRoomDataToResult = (towelConsumptionDoc, roomDoc, result) => {
         result[roomDoc.roomNumber] = {
             weight : towelConsumptionDoc.infoPacket.weight,
             consumption : towelConsumptionDoc.infoPacket.consumption,
-            towels : towelConsumptionDoc.infoPacket.towels
+            towels : towelConsumptionDoc.infoPacket.towels,
+            occupancyState : roomDoc.occupancyState
         };
     }
     else {
@@ -201,7 +202,6 @@ module.exports = {
                 weight : {$sum : "$infoPacket.weight"},
                 consumption : {$sum : "$infoPacket.consumption"}
             });
-            console.log(total);
             if(total.length > 0) return total;
             return null;
             

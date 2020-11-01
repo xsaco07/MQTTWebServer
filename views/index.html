@@ -17,7 +17,10 @@
         const towelByGuestEndPoint = 'http://localhost:3000/towelConsumption/guest/';
         const waterByGuestEndPoint = 'http://localhost:3000/waterConsumption/guest/';
         const towelByDayEndPoint = 'http://localhost:3000/towelConsumption/day/';
-        const waterByDayEndPoint = 'http://localhost:3000/waterConsumption/day/';
+        const waterByDayEndPoint = 'http://localhost:3000/waterConsumption/day/'
+        const towelsByRoomEndPoint = 'http://localhost:3000/towelConsumption/room/';
+        const towelsByActiveRoomEndPoint = 'http://localhost:3000/waterConsumption/room/true';
+        const towelsByInactiveRoomEndPoint = 'http://localhost:3000/waterConsumption/room/false';
 
         // Get todays date formatted to yyyy-mm-dd
         const date = new Date().toISOString().slice(0, 10);
@@ -36,14 +39,16 @@
                     towelByDayResponse,
                     towelByHourResponse,
                     waterByDayResponse,
-                    waterByHourResponse
+                    waterByHourResponse,
+                    towelByRoomResponse,
                 ] = await Promise.all([
                     fetch(towelByGuestEndPoint),
                     fetch(waterByGuestEndPoint),
                     fetch(towelByDayEndPoint),
                     fetch(towelByHourEndPoint),
                     fetch(waterByDayEndPoint),
-                    fetch(waterByHourEndPoint)
+                    fetch(waterByHourEndPoint),
+                    fetch(towelsByRoomEndPoint)
                 ]);
 
                 if(towelByGuestResponse.status == 200) {
@@ -72,6 +77,10 @@
                     jsonData = await waterByHourResponse.json();
                     loadWaterXHourChart(jsonData);
                 }
+                if(towelByRoomResponse.status == 200) {
+                    jsonData = await towelByRoomResponse.json();
+                    loadTowelsXRoomChart(jsonData);
+                }
 
             } catch (error) { console.log(`Error: ${error}`); }
         }, false);
@@ -91,9 +100,9 @@
         // Look for a label in the chart labels array and return the index
         const getElementIndex = (element, chart) => {
             let index = 0;
-            for (const label of chart.data.labels) {
-                if(element == label) return index; 
-                index ++;
+            for (label of chart.data.labels) {
+                if(element === label) return index; 
+                index++;
             }
             return -1;
         };
@@ -109,6 +118,7 @@
         <canvas id="towelsXHour"></canvas>
         <canvas id="waterXDay"></canvas>
         <canvas id="waterXHour"></canvas>
+        <canvas id="towelsXRoom"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -122,5 +132,6 @@
     <script src="./charts/towelsXHour.js"></script>
     <script src="./charts/waterXDay.js"></script>
     <script src="./charts/waterXHour.js"></script>
+    <script src="./charts/towelsXRoom.js"></script>
 </body>
 </html>
