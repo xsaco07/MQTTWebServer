@@ -1,6 +1,6 @@
 var canvasContext = document.getElementById('towelsXHour').getContext('2d');
 
-var towelsXHour = new Chart(canvasContext, {
+const towelsXHour = new Chart(canvasContext, {
     type: 'bar',
     data: {
         labels: ['00:00', '01:00', '02:00','03:00','04:00','05:00',
@@ -10,8 +10,7 @@ var towelsXHour = new Chart(canvasContext, {
         ],
         datasets: [{
             label: '# de Toallas',
-            data: [120, 194, 324, 0, 0, 0, 0, 0, 0, 5, 104,
-                   45, 256, 0, 0, 0, 63, 0, 44, 4, 0, 0, 0, 66],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(1,34,65,0.5)',
             borderWidth: 2
         }]
@@ -20,6 +19,29 @@ var towelsXHour = new Chart(canvasContext, {
         title: {
             display: true,
             text: "Consumo de toallas por hora del día"
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
         }
     }
+});
+
+const loadTowelsXHourChart = (serverData) => {
+    for (object of Object.values(serverData)){
+        let index = getElementIndex(object._id+':00', towelsXHour);
+        towelsXHour.data.datasets[0].data[index] += object.towels;
+    }
+    towelsXHour.update();
+};
+
+socket.on('towelsXHour', function(object){
+    console.log(object._id);
+    let index = getElementIndex(object._id+':00', towelsXHour);
+    towelsXHour.data.datasets[0].data[index] += object.towels;
+    console.log(towelsXHour.data.datasets[0].data);
+    towelsXHour.update();
 });

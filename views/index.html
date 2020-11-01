@@ -13,9 +13,14 @@
     <script>
 
         let socket = io();
+
         const towelByGuestEndPoint = 'http://localhost:3000/towelConsumption/guest/';
         const waterByGuestEndPoint = 'http://localhost:3000/waterConsumption/guest/';
         const towelByDayEndPoint = 'http://localhost:3000/towelConsumption/day/';
+
+        // Get todays date formatted to yyyy-mm-dd
+        const date = new Date().toISOString().slice(0, 10);
+        const towelByHourEndPoint = `http://localhost:3000/towelConsumption/hour/${date}`;
 
         window.addEventListener('load', async function () {
 
@@ -24,15 +29,18 @@
                 let towelsByGuestJsonData = {};
                 let waterByGuestJsonData = {};
                 let towelsByDayJsonData = {};
+                let towelsByHourJsonData = {};
 
                 const [
                     towelByGuestResponse, 
                     waterByGuestResponse, 
-                    towelByDayResponse
+                    towelByDayResponse,
+                    towelByHourResponse
                 ] = await Promise.all([
                     fetch(towelByGuestEndPoint),
                     fetch(waterByGuestEndPoint),
-                    fetch(towelByDayEndPoint)
+                    fetch(towelByDayEndPoint),
+                    fetch(towelByHourEndPoint)
                 ]);
 
                 if(towelByGuestResponse.status == 200) {
@@ -48,6 +56,10 @@
                 if(towelByDayResponse.status == 200) {
                     towelsByDayJsonData = await towelByDayResponse.json();
                     loadTowelsXDayChart(towelsByDayJsonData);
+                }
+                if(towelByHourResponse.status == 200) {
+                    towelsByHourJsonData = await towelByHourResponse.json();
+                    loadTowelsXHourChart(towelsByHourJsonData);
                 }
 
             } catch (error) { console.log(`Error: ${error}`); }
@@ -65,6 +77,7 @@
             return index;
         };
 
+        // Look for a label in the chart labels array and return the index
         const getElementIndex = (element, chart) => {
             let index = 0;
             for (const label of chart.data.labels) {
@@ -82,6 +95,7 @@
         <canvas id="waterXAge"></canvas>
         <canvas id="waterXCountry"></canvas>
         <canvas id="towelsXDay"></canvas>
+        <canvas id="towelsXHour"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -92,5 +106,6 @@
     <script src="./charts/waterXAge.js"></script>
     <script src="./charts/waterXCountry.js"></script>
     <script src="./charts/towelsXDay.js"></script>
+    <script src="./charts/towelsXHour.js"></script>
 </body>
 </html>

@@ -19,7 +19,7 @@ const loadTowelsXCountryChart = (serverData) => {
                 text: "Consumo de toallas por país"
             },
             scales: {
-                yAxes: [{
+                xAxes: [{
                     ticks: {
                         beginAtZero: true
                     }

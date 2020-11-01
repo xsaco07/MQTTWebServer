@@ -16,4 +16,6 @@ router.get('/guest/', towelConsumptionController.getConsumptionForAllGuests);
 
 router.get('/day/', towelConsumptionController.getConsumptionByDay);
 
+router.get('/hour/:date/', towelConsumptionController.getConsumptionByHour);
+
 module.exports = router;

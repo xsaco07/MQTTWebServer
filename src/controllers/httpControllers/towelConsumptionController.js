@@ -82,5 +82,16 @@ module.exports = {
             if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action = towel_consumption/hour/:date
+    // Params = {}
+    getConsumptionByHour : async (req, res, next) => {
+        try {
+            const date = req.params.date;
+            const docs = await towelUseCases.getConsumptionByHour({date});
+            if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }

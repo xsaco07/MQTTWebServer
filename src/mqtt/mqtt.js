@@ -1,6 +1,7 @@
 // Requiring
 const MQTT = require('mqtt');
 const entities = require('../entities/entities')
+const utils = require('../utils/utils');
 const espSensorUseCases = require('../use-cases/espSensorUseCases');
 const guestUseCases = require('../use-cases/guestUseCases');
 const totalUseCases = require('../use-cases/totalUseCases');
@@ -83,6 +84,7 @@ async function handleTowelConsumptionMessage(message) {
         updateTowelsXAgeChart(savedObject, guestDoc);
         updateTowelsXCountryChart(savedObject, guestDoc);
         updateTowelsXDayChart(savedObject);
+        updateTowelsXHourChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -182,10 +184,25 @@ const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
 };
 
 const updateTowelsXDayChart = (towelConsumptionDoc) => {
-    const date = towelConsumptionDoc.infoPacket.datetoISOString().slice(0,10);
+    const date = towelConsumptionDoc.infoPacket.date.toISOString().slice(0,10);
     sockets.emitTowelsXDay(
         towelConsumptionDoc.infoPacket.towels,
+        towelConsumptionDoc.infoPacket.consumption,
         date
+    );
+};
+
+const updateTowelsXHourChart = (towelConsumptionDoc) => {
+    const date = towelConsumptionDoc.infoPacket.date;
+    // Fix hours offset
+    date.setHours(date.getHours() + utils.offsetUTCHours);
+    let hour = date.getHours();
+    // Add leading 0 for the hours smaller than 10
+    if(hour < 10) hour = `0${hour}`;
+    sockets.emitTowelsXHour(
+        towelConsumptionDoc.infoPacket.towels,
+        towelConsumptionDoc.infoPacket.consumption,
+        hour
     );
 };
 

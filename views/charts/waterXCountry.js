@@ -19,7 +19,7 @@ const loadWaterXCountryChart = (serverData) => {
                 text: "Consumo de agua por país"
             },
             scales: {
-                yAxes: [{
+                xAxes: [{
                     ticks: {
                         beginAtZero: true
                     }

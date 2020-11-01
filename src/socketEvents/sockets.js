@@ -47,14 +47,26 @@ module.exports = {
         io.emit('towelsXCountry', message);
     },
 
-    emitTowelsXDay : (towels, date) => {
+    emitTowelsXDay : (towels, consumption, date) => {
         console.log('Emitting towelsXDay message through socket...');
         const message = {
             towels,
-            date
+            consumption,
+            _id : date
         };
         console.log(message);
-        io.emmit('towelsXDay', message);
+        io.emit('towelsXDay', message);
+    },
+
+    emitTowelsXHour : (towels, consumption, hour) => {
+        console.log('Emitting towelsXHour message through socket...');
+        const message = {
+            towels,
+            consumption,
+            _id : hour
+        };
+        console.log(message);
+        io.emit('towelsXHour', message);
     },
 
     emitWaterXAge : (age, consumption) => {

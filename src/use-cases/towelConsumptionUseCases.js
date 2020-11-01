@@ -121,23 +121,26 @@ module.exports = {
 
         } catch (error) { handleDBOperationError(error); }
     },
-
     // Returns towel consumptions by day for the last utils.LAST_DAYS days
     // inputData = {}
     getConsumptionByDay : async () => {
         try {
 
-            // start by getting current date
+            // get current date
             let date1 = new Date();
-            // set date to midnight
-            date1.setHours(24,0,0,0);
             // substract N days
             date1.setDate(date1.getDate() - constants.LAST_DAYS);
+            // set date to midnight
+            date1.setHours(24,0,0,0);
+            // align with time zone offset
+            date1.setHours(date1.getHours() - utils.offsetUTCHours);
 
-            // start by getting current date
+            // get current date
             let date2 = new Date();
             // set date to midnight
             date2.setHours(24,0,0,0);
+            // align with time zone offset
+            date2.setHours(date2.getHours() - utils.offsetUTCHours);
 
             const total = await entities.TowelConsumption.aggregate()
             .match({"infoPacket.date" : { $gte: date1, $lt: date2}})
@@ -150,6 +153,42 @@ module.exports = {
             });
             if(total.length > 0) return total;
             return null;
+        } catch (error) { handleDBOperationError(error); }   
+    },
+    // Returns towel consumptions by day for the last utils.LAST_DAYS days
+    // inputData = {date : Date}
+    getConsumptionByHour : async (inputData) => {
+        try {
+
+            // get current date
+            let date1 = new Date(inputData.date);
+            // set date to midnight
+            date1.setHours(24,0,0,0);
+            // align with time zone offset
+            date1.setHours(date1.getHours() - utils.offsetUTCHours);
+
+            // get current date
+            let date2 = new Date(inputData.date);
+            // substract N days
+            date2.setDate(date2.getDate() + 1);
+            // set date to midnight
+            date2.setHours(24,0,0,0);
+            // align with time zone offset
+            date2.setHours(date2.getHours() - utils.offsetUTCHours);
+
+            const total = await entities.TowelConsumption.aggregate()
+            .match({"infoPacket.date" : { $gte: date1, $lt: date2}})
+            .group({
+                // Each row will be grouped by the day
+                _id : { $dateToString: { format: "%H", date: "$infoPacket.date" } }, 
+                towels : {$sum : "$infoPacket.towels"},
+                weight : {$sum : "$infoPacket.weight"},
+                consumption : {$sum : "$infoPacket.consumption"}
+            });
+            console.log(total);
+            if(total.length > 0) return total;
+            return null;
+            
         } catch (error) { handleDBOperationError(error); }   
     }
 

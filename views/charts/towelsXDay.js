@@ -2,7 +2,7 @@ let towelsXDay = null;
 
 const loadTowelsXDayChart = (serverData) => {
     const canvasContext = document.getElementById('towelsXDay').getContext('2d');
-    var towelsXDay = new Chart(canvasContext, {
+    towelsXDay = new Chart(canvasContext, {
         type: 'bar',
         data: {
             labels: [],
@@ -17,6 +17,13 @@ const loadTowelsXDayChart = (serverData) => {
             title: {
                 display: true,
                 text: "Consumo de toallas por día"
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
             }
         }
     });
@@ -38,6 +45,6 @@ socket.on('towelsXDay', function(object){
         towelsXDay.data.labels.push(object._id);
         towelsXDay.data.datasets[0].data.push(object.towels);
     }
-    else towelsXCountry.data.datasets[0].data[index] += object.towels;
-    towelsXCountry.update();
+    else towelsXDay.data.datasets[0].data[index] += object.towels;
+    towelsXDay.update();
 });
