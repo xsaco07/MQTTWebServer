@@ -1,6 +1,6 @@
 var canvasContext = document.getElementById('waterXHour').getContext('2d');
 
-var waterXHour = new Chart(canvasContext, {
+const waterXHour = new Chart(canvasContext, {
     type: 'bar',
     data: {
         labels: ['00:00', '01:00', '02:00','03:00','04:00','05:00',
@@ -9,9 +9,8 @@ var waterXHour = new Chart(canvasContext, {
                 '20:00','21:00','22:00','23:00'
         ],
         datasets: [{
-            label: 'Mililtros consumidos',
-            data: [1200, 19454, 3254, 0, 0, 0, 0, 0, 0, 5545, 104544,
-                   45552, 2556, 0, 0, 0, 5663, 0, 47564, 455, 0, 0, 0, 45566],
+            label: 'Litros de agua',
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(1,34,65,0.5)',
             borderWidth: 2
         }]
@@ -20,6 +19,28 @@ var waterXHour = new Chart(canvasContext, {
         title: {
             display: true,
             text: "Consumo de agua por hora del día"
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
         }
     }
+});
+
+const loadWaterXHourChart = (serverData) => {
+    for (object of Object.values(serverData)){
+        let index = getElementIndex(object._id+':00', waterXHour);
+        waterXHour.data.datasets[0].data[index] += object.consumption;
+    }
+    waterXHour.update();
+};
+
+socket.on('waterXHour', function(object){
+    console.log(object._id);
+    let index = getElementIndex(object._id+':00', waterXHour);
+    waterXHour.data.datasets[0].data[index] += object.consumption;
+    waterXHour.update();
 });

@@ -14,4 +14,8 @@ router.get('/date/:date1/:date2/', waterConsumptionController.getByDateRange);
 
 router.get('/guest/', waterConsumptionController.getConsumptionForAllGuests);
 
+router.get('/day/', waterConsumptionController.getConsumptionByDay);
+
+router.get('/hour/:date/', waterConsumptionController.getConsumptionByHour);
+
 module.exports = router;

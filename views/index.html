@@ -17,49 +17,60 @@
         const towelByGuestEndPoint = 'http://localhost:3000/towelConsumption/guest/';
         const waterByGuestEndPoint = 'http://localhost:3000/waterConsumption/guest/';
         const towelByDayEndPoint = 'http://localhost:3000/towelConsumption/day/';
+        const waterByDayEndPoint = 'http://localhost:3000/waterConsumption/day/';
 
         // Get todays date formatted to yyyy-mm-dd
         const date = new Date().toISOString().slice(0, 10);
         const towelByHourEndPoint = `http://localhost:3000/towelConsumption/hour/${date}`;
+        const waterByHourEndPoint = `http://localhost:3000/waterConsumption/hour/${date}`;
 
         window.addEventListener('load', async function () {
 
             try {
 
-                let towelsByGuestJsonData = {};
-                let waterByGuestJsonData = {};
-                let towelsByDayJsonData = {};
-                let towelsByHourJsonData = {};
+                let jsonData = {};
 
                 const [
                     towelByGuestResponse, 
                     waterByGuestResponse, 
                     towelByDayResponse,
-                    towelByHourResponse
+                    towelByHourResponse,
+                    waterByDayResponse,
+                    waterByHourResponse
                 ] = await Promise.all([
                     fetch(towelByGuestEndPoint),
                     fetch(waterByGuestEndPoint),
                     fetch(towelByDayEndPoint),
-                    fetch(towelByHourEndPoint)
+                    fetch(towelByHourEndPoint),
+                    fetch(waterByDayEndPoint),
+                    fetch(waterByHourEndPoint)
                 ]);
 
                 if(towelByGuestResponse.status == 200) {
-                    towelsByGuestJsonData = await towelByGuestResponse.json();
-                    loadTowelsXAgeChart(towelsByGuestJsonData);
-                    loadTowelsXCountryChart(towelsByGuestJsonData);
+                    jsonData = await towelByGuestResponse.json();
+                    loadTowelsXAgeChart(jsonData);
+                    loadTowelsXCountryChart(jsonData);
                 }
                 if(waterByGuestResponse.status == 200) {
-                    waterByGuestJsonData = await waterByGuestResponse.json();
-                    loadWaterXAgeChart(waterByGuestJsonData);
-                    loadWaterXCountryChart(waterByGuestJsonData);
+                    jsonData = await waterByGuestResponse.json();
+                    loadWaterXAgeChart(jsonData);
+                    loadWaterXCountryChart(jsonData);
                 }
                 if(towelByDayResponse.status == 200) {
-                    towelsByDayJsonData = await towelByDayResponse.json();
-                    loadTowelsXDayChart(towelsByDayJsonData);
+                    jsonData = await towelByDayResponse.json();
+                    loadTowelsXDayChart(jsonData);
                 }
                 if(towelByHourResponse.status == 200) {
-                    towelsByHourJsonData = await towelByHourResponse.json();
-                    loadTowelsXHourChart(towelsByHourJsonData);
+                    jsonData = await towelByHourResponse.json();
+                    loadTowelsXHourChart(jsonData);
+                }
+                if(waterByDayResponse.status == 200) {
+                    jsonData = await waterByDayResponse.json();
+                    loadWaterXDayChart(jsonData);
+                }
+                if(waterByHourResponse.status == 200) {
+                    jsonData = await waterByHourResponse.json();
+                    loadWaterXHourChart(jsonData);
                 }
 
             } catch (error) { console.log(`Error: ${error}`); }
@@ -89,13 +100,15 @@
 
     </script>
 
-    <div style="width: 50%; height: 25%;">
+    <div style="width: 50%;">
         <canvas id="towelsXAge"></canvas>
         <canvas id="towelsXCountry"></canvas>
         <canvas id="waterXAge"></canvas>
         <canvas id="waterXCountry"></canvas>
         <canvas id="towelsXDay"></canvas>
         <canvas id="towelsXHour"></canvas>
+        <canvas id="waterXDay"></canvas>
+        <canvas id="waterXHour"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -107,5 +120,7 @@
     <script src="./charts/waterXCountry.js"></script>
     <script src="./charts/towelsXDay.js"></script>
     <script src="./charts/towelsXHour.js"></script>
+    <script src="./charts/waterXDay.js"></script>
+    <script src="./charts/waterXHour.js"></script>
 </body>
 </html>

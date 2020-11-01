@@ -155,7 +155,7 @@ module.exports = {
             return null;
         } catch (error) { handleDBOperationError(error); }   
     },
-    // Returns towel consumptions by day for the last utils.LAST_DAYS days
+    // Returns towel consumptions by hour for specific day
     // inputData = {date : Date}
     getConsumptionByHour : async (inputData) => {
         try {

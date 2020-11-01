@@ -1,5 +1,7 @@
 const entities = require('../entities/entities');
 const espSensorUseCases = require('./espSensorUseCases');
+const utils = require('../utils/utils');
+const constants = require('../utils/constants');
 const {buildWaterConsumptionEntity} = require('../entities/waterConsumptionEntity');
 const {buildTotalWaterConsumptionEntity} = require('../entities/totalWaterConsumptionEntity');
 
@@ -117,5 +119,73 @@ module.exports = {
             return result;
 
         } catch (error) { handleDBOperationError(error); }
+    },
+    // Returns water consumptions by day for the last utils.LAST_DAYS days
+    // inputData = {}
+    getConsumptionByDay : async () => {
+        try {
+
+            // get current date
+            let date1 = new Date();
+            // substract N days
+            date1.setDate(date1.getDate() - constants.LAST_DAYS);
+            // set date to midnight
+            date1.setHours(24,0,0,0);
+            // align with time zone offset
+            date1.setHours(date1.getHours() - utils.offsetUTCHours);
+
+            // get current date
+            let date2 = new Date();
+            // set date to midnight
+            date2.setHours(24,0,0,0);
+            // align with time zone offset
+            date2.setHours(date2.getHours() - utils.offsetUTCHours);
+
+            const total = await entities.WaterConsumption.aggregate()
+            .match({"infoPacket.date" : { $gte: date1, $lt: date2}})
+            .group({
+                // Each row will be grouped by the day
+                _id : { $dateToString: { format: "%Y-%m-%d", date: "$infoPacket.date" } }, 
+                consumption : {$sum : "$infoPacket.consumption"},
+                seconds : {$sum : "$infoPacket.seconds"}
+            });
+            if(total.length > 0) return total;
+            return null;
+        } catch (error) { handleDBOperationError(error); }   
+    },
+    // Returns towel consumptions by hour for specific day
+    // inputData = {date : Date}
+    getConsumptionByHour : async (inputData) => {
+        try {
+
+            // get current date
+            let date1 = new Date(inputData.date);
+            // set date to midnight
+            date1.setHours(24,0,0,0);
+            // align with time zone offset
+            date1.setHours(date1.getHours() - utils.offsetUTCHours);
+
+            // get current date
+            let date2 = new Date(inputData.date);
+            // substract N days
+            date2.setDate(date2.getDate() + 1);
+            // set date to midnight
+            date2.setHours(24,0,0,0);
+            // align with time zone offset
+            date2.setHours(date2.getHours() - utils.offsetUTCHours);
+
+            const total = await entities.WaterConsumption.aggregate()
+            .match({"infoPacket.date" : { $gte: date1, $lt: date2}})
+            .group({
+                // Each row will be grouped by the day
+                _id : { $dateToString: { format: "%H", date: "$infoPacket.date" } }, 
+                consumption : {$sum : "$infoPacket.consumption"},
+                seconds : {$sum : "$infoPacket.seconds"}
+            });
+            console.log(total);
+            if(total.length > 0) return total;
+            return null;
+            
+        } catch (error) { handleDBOperationError(error); }   
     }
 };

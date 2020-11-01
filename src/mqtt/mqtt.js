@@ -95,10 +95,12 @@ async function handleWaterConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await waterConsumptionUseCases.newWaterConsumption(parsedMessage);
-        updateWaterTotals(parsedMessage);
         const guestDoc = await getGuestByConsumption(savedObject);
+        updateWaterTotals(parsedMessage);
         updateWaterXAgeChart(savedObject, guestDoc);
         updateWaterXCountryChart(savedObject, guestDoc);
+        updateWaterXDayChart(savedObject);
+        updateWaterXHourChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -125,7 +127,6 @@ async function updateTowelTotals(infoPacket){
     const sensorDocument = await espSensorUseCases.getEspSensorByName(
         {sensorName : infoPacket.sensorName}
     );
-    // TODO: change for getTotalBySensorIdAndCheckInId
     let totalDocument = (await totalUseCases.getTotalBySensorId({sensor_id : sensorDocument._id}))[0];
     totalDocument.totals.towels.consumption += infoPacket.consumption;
     totalDocument.totals.towels.weight += infoPacket.weight;
@@ -168,7 +169,7 @@ const getGuestByConsumption = async (consumptionDoc) => {
 };
 
 const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
-    console.log("Call socket to emit message");
+    console.log("Updating towelsXAge chart");
     sockets.emitTowelsXAge(
         guestDoc.age, 
         towelConsumptionDoc.infoPacket.towels,
@@ -176,7 +177,7 @@ const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
 };
 
 const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
-    console.log("Call socket to emit message");
+    console.log("Updating towelsXCountry chart");
     sockets.emitTowelsXCountry(
         guestDoc.country, 
         towelConsumptionDoc.infoPacket.towels,
@@ -184,6 +185,7 @@ const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
 };
 
 const updateTowelsXDayChart = (towelConsumptionDoc) => {
+    console.log("Updating towelsXDay chart");
     const date = towelConsumptionDoc.infoPacket.date.toISOString().slice(0,10);
     sockets.emitTowelsXDay(
         towelConsumptionDoc.infoPacket.towels,
@@ -193,6 +195,7 @@ const updateTowelsXDayChart = (towelConsumptionDoc) => {
 };
 
 const updateTowelsXHourChart = (towelConsumptionDoc) => {
+    console.log("Updating towelsXHour chart");
     const date = towelConsumptionDoc.infoPacket.date;
     // Fix hours offset
     date.setHours(date.getHours() + utils.offsetUTCHours);
@@ -207,6 +210,7 @@ const updateTowelsXHourChart = (towelConsumptionDoc) => {
 };
 
 const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {
+    console.log("Updating waterXAge chart");
     console.log("Call socket to emit message");
     console.log(waterConsumptionDoc);
     sockets.emitWaterXAge(
@@ -215,10 +219,35 @@ const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {
 };
 
 const updateWaterXCountryChart = async (waterConsumptionDoc, guestDoc) => {
-    console.log("Call socket to emit message");
+    console.log("Updating waterXCountry chart");
     sockets.emitWaterXCountry(
         guestDoc.country,
         waterConsumptionDoc.infoPacket.consumption);
+};
+
+const updateWaterXDayChart = (waterConsumptionDoc) => {
+    console.log("Updating waterXDay chart");
+    const date = waterConsumptionDoc.infoPacket.date.toISOString().slice(0,10);
+    sockets.emitWaterXDay(
+        waterConsumptionDoc.infoPacket.consumption,
+        waterConsumptionDoc.infoPacket.seconds,
+        date
+    );
+};
+
+const updateWaterXHourChart = (waterConsumptionDoc) => {
+    console.log("Updating waterXHour chart");
+    const date = waterConsumptionDoc.infoPacket.date;
+    // Fix hours offset
+    date.setHours(date.getHours() + utils.offsetUTCHours);
+    let hour = date.getHours();
+    // Add leading 0 for the hours smaller than 10
+    if(hour < 10) hour = `0${hour}`;
+    sockets.emitWaterXHour(
+        waterConsumptionDoc.infoPacket.consumption,
+        waterConsumptionDoc.infoPacket.seconds,
+        hour
+    );
 };
 
 module.exports.mqttClient = mqttClient;

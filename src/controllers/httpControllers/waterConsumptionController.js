@@ -72,5 +72,26 @@ module.exports = {
             if(Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action = water_consumption/day/
+    // Params = {}
+    getConsumptionByDay : async (req, res, next) => {
+        try {
+            const docs = await waterUseCases.getConsumptionByDay();
+            if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action = water_consumption/hour/:date
+    // Params = {}
+    getConsumptionByHour : async (req, res, next) => {
+        try {
+            const date = req.params.date;
+            const docs = await waterUseCases.getConsumptionByHour({date});
+            if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }

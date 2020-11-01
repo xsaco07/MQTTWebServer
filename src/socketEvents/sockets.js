@@ -87,6 +87,28 @@ module.exports = {
         };
         console.log(message);
         io.emit('waterXCountry', message);
-    }
+    },
+
+    emitWaterXDay : (consumption, seconds, date) => {
+        console.log('Emitting waterXDay message through socket...');
+        const message = {
+            consumption,
+            seconds,
+            _id : date
+        };
+        console.log(message);
+        io.emit('waterXDay', message);
+    },
+
+    emitWaterXHour : (consumption, seconds, hour) => {
+        console.log('Emitting waterXHour message through socket...');
+        const message = {
+            consumption,
+            seconds,
+            _id : hour
+        };
+        console.log(message);
+        io.emit('waterXHour', message);
+    },
 
 };
