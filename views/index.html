@@ -19,8 +19,7 @@
         const towelByDayEndPoint = 'http://localhost:3000/towelConsumption/day/';
         const waterByDayEndPoint = 'http://localhost:3000/waterConsumption/day/'
         const towelsByRoomEndPoint = 'http://localhost:3000/towelConsumption/room/';
-        const towelsByActiveRoomEndPoint = 'http://localhost:3000/waterConsumption/room/true';
-        const towelsByInactiveRoomEndPoint = 'http://localhost:3000/waterConsumption/room/false';
+        const waterByRoomEndPoint = 'http://localhost:3000/waterConsumption/room/';
 
         // Get todays date formatted to yyyy-mm-dd
         const date = new Date().toISOString().slice(0, 10);
@@ -41,6 +40,7 @@
                     waterByDayResponse,
                     waterByHourResponse,
                     towelByRoomResponse,
+                    waterByRoomResponse
                 ] = await Promise.all([
                     fetch(towelByGuestEndPoint),
                     fetch(waterByGuestEndPoint),
@@ -48,7 +48,8 @@
                     fetch(towelByHourEndPoint),
                     fetch(waterByDayEndPoint),
                     fetch(waterByHourEndPoint),
-                    fetch(towelsByRoomEndPoint)
+                    fetch(towelsByRoomEndPoint),
+                    fetch(waterByRoomEndPoint)
                 ]);
 
                 if(towelByGuestResponse.status == 200) {
@@ -80,6 +81,10 @@
                 if(towelByRoomResponse.status == 200) {
                     jsonData = await towelByRoomResponse.json();
                     loadTowelsXRoomChart(jsonData);
+                }
+                if(waterByRoomResponse.status == 200) {
+                    jsonData = await waterByRoomResponse.json();
+                    loadWaterXRoomChart(jsonData);
                 }
 
             } catch (error) { console.log(`Error: ${error}`); }
@@ -119,6 +124,7 @@
         <canvas id="waterXDay"></canvas>
         <canvas id="waterXHour"></canvas>
         <canvas id="towelsXRoom"></canvas>
+        <canvas id="waterXRoom"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
@@ -133,5 +139,6 @@
     <script src="./charts/waterXDay.js"></script>
     <script src="./charts/waterXHour.js"></script>
     <script src="./charts/towelsXRoom.js"></script>
+    <script src="./charts/waterXRoom.js"></script>
 </body>
 </html>

@@ -102,6 +102,7 @@ async function handleWaterConsumptionMessage(message) {
         updateWaterXCountryChart(savedObject, guestDoc);
         updateWaterXDayChart(savedObject);
         updateWaterXHourChart(savedObject);
+        updateWaterXRoomChart(savedObject);
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -262,6 +263,18 @@ const updateWaterXHourChart = (waterConsumptionDoc) => {
         waterConsumptionDoc.infoPacket.seconds,
         hour
     );
+};
+
+const updateWaterXRoomChart = async (waterConsumptionDoc) => {
+    console.log("Updating waterXRoom chart");
+    const sensorDoc = await entities.EspSensor.findById(waterConsumptionDoc.sensor_id, 'room_id');
+    const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+    sockets.emitWaterXRoom(
+        waterConsumptionDoc.infoPacket.consumption,
+        waterConsumptionDoc.infoPacket.seconds,
+        roomDoc.roomNumber,
+        roomDoc.occupancyState
+    )
 };
 
 module.exports.mqttClient = mqttClient;

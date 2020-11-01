@@ -72,10 +72,10 @@ module.exports = {
     emitTowelsXRoom : (towels, consumption, roomNumber, roomOccupancyState) => {
         console.log('Emitting towelsXRoom message through socket...');
         const message = {
+            _id : roomNumber,
             towels,
             consumption,
-            roomOccupancyState,
-            _id : roomNumber
+            roomOccupancyState
         };
         console.log(message);
         io.emit('towelsXRoom', message);
@@ -121,6 +121,18 @@ module.exports = {
         };
         console.log(message);
         io.emit('waterXHour', message);
+    },
+
+    emitWaterXRoom : (consumption, seconds, roomNumber, roomOccupancyState) => {
+        console.log('Emitting towelsXRoom message through socket...');
+        const message = {
+            _id : roomNumber,
+            consumption,
+            seconds,
+            roomOccupancyState,
+        };
+        console.log(message);
+        io.emit('waterXRoom', message);
     },
 
 };
