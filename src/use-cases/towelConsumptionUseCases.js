@@ -1,6 +1,5 @@
 const entities = require('../entities/entities');
 const espSensorUseCases = require('./espSensorUseCases');
-const roomUseCases = require('../use-cases/roomUseCases');
 const constants = require('../utils/constants');
 const utils = require('../utils/utils');
 const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntity');
@@ -248,7 +247,6 @@ module.exports = {
             return result;
 
         } catch (error) { handleDBOperationError(error); }
-
 
     }
 

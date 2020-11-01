@@ -97,8 +97,8 @@ module.exports = {
     // Method = GET
     // Action1 = towel_consumption/room/
     // Action2 = towel_consumption/room/:state/
-    // Params = {}
-    // Params = {state : boolean}
+    // Params1 = {}
+    // Params2 = {state : boolean}
     getConsumptionByRoom : async (req, res, next) => {
         try {
             const docs = await towelUseCases.getConsumptionByRoom(req.params);

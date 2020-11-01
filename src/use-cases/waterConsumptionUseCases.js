@@ -11,6 +11,20 @@ const handleDBOperationError = (err) => {
     throw new Error(err);
 };
 
+const addRoomDataToResult = (waterConsumptionDoc, roomDoc, result) => {
+    if(result[roomDoc.roomNumber] == null) {
+        result[roomDoc.roomNumber] = {
+            consumption : waterConsumptionDoc.infoPacket.consumption,
+            seconds : waterConsumptionDoc.infoPacket.seconds,
+            occupancyState : roomDoc.occupancyState
+        };
+    }
+    else {
+        result[roomDoc.roomNumber].consumption += waterConsumptionDoc.infoPacket.consumption;
+        result[roomDoc.roomNumber].seconds += waterConsumptionDoc.infoPacket.seconds;
+    } 
+};
+
 module.exports = {
     newWaterConsumption : async (parsedMessage) => {
         try {
@@ -186,5 +200,48 @@ module.exports = {
             return null;
             
         } catch (error) { handleDBOperationError(error); }   
+    },
+    // inputData = {} to get general water consumption by room
+    // inputData = {state : boolean (true)} to get water consumption for active rooms
+    // inputData = {state : boolean (false)} to get water consumption for inactive rooms
+    getConsumptionByRoom : async (inputData) => {
+        
+        try {
+
+            let result = {};
+
+            let state = (inputData.state != null ) ? (inputData.state == 'true') : null;
+            
+            // Get all waterConsumptions registered
+            const waterConsumptions = await entities.WaterConsumption.find({}, 'sensor_id infoPacket');
+            
+            await Promise.all(waterConsumptions.map(async (doc) => {
+
+                // Get the respective room_id for the waterConsumption from the EspSensor
+                const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
+
+                // Get the respective Room
+                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+                
+                // For each room save the consumption
+                // Count just active rooms
+                if(state) {
+                    if(roomDoc.occupancyState) addRoomDataToResult(doc, roomDoc, result);
+                }
+                // Count just inactive rooms
+                else if(state == false) {
+                    if(!roomDoc.occupancyState) addRoomDataToResult(doc, roomDoc, result);
+                }
+                // Count all rooms
+                else {
+                    addRoomDataToResult(doc, roomDoc, result);
+                }
+                
+            }));
+
+            return result;
+
+        } catch (error) { handleDBOperationError(error); }
+
     }
 };

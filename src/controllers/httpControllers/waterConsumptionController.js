@@ -93,5 +93,17 @@ module.exports = {
             if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action1 = water_consumption/room/
+    // Action2 = water_consumption/room/:state/
+    // Params1 = {}
+    // Params2 = {state : boolean}
+    getConsumptionByRoom : async (req, res, next) => {
+        try {
+            const docs = await waterUseCases.getConsumptionByRoom(req.params);
+            if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }
