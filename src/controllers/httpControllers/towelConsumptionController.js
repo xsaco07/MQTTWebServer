@@ -93,5 +93,17 @@ module.exports = {
             if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action1 = towel_consumption/room/
+    // Action2 = towel_consumption/room/:state/
+    // Params = {}
+    // Params = {state : boolean}
+    getConsumptionByRoom : async (req, res, next) => {
+        try {
+            const docs = await towelUseCases.getConsumptionByRoom(req.params);
+            if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
     }
 }

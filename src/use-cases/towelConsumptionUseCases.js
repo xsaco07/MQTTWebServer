@@ -1,5 +1,6 @@
 const entities = require('../entities/entities');
 const espSensorUseCases = require('./espSensorUseCases');
+const roomUseCases = require('../use-cases/roomUseCases');
 const constants = require('../utils/constants');
 const utils = require('../utils/utils');
 const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntity');
@@ -9,6 +10,21 @@ const handleDBOperationError = (err) => {
     console.log(`Towel Consumption Use Case`);
     console.log(`Error: ${err}`);
     throw new Error(err);
+};
+
+const addRoomDataToResult = (towelConsumptionDoc, roomDoc, result) => {
+    if(result[roomDoc.roomNumber] == null) {
+        result[roomDoc.roomNumber] = {
+            weight : towelConsumptionDoc.infoPacket.weight,
+            consumption : towelConsumptionDoc.infoPacket.consumption,
+            towels : towelConsumptionDoc.infoPacket.towels
+        };
+    }
+    else {
+        result[roomDoc.roomNumber].weight += towelConsumptionDoc.infoPacket.weight;
+        result[roomDoc.roomNumber].consumption += towelConsumptionDoc.infoPacket.consumption;
+        result[roomDoc.roomNumber].towels += towelConsumptionDoc.infoPacket.towels;
+    } 
 };
 
 module.exports = {
@@ -190,7 +206,50 @@ module.exports = {
             return null;
             
         } catch (error) { handleDBOperationError(error); }   
-    }
+    },
+    // inputData = {} to get general towel consumption by room
+    // inputData = {state : boolean (true)} to get towel consumption for active rooms
+    // inputData = {state : boolean (false)} to get towel consumption for inactive rooms
+    getConsumptionByRoom : async (inputData) => {
+        
+        try {
 
+            let result = {};
+
+            let state = (inputData.state != null ) ? (inputData.state == 'true') : null;
+            
+            // Get all towelConsumptions registered
+            const towelConsumptions = await entities.TowelConsumption.find({}, 'sensor_id infoPacket');
+            
+            await Promise.all(towelConsumptions.map(async (doc) => {
+
+                // Get the respective room_id for the towelConsumption from the EspSensor
+                const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
+
+                // Get the respective Room
+                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+                
+                // For each room save the consumption
+                // Count just active rooms
+                if(state) {
+                    if(roomDoc.occupancyState) addRoomDataToResult(doc, roomDoc, result);
+                }
+                // Count just inactive rooms
+                else if(state == false) {
+                    if(!roomDoc.occupancyState) addRoomDataToResult(doc, roomDoc, result);
+                }
+                // Count all rooms
+                else {
+                    addRoomDataToResult(doc, roomDoc, result);
+                }
+                
+            }));
+
+            return result;
+
+        } catch (error) { handleDBOperationError(error); }
+
+
+    }
 
 };

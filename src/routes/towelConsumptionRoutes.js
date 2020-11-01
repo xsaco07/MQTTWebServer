@@ -18,4 +18,8 @@ router.get('/day/', towelConsumptionController.getConsumptionByDay);
 
 router.get('/hour/:date/', towelConsumptionController.getConsumptionByHour);
 
+router.get('/room/', towelConsumptionController.getConsumptionByRoom);
+
+router.get('/room/:state/', towelConsumptionController.getConsumptionByRoom);
+
 module.exports = router;
