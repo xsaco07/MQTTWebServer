@@ -1,5 +1,6 @@
 const entities = require('../entities/entities');
 const espSensorUseCases = require('./espSensorUseCases');
+const roomUseCases = require('../use-cases/roomUseCases');
 const constants = require('../utils/constants');
 const utils = require('../utils/utils');
 const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntity');
@@ -32,9 +33,13 @@ module.exports = {
         try {
             const sensorName = parsedMessage.sensorName;
             const sensorDocument = await espSensorUseCases.getEspSensorByName({sensorName});
+            const roomDocument = await roomUseCases.getRoomById({room_id : sensorDocument.room_id});
+            // Validate if room is active
+            const expected = (roomDocument.occupancyState == true) ? true : false;
             const towelConsumptionObject = buildTowelConsumptionEntity({
                 sensor_id : sensorDocument._id,
-                infoPacket : parsedMessage
+                infoPacket : parsedMessage,
+                expected
             });
             return await towelConsumptionObject.save();
         } 
@@ -68,7 +73,13 @@ module.exports = {
             });
         } catch (error) { handleDBOperationError(error); }
     },
-    // Count the total consumption measured by a sensor in a room for the given period of time
+    // inputData = {expected : Boolean}
+    getTowelConsumptionsByExpectedState : async (inputData) => {
+        try {
+            return await entities.TowelConsumption.find({expected : inputData.expected});
+        } catch (error) { handleDBOperationError(error); }
+    },
+    // Count the total expected consumption measured by a sensor in a room for the given period of time
     // inputData = {room_id : ObjectId, date1 : Date, date2 : Date}
     getTotalConsumptionByPeriodAndRoomId : async (inputData) => {
         try {
@@ -81,7 +92,8 @@ module.exports = {
                 {"infoPacket.date" : { 
                     $gte: new Date(inputData.date1), 
                     $lte: new Date(inputData.date2)
-                }}
+                }},
+                {expected : true}
             ]})
             .group({
                 _id : "$infoPacket.sensorName", 
@@ -93,7 +105,7 @@ module.exports = {
             return null;
         } catch (error) { handleDBOperationError(error); }
     },
-    // Returns a list of every guest 
+    // Returns a list of expected towel consumption for every guest 
     // inputData = {}
     getConsumptionForAllGuests : async () => {
         
@@ -102,8 +114,10 @@ module.exports = {
             let result = {};
             
             // Get all towelConsumptions registered
-            const towelConsumptions = await entities.TowelConsumption.find({}, 'sensor_id infoPacket');
-            
+            const towelConsumptions = await entities.TowelConsumption.find(
+                {expected : true}, 
+                'sensor_id infoPacket');
+                
             await Promise.all(towelConsumptions.map(async (doc) => {
 
                 // Get the respective room_id for the towelConsumption from the EspSensor
@@ -159,7 +173,10 @@ module.exports = {
             date2.setHours(date2.getHours() - utils.offsetUTCHours);
 
             const total = await entities.TowelConsumption.aggregate()
-            .match({"infoPacket.date" : { $gte: date1, $lt: date2}})
+            .match({ $and : [
+                {"infoPacket.date" : { $gte: date1, $lt: date2}},
+                {expected : true}
+            ]})
             .group({
                 // Each row will be grouped by the day
                 _id : { $dateToString: { format: "%Y-%m-%d", date: "$infoPacket.date" } }, 
@@ -171,9 +188,10 @@ module.exports = {
             return null;
         } catch (error) { handleDBOperationError(error); }   
     },
-    // Returns towel consumptions by hour for specific day
+    // Returns expected towel consumptions by hour for specific day
     // inputData = {date : Date}
     getConsumptionByHour : async (inputData) => {
+
         try {
 
             // get current date
@@ -193,7 +211,10 @@ module.exports = {
             date2.setHours(date2.getHours() - utils.offsetUTCHours);
 
             const total = await entities.TowelConsumption.aggregate()
-            .match({"infoPacket.date" : { $gte: date1, $lt: date2}})
+            .match({ $and : [
+                {"infoPacket.date" : { $gte: date1, $lt: date2}},
+                {expected : true}
+            ]})
             .group({
                 // Each row will be grouped by the day
                 _id : { $dateToString: { format: "%H", date: "$infoPacket.date" } }, 
@@ -206,9 +227,9 @@ module.exports = {
             
         } catch (error) { handleDBOperationError(error); }   
     },
-    // inputData = {} to get general towel consumption by room
-    // inputData = {state : boolean (true)} to get towel consumption for active rooms
-    // inputData = {state : boolean (false)} to get towel consumption for inactive rooms
+    // inputData = {} to get general expected towel consumption by room
+    // inputData = {state : boolean (true)} to get expected towel consumption for active rooms
+    // inputData = {state : boolean (false)} to get expected towel consumption for inactive rooms
     getConsumptionByRoom : async (inputData) => {
         
         try {
@@ -218,7 +239,9 @@ module.exports = {
             let state = (inputData.state != null ) ? (inputData.state == 'true') : null;
             
             // Get all towelConsumptions registered
-            const towelConsumptions = await entities.TowelConsumption.find({}, 'sensor_id infoPacket');
+            const towelConsumptions = await entities.TowelConsumption.find(
+                {expected : true}, 
+                'sensor_id infoPacket');
             
             await Promise.all(towelConsumptions.map(async (doc) => {
 

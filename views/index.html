@@ -22,9 +22,12 @@
         const waterByRoomEndPoint = 'http://localhost:3000/waterConsumption/room/';
 
         // Get todays date formatted to yyyy-mm-dd
-        const date = new Date().toISOString().slice(0, 10);
-        const towelByHourEndPoint = `http://localhost:3000/towelConsumption/hour/${date}`;
-        const waterByHourEndPoint = `http://localhost:3000/waterConsumption/hour/${date}`;
+        const date = new Date();
+        date.setHours(date.getHours() - new Date().getTimezoneOffset()/60);
+        const formmatedDate = date.toISOString().slice(0, 10);
+
+        const towelByHourEndPoint = `http://localhost:3000/towelConsumption/hour/${formmatedDate}/`;
+        const waterByHourEndPoint = `http://localhost:3000/waterConsumption/hour/${formmatedDate}/`;
 
         window.addEventListener('load', async function () {
 

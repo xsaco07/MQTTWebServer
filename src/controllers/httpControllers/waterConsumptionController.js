@@ -43,7 +43,18 @@ module.exports = {
         try {
             const docs = await waterUseCases.getWaterConsumptionBySensorName({sensorName});
             if(docs.length == 0) res.status(204).end();
-            else res.status(200).json(doc);
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action = water_consumption/expected/:expected/
+    // Params = {expected : Boolean}
+    getByExpectedState : async (req, res, next) => {
+        const expected = req.params.expected;
+        try {
+            const docs = await waterUseCases.getWaterConsumptionsByExpectedState({expected});
+            if(docs.length == 0) res.status(204).end();
+            else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET

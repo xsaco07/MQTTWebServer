@@ -79,13 +79,19 @@ async function handleTowelConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await towelConsumptionUseCases.newTowelConsumption(parsedMessage);
-        const guestDoc = await getGuestByConsumption(savedObject);
-        updateTowelTotals(parsedMessage);
-        updateTowelsXAgeChart(savedObject, guestDoc);
-        updateTowelsXCountryChart(savedObject, guestDoc);
-        updateTowelsXDayChart(savedObject);
-        updateTowelsXHourChart(savedObject);
-        updateTowelsXRoomChart(savedObject);
+        if(savedObject.expected) {
+            const guestDoc = await getGuestByConsumption(savedObject);
+            updateTowelTotals(parsedMessage);
+            updateTowelsXAgeChart(savedObject, guestDoc);
+            updateTowelsXCountryChart(savedObject, guestDoc);
+            updateTowelsXDayChart(savedObject);
+            updateTowelsXHourChart(savedObject);
+            updateTowelsXRoomChart(savedObject);
+        }
+        else {
+            console.log('ALERT! Not expected towel consumption');  
+            console.log('Send notification');   
+        }
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }
@@ -96,13 +102,19 @@ async function handleWaterConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await waterConsumptionUseCases.newWaterConsumption(parsedMessage);
-        const guestDoc = await getGuestByConsumption(savedObject);
-        updateWaterTotals(parsedMessage);
-        updateWaterXAgeChart(savedObject, guestDoc);
-        updateWaterXCountryChart(savedObject, guestDoc);
-        updateWaterXDayChart(savedObject);
-        updateWaterXHourChart(savedObject);
-        updateWaterXRoomChart(savedObject);
+        if(savedObject.expected) {
+            const guestDoc = await getGuestByConsumption(savedObject);
+            updateWaterTotals(parsedMessage);
+            updateWaterXAgeChart(savedObject, guestDoc);
+            updateWaterXCountryChart(savedObject, guestDoc);
+            updateWaterXDayChart(savedObject);
+            updateWaterXHourChart(savedObject);
+            updateWaterXRoomChart(savedObject);
+        }
+        else {
+            console.log('ALERT! Not expected water consumption');
+            console.log('Sendo notification');
+        }
     } 
     catch (error) { errorHandlers.handleMQTTMessageInError(error); }
 }

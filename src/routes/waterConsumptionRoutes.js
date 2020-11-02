@@ -22,4 +22,6 @@ router.get('/room/', waterConsumptionController.getConsumptionByRoom);
 
 router.get('/room/:state/', waterConsumptionController.getConsumptionByRoom);
 
+router.get('/expected/:expected/', waterConsumptionController.getByExpectedState);
+
 module.exports = router;

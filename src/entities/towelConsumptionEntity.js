@@ -33,8 +33,11 @@ const towelConsumptionSchema = {
                 return date;
             }
         }   
+    },
+    expected : {
+        type : Boolean,
+        default : true,
     }
-
 }
 
 const schema = new Schema(towelConsumptionSchema);

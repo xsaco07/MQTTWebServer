@@ -22,4 +22,6 @@ router.get('/room/', towelConsumptionController.getConsumptionByRoom);
 
 router.get('/room/:state/', towelConsumptionController.getConsumptionByRoom);
 
+router.get('/expected/:expected/', towelConsumptionController.getByExpectedState);
+
 module.exports = router;
