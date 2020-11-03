@@ -15,29 +15,34 @@ const totalRoutes = require('./routes/totalRoutes');
 const towelConsumptionRoutes = require('./routes/towelConsumptionRoutes');
 const waterConsumptionRoutes = require('./routes/waterConsumptionRoutes');
 
+// Use cases
+const useCases = require('./use-cases/useCases');
+
 // DB
 const {makeDB} = require('./data-access/mongodb');
 
 // MQTT
 const mqtt = require('./mqtt/mqtt');
+const { use } = require('./routes/roomRoutes');
 
 // Express settings
 const app = express();
 app.set('port', process.env.PORT || 3000);
+app.set('view engine', 'ejs');
 
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
 
 // Routes set up
-app.use('/room', roomRoutes);
-app.use('/sensor', sensorRoutes);
-app.use('/guest', guestRoutes);
-app.use('/checkIn', checkInRoutes);
-app.use('/checkOut', checkOutRoutes);
-app.use('/total', totalRoutes);
-app.use('/towelConsumption', towelConsumptionRoutes);
-app.use('/waterConsumption', waterConsumptionRoutes);
+app.use('/api/room', roomRoutes);
+app.use('/api/sensor', sensorRoutes);
+app.use('/api/guest', guestRoutes);
+app.use('/api/checkIn', checkInRoutes);
+app.use('/api/checkOut', checkOutRoutes);
+app.use('/api/total', totalRoutes);
+app.use('/api/towelConsumption', towelConsumptionRoutes);
+app.use('/api/waterConsumption', waterConsumptionRoutes);
 
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));
@@ -53,6 +58,36 @@ const server = app.listen(app.get('port'), () => {
 });
 
 socket.connect(server);
+
+// Renders
+app.get('/', (req, res, next) => {
+    res.render('index');
+});
+
+app.get('/guests/', async (req, res, next) => {
+    const guests = await useCases.guestUseCases.getGuests();
+    res.render('tables/guests', {guests});
+});
+
+app.get('/rooms/', async (req, res, next) => {
+    const rooms = await useCases.roomUseCases.getRooms();
+    res.render('tables/rooms', {rooms});
+});
+
+app.get('/checkIns/', async (req, res, next) => {
+    const checkIns = await useCases.checkInUseCases.getCheckIns();
+    res.render('tables/checkIns', {checkIns});
+});
+
+app.get('/sensors/', async (req, res, next) => {
+    const sensors = await useCases.espSensorUseCases.getEspSensors();
+    res.render('tables/sensors', {sensors});
+});
+
+app.get('/totals/', async (req, res, next) => {
+    const totals = await useCases.totalUseCases.getTotals();
+    res.render('tables/totals', {totals});
+});
 
 /* const madge = require('madge');
  

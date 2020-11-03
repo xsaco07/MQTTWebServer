@@ -35,7 +35,7 @@ module.exports = {
     },
     // inputData = {}
     getGuests : async () => {
-        try { return await entities.Guest.find({}); } 
+        try { return await entities.Guest.find({}).populate('room_id').exec(); } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {guest_id : ObjectId}

@@ -65,7 +65,12 @@ module.exports = {
     },
     // inputData = {}
     getCheckIns : async () => {
-        try { return await entities.CheckIn.find({}); } 
+        try { return await entities.CheckIn.
+            find({}).
+            populate('room_id').
+            populate('guest_id').
+            exec(); 
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {checkIn_id : ObjectId}

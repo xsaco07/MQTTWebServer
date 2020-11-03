@@ -20,7 +20,16 @@ module.exports = {
     },
     // inputData = {}
     getTotals : async () => {
-        try { return await entities.Total.find({}); } 
+        try { 
+            return await entities.Total.find({}).
+            populate({
+                path : 'checkIn_id',
+                populate : {
+                    path : 'room_id'
+                }
+            }).
+            exec(); 
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {total_id : ObjectId}
