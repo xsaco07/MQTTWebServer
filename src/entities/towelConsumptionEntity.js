@@ -15,36 +15,34 @@ const towelConsumptionSchema = {
         },
         towels : {
             type : Number,
-            require : true, 
-            default : 0
+            require : true,
         },
         weight : {
             type : Number,
             required : true,
-            default : 0.00
         },
         consumption : {
             type : Number,
             requird : true,
-            default : 0.00
         },
         date : {
             type : Date,
-            required : true,
             default : () => {
                 let date = new Date();
                 date.setHours(date.getHours() - utils.offsetUTCHours);
                 return date;
             }
         }   
+    },
+    expected : {
+        type : Boolean,
+        default : true,
     }
-
 }
 
-const TowelConsumption = mongoose.model(
-    'TowelConsumptions', 
-    new Schema(towelConsumptionSchema), 
-    'towelConsumptions');
+const schema = new Schema(towelConsumptionSchema);
+
+const TowelConsumption = mongoose.model('TowelConsumptions', schema, 'towelConsumptions');
 
 module.exports.TowelConsumption = TowelConsumption;
 module.exports.buildTowelConsumptionEntity = (towelConsumptionObject) => new TowelConsumption(Object.freeze(towelConsumptionObject));

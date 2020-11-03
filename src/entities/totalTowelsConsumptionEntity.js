@@ -3,12 +3,8 @@ const isValidObject = (object) => true;
 
 module.exports.buildTotalTowelsConsumptionEntity = (totalTowelsConumptionInputObject) => {
     if(isValidObject(totalTowelsConumptionInputObject)) {
-        /* const object = Object.freeze({
-            towels : totalTowelsConumptionInputObject.towels,
-            weight : totalTowelsConumptionInputObject.weight,
-            consumption : totalTowelsConumptionInputObject.consumption
-        }); */
         const object = {
+            _id : totalTowelsConumptionInputObject._id,
             towels : totalTowelsConumptionInputObject.towels,
             weight : totalTowelsConumptionInputObject.weight,
             consumption : totalTowelsConumptionInputObject.consumption

@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const socketIo = require('socket.io');
+const socket = require('./socketEvents/sockets');
 
 // Routes
 const roomRoutes = require('./routes/roomRoutes');
@@ -12,6 +12,8 @@ const checkInRoutes = require('./routes/checkInRoutes');
 const checkOutRoutes = require('./routes/checkOutRoutes');
 const guestRoutes = require('./routes/guestRoutes');
 const totalRoutes = require('./routes/totalRoutes');
+const towelConsumptionRoutes = require('./routes/towelConsumptionRoutes');
+const waterConsumptionRoutes = require('./routes/waterConsumptionRoutes');
 
 // DB
 const {makeDB} = require('./data-access/mongodb');
@@ -34,6 +36,8 @@ app.use('/guest', guestRoutes);
 app.use('/checkIn', checkInRoutes);
 app.use('/checkOut', checkOutRoutes);
 app.use('/total', totalRoutes);
+app.use('/towelConsumption', towelConsumptionRoutes);
+app.use('/waterConsumption', waterConsumptionRoutes);
 
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));
@@ -48,12 +52,10 @@ const server = app.listen(app.get('port'), () => {
     mqtt.listenToMQTTMessages();
 });
 
-// Init websockets
-const io = socketIo(server);
-io.on('connection', (socket) => {
-    console.log("New connection");
-    socket.on('disconnect', () => {
-        console.log(`User ${socket.id} disconnected`);
-    });
-});
+socket.connect(server);
 
+/* const madge = require('madge');
+ 
+madge('src/main.js').then((res) => {
+    console.log(res.circular());
+}); */

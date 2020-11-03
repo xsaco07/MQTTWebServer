@@ -8,35 +8,10 @@ const checkOutSchema = {
         ref : 'CheckIn',
         required : true
     },
-    totalWaterConsumption : {
-        consumption : {
-            type : Number,
-            default : 0
-        },
-        seconds : {
-            type : Number,
-            default : 0
-        }
-    },
-    totalTowelsConsumption : {
-        towels : {
-            type : Number,
-            default : 0
-        },
-        weight : {
-            type : Number,
-            default : 0
-        },
-        consumption : {
-            type : Number,
-            default : 0
-        }
-    },
-    totalConsumption : {
-        type : Number,
-        default : function() {
-            return this.totalTowelsConsumption.consumption + this.totalWaterConsumption.consumption
-        }
+    total_id : {
+        type : Schema.Types.ObjectId,
+        ref : 'Total',
+        required : true
     },
     date : {
         type : Date,

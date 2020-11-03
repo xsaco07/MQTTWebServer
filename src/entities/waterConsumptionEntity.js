@@ -31,9 +31,12 @@ const waterConsumptionSchema = {
                 date.setHours(date.getHours() - utils.offsetUTCHours);
                 return date;
             }
-        }   
+        }
+    },
+    expected : {
+        type : Boolean,
+        default : true,
     }
-
 }
 
 const WaterConsumption = mongoose.model(

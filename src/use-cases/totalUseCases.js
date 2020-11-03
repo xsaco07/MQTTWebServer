@@ -30,7 +30,7 @@ module.exports = {
     },
     // inputData = {checkIn_id : ObjectId}
     getTotalByCheckInId : async (inputData) => {
-        try { return await entities.Total.find({checkIn_id : inputData.checkIn_id});} 
+        try { return await entities.Total.findOne({checkIn_id : inputData.checkIn_id});} 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {sensor_id : ObjectId}
