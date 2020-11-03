@@ -151,30 +151,32 @@ module.exports = {
     },
     // Returns expected water consumptions by day for the last utils.LAST_DAYS days
     // inputData = {}
-    getConsumptionByDay : async () => {
+    getConsumptionByDay : async (inputData) => {
         try {
 
-            // get current date
-            let date1 = new Date();
-            // substract N days
-            date1.setDate(date1.getDate() - constants.LAST_DAYS);
-            // set date to midnight
-            date1.setHours(24,0,0,0);
-            // align with time zone offset
-            date1.setHours(date1.getHours() - utils.offsetUTCHours);
+            let queryFilter = {};
+            if(inputData.days != null){
+                // get current date
+                let date1 = new Date();
+                // substract N days
+                date1.setDate(date1.getDate() - inputData.days);
+                // set date to midnight
+                date1.setHours(24,0,0,0);
+                // align with time zone offset
+                date1.setHours(date1.getHours() - utils.offsetUTCHours);
 
-            // get current date
-            let date2 = new Date();
-            // set date to midnight
-            date2.setHours(24,0,0,0);
-            // align with time zone offset
-            date2.setHours(date2.getHours() - utils.offsetUTCHours);
+                // get current date
+                let date2 = new Date();
+                // set date to midnight
+                date2.setHours(24,0,0,0);
+                // align with time zone offset
+                date2.setHours(date2.getHours() - utils.offsetUTCHours);
+
+                queryFilter = {"infoPacket.date" : { $gte: date1, $lt: date2}};
+            }
 
             const total = await entities.WaterConsumption.aggregate()
-            .match({ $and : [
-                {"infoPacket.date" : { $gte: date1, $lt: date2}},
-                {expected : true}
-            ]})
+            .match({ $and : [queryFilter,{expected : true}]})
             .group({
                 // Each row will be grouped by the day
                 _id : { $dateToString: { format: "%Y-%m-%d", date: "$infoPacket.date" } }, 

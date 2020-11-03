@@ -16,6 +16,8 @@ router.get('/guest/', towelConsumptionController.getConsumptionForAllGuests);
 
 router.get('/day/', towelConsumptionController.getConsumptionByDay);
 
+router.get('/day/:days', towelConsumptionController.getConsumptionByDay);
+
 router.get('/hour/:date/', towelConsumptionController.getConsumptionByHour);
 
 router.get('/room/', towelConsumptionController.getConsumptionByRoom);

@@ -85,11 +85,14 @@ module.exports = {
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
-    // Action = towel_consumption/day/
-    // Params = {}
+    // Action1 = towel_consumption/day/
+    // Action2 = towel_consumption/day/:days
+    // Params1 = {}
+    // Params2 = {days : Number}
     getConsumptionByDay : async (req, res, next) => {
         try {
-            const docs = await towelUseCases.getConsumptionByDay();
+            const days = req.params.days;
+            const docs = await towelUseCases.getConsumptionByDay({days});
             if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }

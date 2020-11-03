@@ -85,11 +85,14 @@ module.exports = {
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
-    // Action = water_consumption/day/
-    // Params = {}
+    // Action1 = water_consumption/day/
+    // Action2 = water_consumption/day/:days
+    // Params1 = {}
+    // Params2 = {days : Number}
     getConsumptionByDay : async (req, res, next) => {
         try {
-            const docs = await waterUseCases.getConsumptionByDay();
+            const days = req.params.days;
+            const docs = await waterUseCases.getConsumptionByDay({days});
             if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
