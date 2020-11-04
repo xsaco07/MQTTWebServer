@@ -20,7 +20,7 @@ module.exports = {
     // }
     new : async (req, res, next) => {
         try {
-
+            
             const room_id = req.body.room_id;
             // Save new guest
             const guestInfo = {
@@ -29,10 +29,13 @@ module.exports = {
                 lastName2 : req.body.lastName2,
                 age : req.body.age,
                 country : req.body.country,
-                email : req.body.email,
-                phone : req.body.phone,
                 room_id
             };
+
+            // Checking for not required fields
+            if(req.body.email.length > 0) guestInfo[email] = req.body.email;
+            if(req.body.phone.length > 0) guestInfo[phone] = req.body.phone;
+
             const guestDocument = await guestUseCases.newGuest(guestInfo);
 
             // Save checkIn object

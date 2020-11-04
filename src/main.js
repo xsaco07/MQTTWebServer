@@ -31,6 +31,9 @@ app.set('view engine', 'ejs');
 
 // Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(cors());
 
 // Routes set up
@@ -58,7 +61,7 @@ const server = app.listen(app.get('port'), () => {
 
 socket.connect(server);
 
-// Renders
+// Render tables
 app.get('/', (req, res, next) => {
     res.render('index');
 });
@@ -105,6 +108,14 @@ app.get('/unexpectedWater/', async (req, res, next) => {
         expected : false
     });
     res.render('tables/unexpectedWater', {consumptions});
+});
+
+// Render forms
+app.get('/newCheckIn/', async (req, res, next) => {
+    const rooms = await useCases.roomUseCases.getRoomsByOccupancyState({
+        occupancyState : false
+    });
+    res.render('forms/newCheckIn', {rooms});
 });
 
 /* const madge = require('madge');

@@ -1,0 +1,96 @@
+<%- include('../partials/_header') %>
+
+<div class="content">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-primary text-center">
+              <h4 class="card-title">Nuevo Check In</h4>
+              <p class="card-category">Registre un nuevo hospedaje</p>
+            </div>
+            <div class="card-body">
+              <form action="/api/checkIn/new/" method="POST">
+                <div class="row">
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Habitación</label>
+                      <select class="custom-select" name="room_id" required>
+                        <option disabled selected>Habitaciones diponibles...</option>
+                        <% rooms.forEach(function(room){ %>
+                            <option value="<%= room._id %>">Habitación #<%= room.roomNumber %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Días</label>
+                      <input type="number" class="form-control" name="days" required>
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Noches</label>
+                      <input type="number" class="form-control" name="nights" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Nombre</label>
+                      <input type="text" class="form-control" name="name" required>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Primer apellido</label>
+                      <input type="text" class="form-control" name="lastName1" required>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Segundo apellido</label>
+                      <input type="text" class="form-control" name="lastName2" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Edad</label>
+                      <input type="number" class="form-control" name="age" required>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Nacionalidad</label>
+                      <%- include('../partials/countries') %>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Email</label>
+                      <input type="email" class="form-control" name="email">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group">
+                      <label class="bmd-label-floating">Teléfono</label>
+                      <input type="tel" class="form-control" name="phone">
+                    </div>
+                  </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-12 text-center mt-3">
+                        <button type="submit" class="btn btn-success">Listo</button>
+                    </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -45,6 +45,7 @@ module.exports = {
     // inputData = {room_id : ObjectId, guest_id : ObjectId, duration : {days : int, nights : int}}
     newCheckIn : async (inputData) => {
         try {
+            console.log(inputData);
             // Build and save object
             const finalObject = {
                 room_id : inputData.room_id,
