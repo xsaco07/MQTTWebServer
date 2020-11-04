@@ -74,7 +74,16 @@ module.exports = {
     // inputData = {expected : Boolean}
     getWaterConsumptionsByExpectedState : async (inputData) => {
         try {
-            return await entities.WaterConsumption.find({expected : inputData.expected});
+            return await entities.WaterConsumption.find({expected : inputData.expected}).
+            populate({
+                path : 'sensor_id',
+                populate : {
+                    path : 'room_id',
+                    select : 'roomNumber'
+                },
+                select : 'infoPacket sensorName'
+            }).
+            exec();
         } catch (error) { handleDBOperationError(error); }
     },
     // Count the total expected consumption measured by a sensor in a room for the given period of time

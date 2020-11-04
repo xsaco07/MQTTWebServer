@@ -25,9 +25,9 @@
                                             <td><%= sensor.room_id.roomNumber %></td>
                                             <td>
                                                 <% if(sensor.state == true){ %>
-                                                    Activo
+                                                    <span class="text-success">Activo</span>
                                                 <% } else { %>
-                                                    Inactivo
+                                                    <span class="text-danger">Inactivo</span>
                                                 <% } %>
                                             </td>
                                         </tr>

@@ -30,7 +30,7 @@
                                         <tr>
                                             <% 
                                                 checkIn.date.setHours(
-                                                checkIn.date.getHours() - 
+                                                checkIn.date.getHours() + 
                                                 new Date().getTimezoneOffset()/60
                                                 ); 
                                             %> 
@@ -48,9 +48,9 @@
                                             <td><%= checkIn.duration.nights %></td>
                                             <td>
                                                 <% if(checkIn.status == true){ %>
-                                                    Activo
+                                                    <span class="text-success">Activo</span>
                                                 <% } else { %>
-                                                    Finalizado
+                                                    <span class="text-danger">Finalizado</span>
                                                 <% } %>
                                             </td>
                                             <td>

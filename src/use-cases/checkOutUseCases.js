@@ -99,7 +99,19 @@ module.exports = {
     },
     // inputData = {}
     getCheckOuts : async () => {
-        try { return await entities.CheckOut.find({}); } 
+        try { 
+            return await entities.CheckOut.find({}).
+            populate({
+                path : 'total_id checkIn_id',
+                populate : {
+                    path : 'room_id guest_id',
+                    select : 'roomNumber fullName'
+                },
+                select : ' duration date totals'
+            }).
+            select('date').
+            exec();
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {_id : ObjectId}

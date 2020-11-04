@@ -7,8 +7,8 @@
             <div class="col-md-12">
                 <div class="card card-plain">
                 <div class="card-header card-header-primary text-center">
-                    <h4 class="card-title mt-0">Consumos totales</h4>
-                    <p class="card-category">Registro de consumo total de agua y toallas</p>
+                    <h4 class="card-title mt-0">Consumo actual - Check Ins activos</h4>
+                    <p class="card-">Sólo check Ins activos son mostrados en esta tabla</p>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -16,42 +16,38 @@
                             <thead class="">
                                 <th>CheckIn</th>
                                 <th>Habitación</th>
-                                <th>Estado de CheckIn</th>
                                 <th>Toallas</th>
-                                <th>Kgs de toallas</th>
-                                <th>Litros de agua por toallas</th>
-                                <th>Litros de agua</th>
-                                <th>Minutos de agua fluyendo</th>
-                                <th>Consumo de agua total</th>
+                                <th>Peso de toallas (gr)</th>
+                                <th>Consumo de agua por toallas (mls)</th>
+                                <th>Consumo de agua (mls)</th>
+                                <th>Tiempo de consumo de agua (min)</th>
+                                <th>Consumo total de agua (mls)</th>
                             </thead>
                             <tbody>
                                 <% totals.forEach(function(total){ %>
-                                    <tr>
-                                        <% 
-                                            total.checkIn_id.date.setHours(
-                                            total.checkIn_id.date.getHours() - 
-                                            new Date().getTimezoneOffset()/60
-                                            ); 
-                                        %> 
-                                        <td>
-                                            <%= total.checkIn_id.date.toLocaleDateString(); %>
-                                            <%= total.checkIn_id.date.toLocaleTimeString(); %> 
-                                        </td>
-                                        <td><%= total.checkIn_id.room_id.roomNumber %></td>
-                                        <td>
-                                            <% if(total.checkIn_id.status == true){ %>
-                                                <span class="text-success">Activo</span>
-                                            <% } else { %>
-                                                <span class="text-danger">Finalizado</span>
-                                            <% } %>
-                                        </td>
-                                        <td><%= total.totals.towels.towels %></td>
-                                        <td><%= total.totals.towels.weight %></td>
-                                        <td><%= total.totals.towels.consumption %></td>
-                                        <td><%= total.totals.water.consumption %></td>
-                                        <td><%= total.totals.water.seconds %></td>
-                                        <td><%= total.totals.totalConsumption%></td>
-                                    </tr>
+
+                                    <% if(total.checkIn_id.status == true){ %>
+                                        <tr>
+                                            <% 
+                                                total.checkIn_id.date.setHours(
+                                                total.checkIn_id.date.getHours() + 
+                                                new Date().getTimezoneOffset()/60
+                                                ); 
+                                            %> 
+                                            <td>
+                                                <%= total.checkIn_id.date.toLocaleDateString(); %>
+                                                <%= total.checkIn_id.date.toLocaleTimeString(); %> 
+                                            </td>
+                                            <td><%= total.checkIn_id.room_id.roomNumber %></td>
+                                            <td><%= total.totals.towels.towels %></td>
+                                            <td><%= total.totals.towels.weight %></td>
+                                            <td><%= total.totals.towels.consumption %></td>
+                                            <td><%= total.totals.water.consumption %></td>
+                                            <td><%= Math.round((total.totals.water.seconds / 60)) %></td>
+                                            <td><%= total.totals.totalConsumption%></td>
+                                        </tr>
+                                    <% } %>
+                                    
                                 <% }) %>
                             </tbody>
                         </table>

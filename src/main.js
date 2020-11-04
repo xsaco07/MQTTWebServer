@@ -23,7 +23,6 @@ const {makeDB} = require('./data-access/mongodb');
 
 // MQTT
 const mqtt = require('./mqtt/mqtt');
-const { use } = require('./routes/roomRoutes');
 
 // Express settings
 const app = express();
@@ -87,6 +86,25 @@ app.get('/sensors/', async (req, res, next) => {
 app.get('/totals/', async (req, res, next) => {
     const totals = await useCases.totalUseCases.getTotals();
     res.render('tables/totals', {totals});
+});
+
+app.get('/checkOuts/', async (req, res, next) => {
+    const checkOuts = await useCases.checkOutUseCases.getCheckOuts();
+    res.render('tables/checkOuts', {checkOuts});
+});
+
+app.get('/unexpectedTowel/', async (req, res, next) => {
+    const consumptions = await useCases.towelConsumptionUseCases.getTowelConsumptionsByExpectedState({
+        expected : false
+    });
+    res.render('tables/unexpectedTowel', {consumptions});
+});
+
+app.get('/unexpectedWater/', async (req, res, next) => {
+    const consumptions = await useCases.waterConsumptionUseCases.getWaterConsumptionsByExpectedState({
+        expected : false
+    });
+    res.render('tables/unexpectedWater', {consumptions});
 });
 
 /* const madge = require('madge');

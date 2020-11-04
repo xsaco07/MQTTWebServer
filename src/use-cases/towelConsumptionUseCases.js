@@ -1,7 +1,6 @@
 const entities = require('../entities/entities');
 const espSensorUseCases = require('./espSensorUseCases');
 const roomUseCases = require('../use-cases/roomUseCases');
-const constants = require('../utils/constants');
 const utils = require('../utils/utils');
 const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntity');
 const {buildTotalTowelsConsumptionEntity} = require('../entities/totalTowelsConsumptionEntity');
@@ -48,7 +47,7 @@ module.exports = {
     },
     // inputData = {}
     getTowelConsumptions : async () => {
-        try { return await entities.TowelConsumption.find({});} 
+        try { return await entities.TowelConsumption.find({}) } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {_id : ObjectId}
@@ -76,7 +75,16 @@ module.exports = {
     // inputData = {expected : Boolean}
     getTowelConsumptionsByExpectedState : async (inputData) => {
         try {
-            return await entities.TowelConsumption.find({expected : inputData.expected});
+            return await entities.TowelConsumption.find({expected : inputData.expected}).
+            populate({
+                path : 'sensor_id',
+                populate : {
+                    path : 'room_id',
+                    select : 'roomNumber'
+                },
+                select : 'infoPacket sensorName'
+            }).
+            exec();
         } catch (error) { handleDBOperationError(error); }
     },
     // Count the total expected consumption measured by a sensor in a room for the given period of time

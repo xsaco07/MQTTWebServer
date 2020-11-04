@@ -1,0 +1,58 @@
+<%- include('../partials/_header') %>
+<body>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+            <div class="col-md-12">
+                <div class="card card-plain">
+                <div class="card-header card-header-primary text-center">
+                    <h4 class="card-title mt-0">Consumos de toallas inesperados</h4>
+                    <p class="card-category">Registro de consumo en habitaciones inactivas</p>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center">
+                            <thead class="">
+                                <th>Habitación</th>
+                                <th>Sensor</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Toallas</th>
+                                <th>Peso de toallas (gr)</th>
+                                <th>Consumo de agua por toallas (mls)</th>
+                            </thead>
+                            <tbody>
+                                <% consumptions.forEach(function(consumption){ %>
+                                    <tr>
+                                        <% 
+                                            consumption.infoPacket.date.setHours(
+                                            consumption.infoPacket.date.getHours() + 
+                                            new Date().getTimezoneOffset()/60
+                                            );
+                                        %>
+                                        <td><%= consumption.sensor_id.room_id.roomNumber %></td>
+                                        <td><%= consumption.sensor_id.sensorName %></td>
+                                        <td><%= consumption.infoPacket.date.toLocaleDateString(); %></td>
+                                        <td><%= consumption.infoPacket.date.toLocaleTimeString(); %> </td>
+                                        <td><%= consumption.infoPacket.towels %></td>
+                                        <td><%= consumption.infoPacket.weight %></td>
+                                        <td><%= consumption.infoPacket.consumption %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+</body>
+</html>
