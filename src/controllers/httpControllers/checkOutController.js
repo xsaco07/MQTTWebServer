@@ -3,13 +3,14 @@ const {handleGetRequestError, handlePostRequestError} = require('../../utils/err
 
 module.exports = {
     // Method = POST
-    // Action = checkOut/new/checkIn/:checkIn/
+    // Action = checkOut/new/
     // Req.body = {checIn_id : ObjectId}
     new : async (req, res, next) => {
         const checkIn_id = req.body.checkIn_id;
         try {
             const savedObject = await checkOutUseCases.newCheckOut({checkIn_id});   
-            res.status(201).json(savedObject);
+            res.status(201);
+            res.redirect('/checkOuts/');
         } catch (error) { handlePostRequestError(error, res); }
     },
     // Method = GET

@@ -135,4 +135,25 @@ module.exports = {
         io.emit('waterXRoom', message);
     },
 
+    emitTotalTowelsMetric : (towels, weight, consumption) => {
+        console.log('Emitting totalTowelsMetric message through socket...');
+        const message = {
+            towels,
+            weight,
+            consumption
+        };
+        console.log(message);
+        io.emit('towelsMetric', message);
+    },
+
+    emitTotalWaterMetric : (consumption, seconds) => {
+        console.log('Emitting totalWaterMetric message through socket...');
+        const message = {
+            consumption,
+            seconds
+        };
+        console.log(message);
+        io.emit('waterMetric', message);
+    }
+
 };

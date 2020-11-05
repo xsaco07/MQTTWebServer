@@ -119,5 +119,14 @@ module.exports = {
             if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
+    },
+    metrics : {
+        getTotalConsumption : async (req, res, next) => {
+            try {
+                const total = await waterUseCases.metrics.totalConsumption();
+                if(total == null || Object.keys(total).length == 0) res.status(204).end();
+                else res.status(200).json(total);
+            } catch (error) { handleGetRequestError(error, res); }
+        }
     }
 }

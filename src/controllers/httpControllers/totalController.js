@@ -4,7 +4,7 @@ const {handleGetRequestError, handlePostRequestError} = require('../../utils/err
 module.exports = {
     // Method = POST
     // Action = total/new/
-    // Req.body = {checkIn_id: ObjectId}
+    // Req.body = {checkIn_id: ObjectId, sensor_id : ObjectId}
     new : async (req, res, next) => {
         const totalDocument = req.body;
         try {

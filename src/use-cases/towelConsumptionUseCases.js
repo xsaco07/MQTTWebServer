@@ -280,7 +280,17 @@ module.exports = {
             return result;
 
         } catch (error) { handleDBOperationError(error); }
-
+    },
+    metrics : {
+        totalConsumption : async() => {
+            return await entities.TowelConsumption.aggregate()
+            .group({
+                _id : null,
+                towels : {$sum : "$infoPacket.towels"},
+                weight : {$sum : "$infoPacket.weight"},
+                consumption : {$sum : "$infoPacket.consumption"}
+            });
+        }
     }
 
 };

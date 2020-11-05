@@ -87,6 +87,7 @@ async function handleTowelConsumptionMessage(message) {
             updateTowelsXDayChart(savedObject);
             updateTowelsXHourChart(savedObject);
             updateTowelsXRoomChart(savedObject);
+            updateTotalTowelsMetric();
         }
         else {
             console.log('ALERT! Not expected towel consumption');  
@@ -110,6 +111,7 @@ async function handleWaterConsumptionMessage(message) {
             updateWaterXDayChart(savedObject);
             updateWaterXHourChart(savedObject);
             updateWaterXRoomChart(savedObject);
+            updateTotalWaterMetric();
         }
         else {
             console.log('ALERT! Not expected water consumption');
@@ -233,7 +235,17 @@ const updateTowelsXRoomChart = async (towelConsumptionDoc) => {
         towelConsumptionDoc.infoPacket.consumption,
         roomDoc.roomNumber,
         roomDoc.occupancyState
-    )
+    );
+};
+
+const updateTotalTowelsMetric = async () => {
+    console.log("Updating total towels metric");
+    const totals = towelConsumptionUseCases.metrics.totalConsumption();
+    sockets.emitTotalTowelsMetric(
+        totals.towels,
+        totals.weight,
+        totals.consumption
+    );
 };
 
 const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {
@@ -287,6 +299,15 @@ const updateWaterXRoomChart = async (waterConsumptionDoc) => {
         roomDoc.roomNumber,
         roomDoc.occupancyState
     )
+};
+
+const updateTotalWaterMetric = async () => {
+    console.log("Updating total water metric");
+    const totals = waterConsumptionUseCases.metrics.totalConsumption();
+    sockets.emitTotalWaterMetric(
+        totals.consumption,
+        totals.seconds
+    );
 };
 
 module.exports.mqttClient = mqttClient;

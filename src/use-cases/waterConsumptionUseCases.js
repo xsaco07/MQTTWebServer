@@ -277,6 +277,15 @@ module.exports = {
             return result;
 
         } catch (error) { handleDBOperationError(error); }
-
+    },
+    metrics : {
+        totalConsumption : async() => {
+            return await entities.WaterConsumption.aggregate()
+            .group({
+                _id : null,
+                consumption : {$sum : "$infoPacket.consumption"},
+                seconds : {$sum : "$infoPacket.seconds"}
+            });
+        }
     }
 };

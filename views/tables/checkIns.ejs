@@ -57,15 +57,18 @@
                                                 <% } %>
                                             </td>
                                             <td>
-                                                <% if(checkIn.status == true){ %>
-                                                    <button class="btn btn-danger btn-fab btn-round">
-                                                        <i class="material-icons">cancel</i>
-                                                    </button>
-                                                <% } else { %>
-                                                    <button disabled class="btn btn-secondary btn-fab btn-round">
-                                                        <i class="material-icons">cancel</i>
-                                                    </button>
-                                                <% } %>
+                                                <form action="/api/checkOut/new/" method="post">
+                                                    <input hidden type="text" value="<%= checkIn._id %>" name="checkIn_id">
+                                                    <% if(checkIn.status == true){ %>
+                                                        <button type="submit" class="btn btn-danger btn-fab btn-round">
+                                                            <i class="material-icons">cancel</i>
+                                                        </button>
+                                                    <% } else { %>
+                                                        <button disabled class="btn btn-secondary btn-fab btn-round">
+                                                            <i class="material-icons">cancel</i>
+                                                        </button>
+                                                    <% } %>
+                                                </form>
                                             </td>
                                         </tr>
                                     <% }) %>

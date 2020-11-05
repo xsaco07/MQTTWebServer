@@ -8,9 +8,11 @@ router.get('/_id/:_id/', checkInController.getById);
 
 router.get('/room_id/:room_id/', checkInController.getByRoomId);
 
-router.get('/date/:date1/:date2', checkInController.getByDateRange);
+router.get('/date/:date1/:date2/', checkInController.getByDateRange);
 
-router.get('/status/:status', checkInController.getByStatus);
+router.get('/status/:status/', checkInController.getByStatus);
+
+router.get('/active/', checkInController.metrics.getActiveCheckIns);
 
 router.post('/new/', checkInController.new);
 

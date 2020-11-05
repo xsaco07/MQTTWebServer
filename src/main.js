@@ -112,6 +112,7 @@ app.get('/unexpectedWater/', async (req, res, next) => {
 
 // Render forms
 app.get('/newCheckIn/', async (req, res, next) => {
+    // Send available rooms to the form
     const rooms = await useCases.roomUseCases.getRoomsByOccupancyState({
         occupancyState : false
     });
