@@ -240,7 +240,7 @@ const updateTowelsXRoomChart = async (towelConsumptionDoc) => {
 
 const updateTotalTowelsMetric = async () => {
     console.log("Updating total towels metric");
-    const totals = towelConsumptionUseCases.metrics.totalConsumption();
+    const totals = (await towelConsumptionUseCases.metrics.totalConsumption())[0];
     sockets.emitTotalTowelsMetric(
         totals.towels,
         totals.weight,
@@ -303,7 +303,7 @@ const updateWaterXRoomChart = async (waterConsumptionDoc) => {
 
 const updateTotalWaterMetric = async () => {
     console.log("Updating total water metric");
-    const totals = waterConsumptionUseCases.metrics.totalConsumption();
+    const totals = (await waterConsumptionUseCases.metrics.totalConsumption())[0];
     sockets.emitTotalWaterMetric(
         totals.consumption,
         totals.seconds

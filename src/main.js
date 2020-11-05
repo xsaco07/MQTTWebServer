@@ -62,13 +62,16 @@ const server = app.listen(app.get('port'), () => {
 socket.connect(server);
 
 // Render tables
-app.get('/', (req, res, next) => {
-    res.render('index');
+app.get('/', async (req, res, next) => {
+    const towelsMetric = (await useCases.towelConsumptionUseCases.metrics.totalConsumption())[0];
+    const waterMetric = (await useCases.waterConsumptionUseCases.metrics.totalConsumption())[0];
+    const activeCheckIns = await useCases.checkInUseCases.metrics.activeCheckIns();
+    res.render('index', {towelsMetric, waterMetric, activeCheckIns});
 });
 
 app.get('/guests/', async (req, res, next) => {
     const guests = await useCases.guestUseCases.getGuests();
-    res.render('tables/guests', {guests});
+    res.render('guests', {guests});
 });
 
 app.get('/rooms/', async (req, res, next) => {
