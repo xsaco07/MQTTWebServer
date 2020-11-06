@@ -35,7 +35,7 @@ const createTotalObject = async (checkIn_id, room_id) => {
 
 // Use mqtt module to publish-back the sensor state now turned on
 const turnOnSensorState = async (sensorDoc) => {
-    sensorDoc.status = true;
+    sensorDoc.state = true;
     await sensorDoc.save();
     const stateObject = factories.buildSensorStateEntity(true);
     mqtt.publishStateMessage(sensorDoc.sensorName, stateObject);
@@ -45,6 +45,7 @@ module.exports = {
     // inputData = {room_id : ObjectId, guest_id : ObjectId, duration : {days : int, nights : int}}
     newCheckIn : async (inputData) => {
         try {
+            console.log(inputData);
             // Build and save object
             const finalObject = {
                 room_id : inputData.room_id,
@@ -57,6 +58,7 @@ module.exports = {
             // Actions post save
             const roomDoc = await turnOnRoomState(inputData.room_id);
             const sensorDoc = await createTotalObject(savedObject._id, roomDoc._id);
+            console.log(sensorDoc);
             turnOnSensorState(sensorDoc);
 
             return savedObject;
@@ -65,7 +67,12 @@ module.exports = {
     },
     // inputData = {}
     getCheckIns : async () => {
-        try { return await entities.CheckIn.find({}); } 
+        try { return await entities.CheckIn.
+            find({}).
+            populate('room_id').
+            populate('guest_id').
+            exec(); 
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {checkIn_id : ObjectId}
@@ -106,5 +113,12 @@ module.exports = {
             });
         } 
         catch (error) { handleDBOperationError(error); }
+    },
+    metrics : {
+        activeCheckIns : async() => {
+            return {
+                total : (await entities.CheckIn.find({status : true})).length
+            };
+        }
     }
 }

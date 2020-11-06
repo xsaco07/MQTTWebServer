@@ -1,7 +1,6 @@
 const entities = require('../entities/entities');
 const espSensorUseCases = require('./espSensorUseCases');
 const roomUseCases = require('../use-cases/roomUseCases');
-const constants = require('../utils/constants');
 const utils = require('../utils/utils');
 const {buildTowelConsumptionEntity} = require('../entities/towelConsumptionEntity');
 const {buildTotalTowelsConsumptionEntity} = require('../entities/totalTowelsConsumptionEntity');
@@ -48,7 +47,7 @@ module.exports = {
     },
     // inputData = {}
     getTowelConsumptions : async () => {
-        try { return await entities.TowelConsumption.find({});} 
+        try { return await entities.TowelConsumption.find({}) } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {_id : ObjectId}
@@ -76,7 +75,16 @@ module.exports = {
     // inputData = {expected : Boolean}
     getTowelConsumptionsByExpectedState : async (inputData) => {
         try {
-            return await entities.TowelConsumption.find({expected : inputData.expected});
+            return await entities.TowelConsumption.find({expected : inputData.expected}).
+            populate({
+                path : 'sensor_id',
+                populate : {
+                    path : 'room_id',
+                    select : 'roomNumber'
+                },
+                select : 'infoPacket sensorName'
+            }).
+            exec();
         } catch (error) { handleDBOperationError(error); }
     },
     // Count the total expected consumption measured by a sensor in a room for the given period of time
@@ -272,7 +280,56 @@ module.exports = {
             return result;
 
         } catch (error) { handleDBOperationError(error); }
+    },
+    // Returns total conumption by room for current check in
+    // inputData = {}
+    getCurrentConsumptionByRoom : async (inputData) => {
+        
+        try {
 
+            let result = {};
+            
+            // Get all towelConsumptions registered
+            const towelConsumptions = await entities.TowelConsumption.find(
+                {expected : true}, 
+                'sensor_id infoPacket');
+            
+            await Promise.all(towelConsumptions.map(async (doc) => {
+
+                // Get the respective room_id for the towelConsumption from the EspSensor
+                const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
+                
+                // Get the respective CheckIn document based on the closest-smaller-date and room_id
+                const checkInDoc = await entities.CheckIn.findOne({
+                    room_id : sensorDoc.room_id,
+                    date : {$lt : doc.infoPacket.date}
+                }, 'guest_id').sort({date : 'desc'}).limit(1);
+
+                // Get the respective Room
+                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+                
+                // if doc.date > checkIn.date
+                // and
+                if(roomDoc.occupancyState && doc.date > checkInDoc.date) {
+                    addRoomDataToResult(doc, roomDoc, result);
+                }
+                
+            }));
+
+            return result;
+
+        } catch (error) { handleDBOperationError(error); }
+    },
+    metrics : {
+        totalConsumption : async() => {
+            return await entities.TowelConsumption.aggregate()
+            .group({
+                _id : null,
+                towels : {$sum : "$infoPacket.towels"},
+                weight : {$sum : "$infoPacket.weight"},
+                consumption : {$sum : "$infoPacket.consumption"}
+            });
+        }
     }
 
 };

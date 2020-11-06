@@ -6,8 +6,6 @@
   "scripts": {
     "start": "node ./src/main.js",
     "dev": "nodemon ./src/main.js",
-    "testDb": "nodemon ./src/data-access/testingCRUD.js",
-    "testContr": "nodemon ./src/controllers/mqttControllers/testControllers.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,6 +30,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
     "express": "^4.17.1",
     "madge": "^3.11.0",
     "mongoose": "^5.10.8",

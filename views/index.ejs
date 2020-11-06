@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/_header') %>
+</head>
+<body>
+  <%- include('partials/_socket') %>
+  <div class="wrapper ">
+    <div class="sidebar" data-color="main" data-background-color="black">
+      <div class="logo">
+        <img src="./dashboard/assets/img/logo.png" class="logo-normal" width="250" alt="">
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#0">
+              <i class="material-icons">poll</i>
+              <p>Inicio</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/rooms/">
+              <i class="material-icons">single_bed</i>
+              <p>Habitaciones</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/guests/">
+              <i class="material-icons">face</i>
+              <p>Huéspedes</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/checkIns/">
+              <i class="material-icons">today</i>
+              <p>Check In</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/checkOuts/">
+              <i class="material-icons">event_available</i>
+              <p>Check Out</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/sensors/">
+              <i class="material-icons">settings_remote</i>
+              <p>Dispositivos</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/totals/">
+              <i class="material-icons">clean_hands</i>
+              <p>Consumos generales</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/unexpected/">
+              <i class="material-icons">report</i>
+              <p>Consumos inesperados</p>
+            </a>
+          </li>
+          <!-- your sidebar here -->
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row mb-5 mt-5">
+            <div class="col text-center">
+              <h2>Métricas</h2>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">money</i>
+                  </div>
+                  <p class="card-category">Peso de toallas utilizadas</p>
+                  <h3 class="card-title" id="towelWeightMetric"><%= towelsMetric.weight / 1000 %> kgs</h3>
+                </div>
+                <div class="card-footer text-center"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">bathtub</i>
+                  </div>
+                  <p class="card-category">Agua consumida</p>
+                  <h3 class="card-title" id="waterMetric"><%= waterMetric.consumption %> lts</h3>
+                </div>
+                <div class="card-footer text-center"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-danger card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">hotel</i>
+                  </div>
+                  <p class="card-category">Habitaciones activas</p>
+                  <h3 class="card-title"><%= activeCheckIns.total %></h3>
+                </div>
+                <div class="card-footer text-center"></div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-info card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">av_timer</i>
+                  </div>
+                  <p class="card-category">Tiempo total del flujo de agua</p>
+                  <h3 class="card-title" id="waterTimeMetric"><%= Math.round(waterMetric.seconds / 60)%> min</h3>
+                </div>
+                <div class="card-footer text-center"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-5 mt-5">
+            <div class="col text-center">
+              <h2>Gráficos</h2>
+            </div>
+          </div>
+
+          <div class="row justify-content-center mb-5">
+            <div class="col-8">
+              <div>
+                <canvas id="waterXDay"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-center mb-5">
+            <div class="col-8">
+              <div>
+                <canvas id="waterXHour"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-center mb-5">
+            <div class="col-8">
+              <div>
+                <canvas id="towelsXDay"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-center mb-5">
+            <div class="col-8">
+              <div>
+                <canvas id="towelsXHour"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <%- include('partials/_scripts') %>
+  <script src="index.js"></script>
+  <script src="charts/towelsXDay.js"></script>
+  <script src="charts/towelsXHour.js"></script>
+  <script src="charts/waterXDay.js"></script>
+  <script src="charts/waterXHour.js"></script>
+
+</body>
+</html>

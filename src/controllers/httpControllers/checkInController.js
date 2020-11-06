@@ -2,6 +2,7 @@ const guestUseCases = require('../../use-cases/guestUseCases');
 const espSensorUseCases = require('../../use-cases/espSensorUseCases');
 const checkInUseCases = require('../../use-cases/checkInUseCases');
 const {handleGetRequestError, handlePostRequestError} = require('../../utils/errorHandlers');
+const totalUseCases = require('../../use-cases/totalUseCases');
 
 module.exports = {
     // Method = POST
@@ -20,7 +21,6 @@ module.exports = {
     // }
     new : async (req, res, next) => {
         try {
-
             const room_id = req.body.room_id;
             // Save new guest
             const guestInfo = {
@@ -29,10 +29,10 @@ module.exports = {
                 lastName2 : req.body.lastName2,
                 age : req.body.age,
                 country : req.body.country,
-                email : req.body.email,
-                phone : req.body.phone,
                 room_id
             };
+
+            // Save guest object
             const guestDocument = await guestUseCases.newGuest(guestInfo);
 
             // Save checkIn object
@@ -44,15 +44,12 @@ module.exports = {
                     nights : req.body.nights
                 }
             };
-            const savedObject = await checkInUseCases.newCheckIn(checkInInfo);  
-
-            // Set room sensor as active
-            let sensorDocument = await espSensorUseCases.getEspSensorByRoomId({room_id});
-            sensorDocument.state = true;
-            await sensorDocument.save();
+            const savedObject = await checkInUseCases.newCheckIn(checkInInfo);
 
             // Send response
-            res.status(201).json(savedObject);
+            res.status(201);
+            res.redirect('/checkIns/');
+            
 
         } catch (error) { handlePostRequestError(error, res); }
     },
@@ -110,5 +107,14 @@ module.exports = {
             if(docs.length == 0) res.status(204).end();
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
+    },
+    metrics : {
+        getActiveCheckIns : async (req, res, next) => {
+            try {
+                const total = await checkInUseCases.metrics.activeCheckIns();
+                if(total == null || Object.keys(total).length == 0) res.status(204).end();
+                else res.status(200).json(total);
+            } catch (error) { handleGetRequestError(error, res); }
+        }
     }
 }

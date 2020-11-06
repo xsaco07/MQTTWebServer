@@ -66,27 +66,30 @@ module.exports = {
 
         let totalDoc = await totalUseCases.getTotalByCheckInId({checkIn_id : checkInDoc._id});
 
-        let totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId({
+        const totalWater = await waterConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId({
             room_id : checkInDoc.room_id,
             date1 : checkInDoc.date,
             date2 : now
         });
 
-        let totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId({
+        const totalTowels = await towelConsumptionUseCases.getTotalConsumptionByPeriodAndRoomId({
             room_id : checkInDoc.room_id,
             date1 : checkInDoc.date,
             date2 : now
         });
         
-        // Replace totals for the last count of consumption if totals dont match
+        // If there was consumption in the room
+        // replace totals for the last count of consumption if totals dont match
         // The last count of consumption has the priority
-        if(!totalsMatch(totalDoc, totalWater, totalTowels)) {
-            console.log('Not matched!');
-            totalDoc.totals = {
-                towels : totalTowels,
-                water : totalWater
-            };
-            await totalDoc.save();
+        if(totalTowels != null && totalWater != null){
+            if(!totalsMatch(totalDoc, totalWater, totalTowels)) {
+                console.log('Not matched!');
+                totalDoc.totals = {
+                    towels : totalTowels,
+                    water : totalWater
+                };
+                await totalDoc.save();
+            }
         }
 
         inputData.total_id = totalDoc._id;
@@ -99,7 +102,19 @@ module.exports = {
     },
     // inputData = {}
     getCheckOuts : async () => {
-        try { return await entities.CheckOut.find({}); } 
+        try { 
+            return await entities.CheckOut.find({}).
+            populate({
+                path : 'total_id checkIn_id',
+                populate : {
+                    path : 'room_id guest_id',
+                    select : 'roomNumber fullName'
+                },
+                select : ' duration date totals'
+            }).
+            select('date').
+            exec();
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {_id : ObjectId}

@@ -16,7 +16,10 @@ module.exports = {
     },
     // inputData = {}
     getEspSensors : async (inputData) => {
-        try { return await entities.EspSensor.find({}); } 
+        try { 
+            return await entities.EspSensor.find({}).
+            populate('room_id').exec(); 
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {sensor_id : ObjectId}
