@@ -33,9 +33,7 @@ window.addEventListener('load', async function () {
         }
         if(towelByHourResponse.status == 200) {
             jsonData = await towelByHourResponse.json();
-            console.log(jsonData);
             loadTowelsXHourChart(jsonData);
-            console.log('loaded');
         }
         if(waterByDayResponse.status == 200) {
             jsonData = await waterByDayResponse.json();
