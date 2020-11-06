@@ -9,8 +9,6 @@ const formmatedDate = date.toISOString().slice(0, 10);
 const towelByHourEndPoint = `/api/towelConsumption/hour/${formmatedDate}/`;
 const waterByHourEndPoint = `/api/waterConsumption/hour/${formmatedDate}/`;
 
-console.log(towelByHourEndPoint);
-
 window.addEventListener('load', async function () {
 
     try {
@@ -29,13 +27,17 @@ window.addEventListener('load', async function () {
             fetch(waterByHourEndPoint)
         ]);
 
+        console.log(towelByHourResponse);
+
         if(towelByDayResponse.status == 200) {
             jsonData = await towelByDayResponse.json();
             loadTowelsXDayChart(jsonData);
         }
         if(towelByHourResponse.status == 200) {
             jsonData = await towelByHourResponse.json();
+            console.log(jsonData);
             loadTowelsXHourChart(jsonData);
+            console.log('loaded');
         }
         if(waterByDayResponse.status == 200) {
             jsonData = await waterByDayResponse.json();
@@ -52,7 +54,7 @@ window.addEventListener('load', async function () {
 // Metrics
 socket.on('waterMetric', function(object) {
     $(document).ready(function(){
-        $('#waterMetric').text((object.consumption / 1000) + ' lts');
+        $('#waterMetric').text((object.consumption) + ' lts');
         $('#waterTimeMetric').text((Math.round(object.seconds / 60)) + ' min');
       });
 });
@@ -60,6 +62,6 @@ socket.on('waterMetric', function(object) {
 socket.on('towelsMetric', function(object) {
     $(document).ready(function(){
         $('#towelMetric').text(object.towels);
-        $('#towelWeightMetric').text(object.weight + ' gr');
+        $('#towelWeightMetric').text((object.weight / 1000) + ' kgs');
       });
 });
