@@ -9,6 +9,8 @@ const formmatedDate = date.toISOString().slice(0, 10);
 const towelByHourEndPoint = `/api/towelConsumption/hour/${formmatedDate}/`;
 const waterByHourEndPoint = `/api/waterConsumption/hour/${formmatedDate}/`;
 
+console.log(towelByHourEndPoint);
+
 window.addEventListener('load', async function () {
 
     try {
