@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-plain">
+            <div class="card-header card-header-primary text-center">
+                <h4 class="card-title mt-0">Huéspedes</h4>
+                <p class="card-category">Registro y datos de huéspedes</p>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover text-center">
+                        <thead class="">
+                            <th>Nombre</th>
+                            <th>Primer apellido</th>
+                            <th>Segundo apellido</th>
+                            <th>Habitación</th>
+                            <th>Edad</th>
+                            <th>Nacionalidad</th>
+                        </thead>
+                        <tbody>
+                            <% guests.forEach(function(guest){ %>
+                                <tr>
+                                    <td><%= guest.fullName.name %></td>
+                                    <td><%= guest.fullName.lastName1 %></td>
+                                    <td><%= guest.fullName.lastName2 %></td>
+                                    <td><%= guest.room_id.roomNumber %></td>
+                                    <td><%= guest.age %></td>
+                                    <td><%= guest.country %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

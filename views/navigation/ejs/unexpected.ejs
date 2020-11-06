@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/_header') %>
+</head>
+<body>
+    <%- include('../../partials/_socket') %>
+    <div class="wrapper ">
+        <div class="sidebar" data-color="main" data-background-color="black">
+        <div class="logo">
+            <img src="../../dashboard/assets/img/logo.png" class="logo-normal" width="250" alt="">
+            </div>
+            <div class="sidebar-wrapper">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/">
+                    <i class="material-icons">poll</i>
+                    <p>Inicio</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/rooms/">
+                    <i class="material-icons">single_bed</i>
+                    <p>Habitaciones</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/guests/">
+                    <i class="material-icons">face</i>
+                    <p>Huéspedes</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/checkIns/">
+                    <i class="material-icons">today</i>
+                    <p>Check In</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/checkOuts/">
+                    <i class="material-icons">event_available</i>
+                    <p>Check Out</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/sensors/">
+                    <i class="material-icons">settings_remote</i>
+                    <p>Dispositivos</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/totals/">
+                    <i class="material-icons">clean_hands</i>
+                    <p>Consumos generales</p>
+                  </a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="/unexpected/">
+                    <i class="material-icons">report</i>
+                    <p>Consumos inesperados</p>
+                  </a>
+                </li>
+                <!-- your sidebar here -->
+              </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <div class="content">
+                <div class="container-fluid">
+
+                    <%- include('../../tables/unexpectedTowelTable') %>
+                    <%- include('../../tables/unexpectedWaterTable') %>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

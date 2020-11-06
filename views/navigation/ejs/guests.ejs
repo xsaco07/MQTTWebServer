@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/_header') %>
+</head>
+<body>
+    <%- include('../../partials/_socket') %>
+    <div class="wrapper ">
+        <div class="sidebar" data-color="main" data-background-color="black">
+        <div class="logo">
+            <img src="../../dashboard/assets/img/logo.png" class="logo-normal" width="250" alt="">
+            </div>
+            <div class="sidebar-wrapper">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/">
+                    <i class="material-icons">poll</i>
+                    <p>Inicio</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/rooms/">
+                    <i class="material-icons">single_bed</i>
+                    <p>Habitaciones</p>
+                  </a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="/guests/">
+                    <i class="material-icons">face</i>
+                    <p>Huéspedes</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/checkIns/">
+                    <i class="material-icons">today</i>
+                    <p>Check In</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/checkOuts/">
+                    <i class="material-icons">event_available</i>
+                    <p>Check Out</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/sensors/">
+                    <i class="material-icons">settings_remote</i>
+                    <p>Dispositivos</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/totals/">
+                    <i class="material-icons">clean_hands</i>
+                    <p>Consumos generales</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/unexpected/">
+                    <i class="material-icons">report</i>
+                    <p>Consumos inesperados</p>
+                  </a>
+                </li>
+                <!-- your sidebar here -->
+              </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <div class="content">
+                <div class="container-fluid">
+
+                    <%- include('../../tables/guestsTable') %>
+                    
+                    <div class="row mb-5 mt-5">
+                        <div class="col text-center">
+                          <h2>Gráficos</h2>
+                        </div>
+                      </div>
+            
+                      <div class="row justify-content-center mb-5">
+                        <div class="col-8">
+                          <div>
+                            <canvas id="waterXAge"></canvas>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div class="row justify-content-center mb-5">
+                        <div class="col-8">
+                          <div>
+                            <canvas id="waterXCountry"></canvas>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div class="row justify-content-center mb-5">
+                        <div class="col-8">
+                          <div>
+                            <canvas id="towelsXAge"></canvas>
+                          </div>
+                        </div>
+                      </div>
+            
+                      <div class="row justify-content-center mb-5">
+                        <div class="col-8">
+                          <div>
+                            <canvas id="towelsXCountry"></canvas>
+                          </div>
+                        </div>
+                      </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../../partials/_scripts') %>
+    <script src="../../navigation/js/guests.js"></script>
+    <script src="../../charts/towelsXAge.js"></script>
+    <script src="../../charts/towelsXCountry.js"></script>
+    <script src="../../charts/waterXAge.js"></script>
+    <script src="../../charts/waterXCountry.js"></script>
+
+</body>
+</html>

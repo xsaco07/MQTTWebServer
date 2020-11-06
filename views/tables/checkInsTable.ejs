@@ -1,0 +1,90 @@
+<%- include('../partials/_header') %>
+<body>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+            <div class="col-md-12">
+                <div class="card card-plain">
+                    <div class="card-header card-header-primary text-center">
+                        <h4 class="card-title mt-0">Check Ins</h4>
+                        <p class="card-category">Registro e información de checkIns</p>
+                        <a href="/newCheckIn/" class="btn btn-success btn-round" type="button">
+                            Nuevo Check In
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center">
+                                <thead class="">
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Habitación</th>
+                                    <th>Nombre huésped</th>
+                                    <th>Primer apellido huésped</th>
+                                    <th>Segundo apellido huésped</th>
+                                    <th>Días</th>
+                                    <th>Noches</th>
+                                    <th>Estado</th>
+                                    <th>Check Out</th>
+                                </thead>
+                                <tbody>
+                                    <% checkIns.forEach(function(checkIn){ %>
+                                        <tr>
+                                            <% 
+                                                checkIn.date.setHours(
+                                                checkIn.date.getHours() + 
+                                                new Date().getTimezoneOffset()/60
+                                                ); 
+                                            %> 
+                                            <td>
+                                                <%= checkIn.date.toLocaleDateString(); %>
+                                            </td>
+                                            <td>
+                                                <%= checkIn.date.toLocaleTimeString(); %> 
+                                            </td>
+                                            <td><%= checkIn.room_id.roomNumber %></td>
+                                            <td><%= checkIn.guest_id.fullName.name %></td>
+                                            <td><%= checkIn.guest_id.fullName.lastName1 %></td>
+                                            <td><%= checkIn.guest_id.fullName.lastName2 %></td>
+                                            <td><%= checkIn.duration.days %></td>
+                                            <td><%= checkIn.duration.nights %></td>
+                                            <td>
+                                                <% if(checkIn.status == true){ %>
+                                                    <span class="text-success font-weight-bold">Activo</span>
+                                                <% } else { %>
+                                                    <span class="text-danger font-weight-bold">Finalizado</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <form action="/api/checkOut/new/" method="post">
+                                                    <input hidden type="text" value="<%= checkIn._id %>" name="checkIn_id">
+                                                    <% if(checkIn.status == true){ %>
+                                                        <button type="submit" class="btn btn-danger btn-fab btn-round">
+                                                            <i class="material-icons">cancel</i>
+                                                        </button>
+                                                    <% } else { %>
+                                                        <button disabled class="btn btn-muted btn-fab btn-round">
+                                                            <i class="material-icons">cancel</i>
+                                                        </button>
+                                                    <% } %>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+</body>
+</html>
