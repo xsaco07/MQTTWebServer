@@ -32,10 +32,6 @@ module.exports = {
                 room_id
             };
 
-            // Checking for not required fields
-            if(req.body.email.length > 0) guestInfo["email"] = req.body.email;
-            if(req.body.phone.length > 0) guestInfo["phone"] = req.body.phone;
-
             // Save guest object
             const guestDocument = await guestUseCases.newGuest(guestInfo);
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const url = 'mongodb+srv://root:inrootpassword@i-cluster01.qumlq.mongodb.net/EcoProjectDB?retryWrites=true&w=majority';
+const url = process.env.MONGODB_URL;
 
 const connectionOptions = {
     useNewUrlParser: true,

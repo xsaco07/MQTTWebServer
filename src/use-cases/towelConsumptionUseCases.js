@@ -281,6 +281,45 @@ module.exports = {
 
         } catch (error) { handleDBOperationError(error); }
     },
+    // Returns total conumption by room for current check in
+    // inputData = {}
+    getCurrentConsumptionByRoom : async (inputData) => {
+        
+        try {
+
+            let result = {};
+            
+            // Get all towelConsumptions registered
+            const towelConsumptions = await entities.TowelConsumption.find(
+                {expected : true}, 
+                'sensor_id infoPacket');
+            
+            await Promise.all(towelConsumptions.map(async (doc) => {
+
+                // Get the respective room_id for the towelConsumption from the EspSensor
+                const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
+                
+                // Get the respective CheckIn document based on the closest-smaller-date and room_id
+                const checkInDoc = await entities.CheckIn.findOne({
+                    room_id : sensorDoc.room_id,
+                    date : {$lt : doc.infoPacket.date}
+                }, 'guest_id').sort({date : 'desc'}).limit(1);
+
+                // Get the respective Room
+                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+                
+                // if doc.date > checkIn.date
+                // and
+                if(roomDoc.occupancyState && doc.date > checkInDoc.date) {
+                    addRoomDataToResult(doc, roomDoc, result);
+                }
+                
+            }));
+
+            return result;
+
+        } catch (error) { handleDBOperationError(error); }
+    },
     metrics : {
         totalConsumption : async() => {
             return await entities.TowelConsumption.aggregate()

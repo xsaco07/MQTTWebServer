@@ -5,6 +5,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const socket = require('./socketEvents/sockets');
 
+// For ENV variables
+require('dotenv').config();
+
 // Routes
 const roomRoutes = require('./routes/roomRoutes');
 const sensorRoutes = require('./routes/sensorRoutes');

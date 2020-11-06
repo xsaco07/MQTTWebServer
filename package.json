@@ -6,8 +6,6 @@
   "scripts": {
     "start": "node ./src/main.js",
     "dev": "nodemon ./src/main.js",
-    "testDb": "nodemon ./src/data-access/testingCRUD.js",
-    "testContr": "nodemon ./src/controllers/mqttControllers/testControllers.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
