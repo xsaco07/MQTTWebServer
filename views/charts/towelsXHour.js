@@ -1,7 +1,7 @@
-var canvasContext = document.getElementById('towelsXHour').getContext('2d');
+var towelsXHourCanvas = document.getElementById('towelsXHour').getContext('2d');
 
-const towelsXHour = new Chart(canvasContext, {
-    type: 'bar',
+const towelsXHour = new Chart(towelsXHourCanvas, {
+    type: 'line',
     data: {
         labels: ['00:00', '01:00', '02:00','03:00','04:00','05:00',
                 '06:00','07:00','08:00','09:00','10:00','11:00','12:00',
@@ -12,18 +12,44 @@ const towelsXHour = new Chart(canvasContext, {
             label: '# de Toallas',
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(1,34,65,0.5)',
-            borderWidth: 2
+            borderWidth: 2,
+            borderColor : 'rgb(1,34,65)',
+            fill : false
         }]
     },
     options: {
         title: {
+            display : true,
+            padding : 20,
+            fontSize : 24,
+            fontStyle : "normal",
+            fontColor : 'rgb(1,34,65)',
+            text: "Consumo de toallas por hora",
+        },
+        legend: {
             display: true,
-            text: "Consumo de toallas por hora del día"
+            labels: {
+                fontColor: 'rgb(1,34,65)',
+                fontSize : 18
+            }
         },
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    fontSize : 15,
+                    padding : 20
+                },
+                gridLines : {
+                    
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    fontSize : 15,
+                },
+                gridLines : {
+                    display : false
                 }
             }]
         }

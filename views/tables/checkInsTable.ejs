@@ -9,7 +9,7 @@
                     <div class="card-header card-header-primary text-center">
                         <h4 class="card-title mt-0">Check Ins</h4>
                         <p class="card-category">Registro e información de checkIns</p>
-                        <a href="/newCheckIn/" class="btn btn-success btn-fab btn-round" type="button">
+                        <a href="/newCheckIn/" class="btn btn-success btn-round" type="button">
                             Nuevo Check In
                         </a>
                     </div>
@@ -51,9 +51,9 @@
                                             <td><%= checkIn.duration.nights %></td>
                                             <td>
                                                 <% if(checkIn.status == true){ %>
-                                                    <span class="text-success">Activo</span>
+                                                    <span class="text-success font-weight-bold">Activo</span>
                                                 <% } else { %>
-                                                    <span class="text-danger">Finalizado</span>
+                                                    <span class="text-danger font-weight-bold">Finalizado</span>
                                                 <% } %>
                                             </td>
                                             <td>
@@ -64,7 +64,7 @@
                                                             <i class="material-icons">cancel</i>
                                                         </button>
                                                     <% } else { %>
-                                                        <button disabled class="btn btn-secondary btn-fab btn-round">
+                                                        <button disabled class="btn btn-muted btn-fab btn-round">
                                                             <i class="material-icons">cancel</i>
                                                         </button>
                                                     <% } %>

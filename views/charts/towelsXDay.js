@@ -1,33 +1,55 @@
-let towelsXDay = null;
+
+const towelsXDayCanvas = document.getElementById('towelsXDay').getContext('2d');
+const towelsXDay = new Chart(towelsXDayCanvas, {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [{
+            label: '# de Toallas',
+            data: [],
+            backgroundColor: 'rgb(171,202,183)',
+            borderWidth: 2,
+            borderColor : 'rgb(1,34,65)',
+            hoverBackgroundColor : 'rgb(1,34,65)'
+        }]
+    },
+    options: {
+        title: {
+            display : true,
+            padding : 20,
+            fontSize : 24,
+            fontStyle : "normal",
+            fontColor : 'rgb(1,34,65)',
+            text: "Consumo de toallas por día"
+        },
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(1,34,65)',
+                fontSize : 18
+            }
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    fontSize : 15,
+                    padding : 20,
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    fontSize : 15,
+                },
+                gridLines : {
+                    display : false
+                }
+            }]
+        }
+    }
+});
 
 const loadTowelsXDayChart = (serverData) => {
-    const canvasContext = document.getElementById('towelsXDay').getContext('2d');
-    towelsXDay = new Chart(canvasContext, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '# de Toallas',
-                data: [],
-                backgroundColor: 'rgb(1,34,65,0.5)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: "Consumo de toallas por día"
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, towelsXDay);
         if(index == -1){

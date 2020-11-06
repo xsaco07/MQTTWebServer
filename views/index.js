@@ -1,5 +1,3 @@
-let socket = io();
-
 const towelByDayEndPoint = 'http://localhost:3000/api/towelConsumption/day/';
 const waterByDayEndPoint = 'http://localhost:3000/api/waterConsumption/day/';
 
@@ -48,16 +46,6 @@ window.addEventListener('load', async function () {
 
     } catch (error) { console.log(`Error: ${error}`); }
 }, false);
-
-// Look for a label in the chart labels array and return the index
-const getElementIndex = (element, chart) => {
-    let index = 0;
-    for (label of chart.data.labels) {
-        if(element === label) return index; 
-        index++;
-    }
-    return -1;
-};
 
 // Metrics
 socket.on('waterMetric', function(object) {

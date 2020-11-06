@@ -1,25 +1,48 @@
-var canvasContext = document.getElementById('waterXRoom').getContext('2d');
+var waterXRoomCanvas = document.getElementById('waterXRoom').getContext('2d');
 
-var waterXRoom = new Chart(canvasContext, {
+var waterXRoom = new Chart(waterXRoomCanvas, {
     type: 'bar',
     data: {
         labels: [],
         datasets: [{
             label: 'Litros de agua',
             data: [],
-            backgroundColor: 'rgb(1,34,65,0.5)',
-            borderWidth: 2
+            backgroundColor: 'rgb(171,202,183)',
+            borderWidth: 2,
+            borderColor : 'rgb(1,34,65)',
+            hoverBackgroundColor : 'rgb(1,34,65)'
         }]
     },
     options: {
         title: {
+            display : true,
+            padding : 20,
+            fontSize : 24,
+            fontStyle : "normal",
+            fontColor : 'rgb(1,34,65)',
+            text: "Consumo de agua por habitación activa"
+        },
+        legend: {
             display: true,
-            text: "Consumo de agua por habitacion"
+            labels: {
+                fontColor: 'rgb(1,34,65)',
+                fontSize : 18
+            }
         },
         scales: {
             yAxes: [{
                 ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    fontSize : 15,
+                    padding : 20,
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    fontSize : 15,
+                },
+                gridLines : {
+                    display : false
                 }
             }]
         }

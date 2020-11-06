@@ -8,7 +8,7 @@
                 <div class="card card-plain">
                 <div class="card-header card-header-primary text-center">
                     <h4 class="card-title mt-0">Habitaciones</h4>
-                    <p class="card-category">Registro y datos de las habitaciones</p>
+                    <p class="card-category">Registro y estado de las habitaciones</p>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -25,9 +25,9 @@
                                         <td><%= room.capacity %></td>
                                         <td>
                                             <% if(room.occupancyState == true){ %>
-                                                <span class="text-danger">Ocupada</span>
+                                                <span class="text-success font-weight-bold">Activa</span>
                                             <% } else { %>
-                                                <span class="text-success">Libre</span>
+                                                <span class="text-danger font-weight-bold">Inactiva</span>
                                             <% } %>
                                         </td>
                                     </tr>

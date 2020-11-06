@@ -7,7 +7,7 @@
             <div class="col-md-12">
                 <div class="card card-plain">
                 <div class="card-header card-header-primary text-center">
-                    <h4 class="card-title mt-0">Consumos de toallas inesperados</h4>
+                    <h4 class="card-title mt-0">Consumos de agua inesperados</h4>
                     <p class="card-category">Registro de consumo en habitaciones inactivas</p>
                 </div>
                 <div class="card-body">
@@ -18,12 +18,11 @@
                                 <th>Sensor</th>
                                 <th>Fecha</th>
                                 <th>Hora</th>
-                                <th>Toallas</th>
-                                <th>Peso de toallas (gr)</th>
-                                <th>Consumo de agua por toallas (mls)</th>
+                                <th>Consumo</th>
+                                <th>Tiempo de consumo (min)</th>
                             </thead>
                             <tbody>
-                                <% consumptions.forEach(function(consumption){ %>
+                                <% waterConsumptions.forEach(function(consumption){ %>
                                     <tr>
                                         <% 
                                             consumption.infoPacket.date.setHours(
@@ -35,9 +34,8 @@
                                         <td><%= consumption.sensor_id.sensorName %></td>
                                         <td><%= consumption.infoPacket.date.toLocaleDateString(); %></td>
                                         <td><%= consumption.infoPacket.date.toLocaleTimeString(); %> </td>
-                                        <td><%= consumption.infoPacket.towels %></td>
-                                        <td><%= consumption.infoPacket.weight %></td>
                                         <td><%= consumption.infoPacket.consumption %></td>
+                                        <td><%= Math.round((consumption.infoPacket.seconds / 60)) %></td>
                                     </tr>
                                 <% }) %>
                             </tbody>

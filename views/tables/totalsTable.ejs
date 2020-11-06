@@ -16,12 +16,11 @@
                             <thead class="">
                                 <th>CheckIn</th>
                                 <th>Habitación</th>
-                                <th>Toallas</th>
-                                <th>Peso de toallas (gr)</th>
-                                <th>Consumo de agua por toallas (mls)</th>
-                                <th>Consumo de agua (mls)</th>
+                                <th>Peso de toallas (kgr)</th>
+                                <th>Consumo de agua por toallas (lts)</th>
+                                <th>Consumo de agua (lts)</th>
                                 <th>Tiempo de consumo de agua (min)</th>
-                                <th>Consumo total de agua (mls)</th>
+                                <th>Consumo total de agua (lts)</th>
                             </thead>
                             <tbody>
                                 <% totals.forEach(function(total){ %>
@@ -39,12 +38,15 @@
                                                 <%= total.checkIn_id.date.toLocaleTimeString(); %> 
                                             </td>
                                             <td><%= total.checkIn_id.room_id.roomNumber %></td>
-                                            <td><%= total.totals.towels.towels %></td>
-                                            <td><%= total.totals.towels.weight %></td>
+                                            <td><%= total.totals.towels.weight / 1000 %></td>
                                             <td><%= total.totals.towels.consumption %></td>
                                             <td><%= total.totals.water.consumption %></td>
                                             <td><%= Math.round((total.totals.water.seconds / 60)) %></td>
-                                            <td><%= total.totals.totalConsumption%></td>
+                                            <td>
+                                                <span class="font-weight-bold">
+                                                    <%= total.totals.totalConsumption%>
+                                                </span>
+                                            </td>
                                         </tr>
                                     <% } %>
                                     

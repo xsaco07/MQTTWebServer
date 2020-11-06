@@ -8,7 +8,7 @@
                 <div class="card card-plain">
                 <div class="card-header card-header-primary text-center">
                     <h4 class="card-title mt-0">Check Outs</h4>
-                    <p class="card-category">Registro de check outs y total de consumo</p>
+                    <p class="card-category">Registro de check outs y consumo total</p>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -21,12 +21,11 @@
                                 <th>Nombre</th>
                                 <th>Primer apellido</th>
                                 <th>Segundo apellido</th>
-                                <th>Total toallas</th>
-                                <th>Total agua por salidas</th>
-                                <th>Total agua por toallas</th>
-                                <th>Peso total toallas</th>
+                                <th>Total peso toallas (kgs)</th>
+                                <th>Total agua por salidas (lts)</th>
+                                <th>Total agua por toallas (lts)</th>
                                 <th>Tiempo de consumo de agua (min)</th>
-                                <th>Consumo de agua total</th>
+                                <th>Consumo de agua total (lts)</th>
                             </thead>
                             <tbody>
                                 <% checkOuts.forEach(function(checkOut){ %>
@@ -54,12 +53,15 @@
                                         <td><%= checkOut.checkIn_id.guest_id.fullName.name %></td>
                                         <td><%= checkOut.checkIn_id.guest_id.fullName.lastName1 %></td>
                                         <td><%= checkOut.checkIn_id.guest_id.fullName.lastName2 %></td>
-                                        <td><%= checkOut.total_id.totals.towels.towels %></td>
+                                        <td><%= checkOut.total_id.totals.towels.weight / 1000 %></td>
                                         <td><%= checkOut.total_id.totals.water.consumption %></td>
-                                        <td><%= checkOut.total_id.totals.towels.consumption%></td>
-                                        <td><%= checkOut.total_id.totals.towels.weight%></td>
+                                        <td><%= checkOut.total_id.totals.towels.consumption %></td>
                                         <td><%= Math.round((checkOut.total_id.totals.water.seconds / 60)) %></td>
-                                        <td><%= checkOut.total_id.totals.totalConsumption%></td>
+                                        <td>
+                                            <span class="font-weight-bold">
+                                                <%= checkOut.total_id.totals.totalConsumption%>
+                                            </span>
+                                        </td>
                                     </tr>
                                 <% }) %>
                             </tbody>

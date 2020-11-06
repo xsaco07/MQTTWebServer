@@ -71,46 +71,42 @@ app.get('/', async (req, res, next) => {
 
 app.get('/guests/', async (req, res, next) => {
     const guests = await useCases.guestUseCases.getGuests();
-    res.render('guests', {guests});
+    res.render('navigation/ejs/guests', {guests});
 });
 
 app.get('/rooms/', async (req, res, next) => {
     const rooms = await useCases.roomUseCases.getRooms();
-    res.render('tables/rooms', {rooms});
+    res.render('navigation/ejs/rooms', {rooms});
 });
 
 app.get('/checkIns/', async (req, res, next) => {
     const checkIns = await useCases.checkInUseCases.getCheckIns();
-    res.render('tables/checkIns', {checkIns});
+    res.render('navigation/ejs/checkIns', {checkIns});
 });
 
 app.get('/sensors/', async (req, res, next) => {
     const sensors = await useCases.espSensorUseCases.getEspSensors();
-    res.render('tables/sensors', {sensors});
+    res.render('navigation/ejs/sensors', {sensors});
 });
 
 app.get('/totals/', async (req, res, next) => {
     const totals = await useCases.totalUseCases.getTotals();
-    res.render('tables/totals', {totals});
+    res.render('navigation/ejs/totals', {totals});
 });
 
 app.get('/checkOuts/', async (req, res, next) => {
     const checkOuts = await useCases.checkOutUseCases.getCheckOuts();
-    res.render('tables/checkOuts', {checkOuts});
+    res.render('navigation/ejs/checkOuts', {checkOuts});
 });
 
-app.get('/unexpectedTowel/', async (req, res, next) => {
-    const consumptions = await useCases.towelConsumptionUseCases.getTowelConsumptionsByExpectedState({
+app.get('/unexpected/', async (req, res, next) => {
+    const waterConsumptions = await useCases.waterConsumptionUseCases.getWaterConsumptionsByExpectedState({
         expected : false
     });
-    res.render('tables/unexpectedTowel', {consumptions});
-});
-
-app.get('/unexpectedWater/', async (req, res, next) => {
-    const consumptions = await useCases.waterConsumptionUseCases.getWaterConsumptionsByExpectedState({
+    const towelConsumptions = await useCases.towelConsumptionUseCases.getTowelConsumptionsByExpectedState({
         expected : false
     });
-    res.render('tables/unexpectedWater', {consumptions});
+    res.render('navigation/ejs/unexpected', {waterConsumptions, towelConsumptions});
 });
 
 // Render forms
