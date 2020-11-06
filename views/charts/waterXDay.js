@@ -20,7 +20,7 @@ const waterXDay = new Chart(waterXDayCanvas, {
             fontSize : 24,
             fontStyle : "normal",
             fontColor : 'rgb(1,34,65)',
-            text: "Consumo de agua por día"
+            text: "Consumo de agua por día (últimos 7 días)"
         },
         legend: {
             display: true,
@@ -50,6 +50,7 @@ const waterXDay = new Chart(waterXDayCanvas, {
 });
 
 const loadWaterXDayChart = (serverData) => {
+    serverData.sort(custom_sort);
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, waterXDay);
         if(index == -1){

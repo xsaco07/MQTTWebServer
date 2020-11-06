@@ -24,7 +24,7 @@ const waterXHour = new Chart(waterXHourCanvas, {
             fontSize : 24,
             fontStyle : "normal",
             fontColor : 'rgb(1,34,65)',
-            text: "Consumo de agua por hora",
+            text: "Consumo de agua por hora (hoy)",
         },
         legend: {
             display: true,

@@ -20,7 +20,7 @@ const towelsXDay = new Chart(towelsXDayCanvas, {
             fontSize : 24,
             fontStyle : "normal",
             fontColor : 'rgb(1,34,65)',
-            text: "Consumo de toallas por día"
+            text: "Consumo de toallas por día (últimos 7 días)"
         },
         legend: {
             display: true,
@@ -50,6 +50,7 @@ const towelsXDay = new Chart(towelsXDayCanvas, {
 });
 
 const loadTowelsXDayChart = (serverData) => {
+    serverData.sort(custom_sort);
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, towelsXDay);
         if(index == -1){

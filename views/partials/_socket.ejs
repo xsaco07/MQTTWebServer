@@ -23,4 +23,8 @@
         }
         return -1;
     };
+
+    function custom_sort(a, b) {
+        return new Date(a._id).getTime() - new Date(b._id).getTime();
+    }
 </script>

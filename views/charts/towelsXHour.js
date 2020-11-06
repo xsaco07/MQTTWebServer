@@ -24,7 +24,7 @@ const towelsXHour = new Chart(towelsXHourCanvas, {
             fontSize : 24,
             fontStyle : "normal",
             fontColor : 'rgb(1,34,65)',
-            text: "Consumo de toallas por hora",
+            text: "Consumo de toallas por hora (hoy)",
         },
         legend: {
             display: true,
