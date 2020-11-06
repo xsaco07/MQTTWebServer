@@ -1,13 +1,13 @@
-const towelByDayEndPoint = 'http://localhost:3000/api/towelConsumption/day/';
-const waterByDayEndPoint = 'http://localhost:3000/api/waterConsumption/day/';
+const towelByDayEndPoint = '/api/towelConsumption/day/';
+const waterByDayEndPoint = '/api/waterConsumption/day/';
 
 // Get todays date formatted to yyyy-mm-dd
 const date = new Date();
 date.setHours(date.getHours() - new Date().getTimezoneOffset()/60);
 const formmatedDate = date.toISOString().slice(0, 10);
 
-const towelByHourEndPoint = `http://localhost:3000/api/towelConsumption/hour/${formmatedDate}/`;
-const waterByHourEndPoint = `http://localhost:3000/api/waterConsumption/hour/${formmatedDate}/`;
+const towelByHourEndPoint = `/api/towelConsumption/hour/${formmatedDate}/`;
+const waterByHourEndPoint = `/api/waterConsumption/hour/${formmatedDate}/`;
 
 window.addEventListener('load', async function () {
 
