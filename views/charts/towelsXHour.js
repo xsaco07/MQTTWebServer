@@ -57,7 +57,6 @@ const towelsXHour = new Chart(towelsXHourCanvas, {
 });
 
 const loadTowelsXHourChart = (serverData) => {
-    console.log(serverData);
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id+':00', towelsXHour);
         towelsXHour.data.datasets[0].data[index] += object.towels;
@@ -66,7 +65,6 @@ const loadTowelsXHourChart = (serverData) => {
 };
 
 socket.on('towelsXHour', function(object){
-    console.log(object);
     let index = getElementIndex(object._id+':00', towelsXHour);
     towelsXHour.data.datasets[0].data[index] += object.towels;
     towelsXHour.update();

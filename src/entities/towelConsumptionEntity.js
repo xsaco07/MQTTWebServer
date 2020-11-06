@@ -29,7 +29,6 @@ const towelConsumptionSchema = {
             type : Date,
             default : () => {
                 let date = new Date();
-                console.log('OFFSET >> ' + utils.offsetUTCHours);
                 date.setHours(date.getHours() - utils.offsetUTCHours);
                 return date;
             }

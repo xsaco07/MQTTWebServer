@@ -27,8 +27,6 @@ window.addEventListener('load', async function () {
             fetch(waterByHourEndPoint)
         ]);
 
-        console.log(towelByHourResponse);
-
         if(towelByDayResponse.status == 200) {
             jsonData = await towelByDayResponse.json();
             loadTowelsXDayChart(jsonData);
