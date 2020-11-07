@@ -283,7 +283,7 @@ module.exports = {
     },
     // Returns total conumption by room for current check in
     // inputData = {}
-    getCurrentConsumptionByRoom : async (inputData) => {
+    getCurrentConsumptionByRoom : async () => {
         
         try {
 
@@ -299,18 +299,16 @@ module.exports = {
                 // Get the respective room_id for the towelConsumption from the EspSensor
                 const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
                 
-                // Get the respective CheckIn document based on the closest-smaller-date and room_id
-                const checkInDoc = await entities.CheckIn.findOne({
-                    room_id : sensorDoc.room_id,
-                    date : {$lt : doc.infoPacket.date}
-                }, 'guest_id').sort({date : 'desc'}).limit(1);
-
                 // Get the respective Room
                 const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
                 
-                // if doc.date > checkIn.date
-                // and
-                if(roomDoc.occupancyState && doc.date > checkInDoc.date) {
+                // Get the respective CheckIn document based on the closest-smaller-date and room_id
+                const checkInDoc = await entities.CheckIn.findOne({
+                    room_id : roomDoc._id,
+                    date : {$lt : doc.infoPacket.date}
+                }, 'date status').sort({date : 'desc'}).limit(1);
+
+                if(roomDoc.occupancyState && checkInDoc.status) {
                     addRoomDataToResult(doc, roomDoc, result);
                 }
                 
