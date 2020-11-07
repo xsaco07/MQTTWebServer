@@ -1,4 +1,3 @@
-
 const waterXDayCanvas = document.getElementById('waterXDay').getContext('2d');
 const waterXDay = new Chart(waterXDayCanvas, {
     type: 'bar',
@@ -6,7 +5,7 @@ const waterXDay = new Chart(waterXDayCanvas, {
         labels: [],
         datasets: [{
             label: 'Litros de agua',
-            data: [],
+            data: [0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(171,202,183)',
             borderWidth: 2,
             borderColor : 'rgb(1,34,65)',
@@ -50,9 +49,12 @@ const waterXDay = new Chart(waterXDayCanvas, {
 });
 
 const loadWaterXDayChart = (serverData) => {
+    waterXDay.data.labels = getLastXDays(lastDays);
     serverData.sort(custom_sort);
+    console.log(serverData);
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, waterXDay);
+        console.log(index);
         if(index == -1){
             waterXDay.data.labels.push(object._id);
             waterXDay.data.datasets[0].data.push(object.consumption);

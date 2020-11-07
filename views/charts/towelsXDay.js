@@ -1,4 +1,3 @@
-
 const towelsXDayCanvas = document.getElementById('towelsXDay').getContext('2d');
 const towelsXDay = new Chart(towelsXDayCanvas, {
     type: 'bar',
@@ -6,7 +5,7 @@ const towelsXDay = new Chart(towelsXDayCanvas, {
         labels: [],
         datasets: [{
             label: '# de Toallas',
-            data: [],
+            data: [0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(171,202,183)',
             borderWidth: 2,
             borderColor : 'rgb(1,34,65)',
@@ -50,6 +49,7 @@ const towelsXDay = new Chart(towelsXDayCanvas, {
 });
 
 const loadTowelsXDayChart = (serverData) => {
+    towelsXDay.data.labels = getLastXDays(lastDays);
     serverData.sort(custom_sort);
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, towelsXDay);

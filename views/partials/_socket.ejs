@@ -27,4 +27,18 @@
     function custom_sort(a, b) {
         return new Date(a._id).getTime() - new Date(b._id).getTime();
     }
+
+    // Return list of last X days in 'yyyy-mm-dd' format
+    function getLastXDays (days) {
+        const date = new Date();
+        date.setHours(date.getHours() - new Date().getTimezoneOffset()/60);
+        const daysList = [];
+        for (let i = 0; i < days; i++) {
+            daysList.push(date.toISOString().slice(0, 10));
+            var pastDate = date.getDate() - 1;  
+            date.setDate(pastDate);
+        }
+        return daysList.reverse();
+    }
+
 </script>
