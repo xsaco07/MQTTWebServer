@@ -66,7 +66,6 @@ const loadWaterXHourChart = (serverData) => {
 };
 
 socket.on('waterXHour', function(object){
-    console.log(object._id);
     let index = getElementIndex(object._id+':00', waterXHour);
     waterXHour.data.datasets[0].data[index] += object.consumption;
     waterXHour.update();
