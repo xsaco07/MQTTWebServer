@@ -7,10 +7,10 @@ const towelsXCountry = new Chart(towelsXCountryCanvas, {
         datasets: [{
             label: '# de Toallas',
             data: [],
-            backgroundColor: 'rgb(171,202,183)',
-            borderWidth: 2,
-            borderColor : 'rgb(1,34,65)',
-            hoverBackgroundColor : 'rgb(1,34,65)'
+            backgroundColor: 'rgb(39, 33, 146, 0.85)',
+            borderWidth: 1,
+            borderColor : 'rgb(0,0,0)',
+            hoverBackgroundColor : 'rgb(39, 33, 146, 0.6)'
         }]
     },
     options: {
@@ -19,13 +19,11 @@ const towelsXCountry = new Chart(towelsXCountryCanvas, {
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            fontColor : 'rgb(1,34,65)',
             text: "Consumo de toallas por nacionalidad"
         },
         legend: {
             display: true,
             labels: {
-                fontColor: 'rgb(1,34,65)',
                 fontSize : 18
             }
         },

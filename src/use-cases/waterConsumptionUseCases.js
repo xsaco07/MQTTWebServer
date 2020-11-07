@@ -17,7 +17,8 @@ const addRoomDataToResult = (waterConsumptionDoc, roomDoc, result) => {
         result[roomDoc.roomNumber] = {
             consumption : waterConsumptionDoc.infoPacket.consumption,
             seconds : waterConsumptionDoc.infoPacket.seconds,
-            occupancyState : roomDoc.occupancyState
+            occupancyState : roomDoc.occupancyState,
+            capacity : roomDoc.capacity
         };
     }
     else {
@@ -269,6 +270,46 @@ module.exports = {
                 }
                 // Count all rooms
                 else {
+                    addRoomDataToResult(doc, roomDoc, result);
+                }
+                
+            }));
+
+            return result;
+
+        } catch (error) { handleDBOperationError(error); }
+    },
+    // Returns total conumption by room for current check in
+    // inputData = {}
+    getCurrentConsumptionByRoom : async () => {
+        
+        try {
+
+            let result = {};
+            
+            // Get all towelConsumptions registered
+            const towelConsumptions = await entities.WaterConsumption.find(
+                {expected : true}, 
+                'sensor_id infoPacket');
+            
+            await Promise.all(towelConsumptions.map(async (doc) => {
+
+                // Get the respective room_id for the towelConsumption from the EspSensor
+                const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
+                
+                // Get the respective Room
+                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 
+                    'roomNumber capacity occupancyState'
+                );
+                
+                // Get the respective CheckIn document based on the closest-smaller-date and room_id
+                const checkInDoc = await entities.CheckIn.findOne({
+                    room_id : roomDoc._id,
+                    date : {$lt : doc.infoPacket.date}
+                }, 'date status').sort({date : 'desc'}).limit(1);
+
+                // Consider just consumption for an active checkIn
+                if(roomDoc.occupancyState && checkInDoc.status) {
                     addRoomDataToResult(doc, roomDoc, result);
                 }
                 
