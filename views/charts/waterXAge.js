@@ -7,10 +7,10 @@ const waterXAge = new Chart(waterXAgeCanvas, {
         datasets: [{
             label: 'Litros de agua',
             data: [0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: 'rgb(171,202,183)',
-            borderWidth: 2,
-            borderColor : 'rgb(1,34,65)',
-            hoverBackgroundColor : 'rgb(1,34,65)'
+            backgroundColor: 'rgb(39, 33, 146, 0.85)',
+            borderWidth: 1,
+            borderColor : 'rgb(0,0,0)',
+            hoverBackgroundColor : 'rgb(39, 33, 146, 0.6)'
         }]
     },
     options: {
@@ -19,13 +19,11 @@ const waterXAge = new Chart(waterXAgeCanvas, {
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            fontColor : 'rgb(1,34,65)',
             text: "Consumo de agua por edad"
         },
         legend: {
             display: true,
             labels: {
-                fontColor: 'rgb(1,34,65)',
                 fontSize : 18
             }
         },

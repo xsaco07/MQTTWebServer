@@ -1,5 +1,6 @@
-const towelByDayEndPoint = '/api/towelConsumption/day/';
-const waterByDayEndPoint = '/api/waterConsumption/day/';
+const lastDays = 7;
+const towelByDayEndPoint = `/api/towelConsumption/day/${lastDays}`;
+const waterByDayEndPoint = `/api/waterConsumption/day/${lastDays}`;
 
 // Get todays date formatted to yyyy-mm-dd
 const date = new Date();

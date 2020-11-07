@@ -5,16 +5,16 @@
         <div class="container-fluid">
             <div class="row">
             <div class="col-md-12">
-                <div class="card card-plain">
+                <div class="card">
                 <div class="card-header card-header-primary text-center">
-                    <h4 class="card-title mt-0">Habitaciones</h4>
-                    <p class="card-category">Registro y estado de las habitaciones</p>
+                    <h3 class="card-title mt-0">Habitaciones</h3>
+                    <h5 class="card-category">Registro y estado de las habitaciones</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover text-center">
                             <thead class="">
-                                <th>Número</th>
+                                <th>Número de habitación</th>
                                 <th>Capacidad</th>
                                 <th>Estado</th>
                             </thead>
@@ -25,9 +25,9 @@
                                         <td><%= room.capacity %></td>
                                         <td>
                                             <% if(room.occupancyState == true){ %>
-                                                <span class="text-success font-weight-bold">Activa</span>
+                                                <span class="text-danger font-weight-bold">Ocupada</span>
                                             <% } else { %>
-                                                <span class="text-danger font-weight-bold">Inactiva</span>
+                                                <span class="text-success font-weight-bold">Desocupada</span>
                                             <% } %>
                                         </td>
                                     </tr>

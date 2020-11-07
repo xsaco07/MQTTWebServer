@@ -120,6 +120,17 @@ module.exports = {
             else res.status(200).json(docs);
         } catch (error) { handleGetRequestError(error, res); }
     },
+    // Method = GET
+    // Action = water_consumption/current/room/
+    // Params = {}
+    getCurrentConsumptionByRoom : async (req, res, next) => {
+        try {
+            console.log('Reach controller');
+            const docs = await waterUseCases.getCurrentConsumptionByRoom();
+            if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
+    },
     metrics : {
         getTotalConsumption : async (req, res, next) => {
             try {

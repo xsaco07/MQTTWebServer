@@ -11,9 +11,10 @@ const towelsXHour = new Chart(towelsXHourCanvas, {
         datasets: [{
             label: '# de Toallas',
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: 'rgb(1,34,65,0.5)',
+            backgroundColor: 'rgb(39, 33, 146, 0.85)',
             borderWidth: 2,
-            borderColor : 'rgb(1,34,65)',
+            borderColor : 'rgb(39, 33, 146, 0.85)',
+            hoverBackgroundColor : 'rgb(39, 33, 146, 0.6)',
             fill : false
         }]
     },
