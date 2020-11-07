@@ -17,7 +17,8 @@ const addRoomDataToResult = (waterConsumptionDoc, roomDoc, result) => {
         result[roomDoc.roomNumber] = {
             consumption : waterConsumptionDoc.infoPacket.consumption,
             seconds : waterConsumptionDoc.infoPacket.seconds,
-            occupancyState : roomDoc.occupancyState
+            occupancyState : roomDoc.occupancyState,
+            capacity : roomDoc.capacity
         };
     }
     else {
@@ -297,7 +298,9 @@ module.exports = {
                 const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
                 
                 // Get the respective Room
-                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 
+                    'roomNumber capacity occupancyState'
+                );
                 
                 // Get the respective CheckIn document based on the closest-smaller-date and room_id
                 const checkInDoc = await entities.CheckIn.findOne({

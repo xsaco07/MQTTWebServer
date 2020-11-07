@@ -17,7 +17,8 @@ const addRoomDataToResult = (towelConsumptionDoc, roomDoc, result) => {
             weight : towelConsumptionDoc.infoPacket.weight,
             consumption : towelConsumptionDoc.infoPacket.consumption,
             towels : towelConsumptionDoc.infoPacket.towels,
-            occupancyState : roomDoc.occupancyState
+            occupancyState : roomDoc.occupancyState,
+            capacity : roomDoc.capacity
         };
     }
     else {
@@ -259,7 +260,9 @@ module.exports = {
                 const sensorDoc = await entities.EspSensor.findById(doc.sensor_id, 'room_id');
 
                 // Get the respective Room
-                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+                const roomDoc = await entities.Room.findById(sensorDoc.room_id, 
+                    'roomNumber capacity occupancyState'
+                );
                 
                 // For each room save the consumption
                 // Count just active rooms

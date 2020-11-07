@@ -15180,10 +15180,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   border-left: 4px solid transparent;
 }
 
-.sidebar[data-background-color="black"] {
-  background-color: #191919;
-}
-
 .sidebar .sidebar-wrapper {
   position: relative;
   height: calc(100vh - 75px);
@@ -15317,7 +15313,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .sidebar .nav p {
   margin: 0;
   line-height: 30px;
-  font-size: 14px;
+  font-size: 15px;
   position: relative;
   display: block;
   height: auto;
@@ -15325,7 +15321,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .sidebar .nav i {
-  font-size: 24px;
+  font-size: 30px;
   float: left;
   margin-right: 15px;
   line-height: 30px;
@@ -15424,6 +15420,10 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   height: 60px;
 }
 
+.sidebar[data-background-color="black"] {
+  background-color: #0d9c19;
+}
+
 .sidebar[data-background-color="black"] .nav .nav-item .nav-link {
   color: #fff;
 }
@@ -15509,48 +15509,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   color: rgba(60, 72, 88, 0.8);
 }
 
-.sidebar[data-background-color="red"] .nav .nav-item .nav-link {
-  color: #fff;
-}
-
-.sidebar[data-background-color="red"] .nav .nav-item i {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.sidebar[data-background-color="red"] .nav .nav-item.active [data-toggle="collapse"],
-.sidebar[data-background-color="red"] .nav .nav-item:hover [data-toggle="collapse"] {
-  color: #fff;
-}
-
-.sidebar[data-background-color="red"] .nav .nav-item.active [data-toggle="collapse"] i,
-.sidebar[data-background-color="red"] .nav .nav-item:hover [data-toggle="collapse"] i {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.sidebar[data-background-color="red"] .user a {
-  color: #fff;
-}
-
-.sidebar[data-background-color="red"] .simple-text {
-  color: #fff;
-}
-
-.sidebar[data-background-color="red"] .sidebar-background:after {
-  background: #f44336;
-  opacity: .8;
-}
-
-.sidebar[data-background-color="red"] .user:after,
-.sidebar[data-background-color="red"] .logo:after,
-.sidebar[data-background-color="red"] .nav li.separator:after {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.sidebar[data-background-color="red"] .nav li:hover:not(.active)>a,
-.sidebar[data-background-color="red"] .nav li.active>[data-toggle="collapse"] {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 .sidebar[data-image]:after,
 .sidebar.has-image:after {
   opacity: .77;
@@ -15575,7 +15533,6 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .main-panel>.content {
-  margin-top: 70px;
   padding: 30px 15px;
   min-height: calc(100vh - 123px);
 }
@@ -16862,10 +16819,12 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   padding: 12px 8px;
   vertical-align: middle;
   border-color: #ddd;
+  font-size: 16px;
 }
 
 .table thead tr th {
-  font-size: 1.063rem;
+  font-size: 1.2rem;
+  color: darkblue;
 }
 
 .table .th-description {
@@ -17522,7 +17481,7 @@ html[dir="rtl"] .form-check .form-check-sign .check:before {
 .card.bg-primary,
 .card.card-rotate.bg-primary .front,
 .card.card-rotate.bg-primary .back {
-  background: linear-gradient(60deg, #012241, #1707aa);
+  background: linear-gradient(60deg, #1d027c, #3a19b1);
 }
 
 .card .card-header-info .card-icon,
@@ -17703,7 +17662,7 @@ html[dir="rtl"] .form-check .form-check-sign .check:before {
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
 }
 
-.card .table tr:first-child td {
+.card :first-child td {
   border-top: none;
 }
 
