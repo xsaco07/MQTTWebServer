@@ -7,6 +7,8 @@ var towelsXRoom = new Chart(towelsXRoomCanvas, {
         datasets: [{
             label: '# de Toallas',
             data: [],
+            // Custom field to show each room capacity for each tooltip
+            capacity : [],
             backgroundColor: 'rgb(39, 33, 146, 0.85)',
             borderWidth: 1,
             borderColor : 'rgb(0,0,0)',
@@ -14,7 +16,16 @@ var towelsXRoom = new Chart(towelsXRoomCanvas, {
         }]
     },
     options: {
-        
+
+        tooltips : {
+            callbacks : {
+                title: function(tooltipItems, data) {
+                    return tooltipItems[0].xLabel + ' Capacidad: ' + 
+                    data.datasets[0].capacity[tooltipItems[0].index] + ' pers';
+                }
+            }
+        },
+
         title: {
             display : true,
             padding : 20,
@@ -49,6 +60,7 @@ var towelsXRoom = new Chart(towelsXRoomCanvas, {
 });
 
 const loadTowelsXRoomChart = (serverData) => {
+    // Fill data, capacity, and labels array
     for (_id of Object.keys(serverData)){
         const object = serverData[_id];
         const roomNumber = parseInt(_id);
@@ -56,9 +68,11 @@ const loadTowelsXRoomChart = (serverData) => {
         if(index == -1){
             towelsXRoom.data.labels.push(`Hab-${roomNumber}`);
             towelsXRoom.data.datasets[0].data.push(object.towels);
+            towelsXRoom.data.datasets[0].capacity.push(object.capacity);
         }
         else towelsXRoom.data.datasets[0].data[index] += object.towels;
     }
+
     towelsXRoom.update();
 };
 
