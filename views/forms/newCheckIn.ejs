@@ -6,8 +6,8 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header card-header-primary text-center">
-              <h4 class="card-title">Nuevo Check In</h4>
-              <p class="card-category">Registre un nuevo hospedaje</p>
+              <h3 class="card-title">Nuevo Check In</h3>
+              <h5 class="card-category">Registre un nuevo hospedaje</h5>
             </div>
             <div class="card-body">
               <form action="/api/checkIn/new/" method="POST">
@@ -18,7 +18,9 @@
                       <select class="custom-select" name="room_id" required>
                         <option disabled selected>Habitaciones diponibles...</option>
                         <% rooms.forEach(function(room){ %>
-                            <option value="<%= room._id %>">Habitación #<%= room.roomNumber %></option>
+                            <option value="<%= room._id %>">
+                              Habitación #<%= room.roomNumber %> Capacidad: <%= room.capacity %> 
+                            </option>
                         <% }) %>
                       </select>
                     </div>

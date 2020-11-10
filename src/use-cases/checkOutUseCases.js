@@ -8,6 +8,7 @@ const totalUseCases = require('./totalUseCases');
 const towelConsumptionUseCases = require('./towelConsumptionUseCases');
 const waterConsumptionUseCases = require('./waterConsumptionUseCases');
 const mqtt = require('./../mqtt/mqtt');
+const guestUseCases = require('./guestUseCases');
 
 const handleDBOperationError = (err) => {
     console.log(`CheckOut Use Case`);
@@ -17,22 +18,31 @@ const handleDBOperationError = (err) => {
 
 // Updates checkIn active state 
 // Returns the updated checkIn document
-const turnOffCheckInState = async (checkIn_id) => {
+const turnOffCheckInStatus = async (checkIn_id) => {
     let boundCheckIn = await checkInUseCases.getCheckInById({checkIn_id});
     boundCheckIn.status = false;
     return await boundCheckIn.save();
 };
 
+// Updates checkIn active state 
+// Returns the updated checkIn document
+const turnOffGuestStatus = async (checkIn_id) => {
+    const boundCheckIn = await checkInUseCases.getCheckInById({checkIn_id});
+    let guestDoc = await guestUseCases.getGuestById(boundCheckIn.guest_id);
+    guestDoc.status = false;
+    return await guestDoc.save();
+};
+
 // Updates room occupancyState 
 // Returns the updated room document
-const turnOffRoomState = async (room_id) => {
+const turnOffRoomStatus = async (room_id) => {
     let boundRoom = await roomUseCases.getRoomById({room_id});
     boundRoom.occupancyState = false;
     return await boundRoom.save();
 };
 
 // Use mqtt module to publish-back the sensor state is now turned off
-const turnOffSensorState = async (sensorDoc) => {
+const turnOffSensorStatus = async (sensorDoc) => {
     sensorDoc.state = false;
     await sensorDoc.save();
     const stateObject = factories.buildSensorStateEntity(false);
@@ -56,13 +66,15 @@ module.exports = {
         let now = new Date();
         now.setHours(now.getHours() - utils.offsetUTCHours);
 
-        const checkInDoc = await turnOffCheckInState(inputData.checkIn_id);
+        const checkInDoc = await turnOffCheckInStatus(inputData.checkIn_id);
 
-        const roomDoc = await turnOffRoomState(checkInDoc.room_id);
+        const roomDoc = await turnOffRoomStatus(checkInDoc.room_id);
+
+        turnOffGuestStatus(inputData.checkIn_id);
         
         const sensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id : roomDoc._id});
 
-        turnOffSensorState(sensorDoc);
+        turnOffSensorStatus(sensorDoc);
 
         let totalDoc = await totalUseCases.getTotalByCheckInId({checkIn_id : checkInDoc._id});
 

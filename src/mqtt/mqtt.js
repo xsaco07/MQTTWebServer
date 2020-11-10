@@ -76,7 +76,7 @@ async function handleTowelConsumptionMessage(message) {
         const savedObject = await towelConsumptionUseCases.newTowelConsumption(parsedMessage);
         if(savedObject.expected) {
             const guestDoc = await getGuestByConsumption(savedObject);
-            updateTowelTotals(parsedMessage);
+            updateTowelTotals(savedObject);
             updateTowelsXAgeChart(savedObject, guestDoc);
             updateTowelsXCountryChart(savedObject, guestDoc);
             updateTowelsXDayChart(savedObject);
@@ -100,7 +100,7 @@ async function handleWaterConsumptionMessage(message) {
         const savedObject = await waterConsumptionUseCases.newWaterConsumption(parsedMessage);
         if(savedObject.expected) {
             const guestDoc = await getGuestByConsumption(savedObject);
-            updateWaterTotals(parsedMessage);
+            updateWaterTotals(savedObject);
             updateWaterXAgeChart(savedObject, guestDoc);
             updateWaterXCountryChart(savedObject, guestDoc);
             updateWaterXDayChart(savedObject);
@@ -130,37 +130,52 @@ function publishTotalsMessage(sensorName, totalsObject){
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
 
-// Get total object by sensor name
+// Get total object by checkIn id
 // Update towel values
 // Save again
 // Publish-back totals object via mqtt
-async function updateTowelTotals(infoPacket){
-    const sensorDocument = await espSensorUseCases.getEspSensorByName(
-        {sensorName : infoPacket.sensorName}
-    );
-    let totalDocument = (await totalUseCases.getTotalBySensorId({sensor_id : sensorDocument._id}))[0];
-    totalDocument.totals.towels.consumption += infoPacket.consumption;
-    totalDocument.totals.towels.weight += infoPacket.weight;
-    totalDocument.totals.towels.towels += infoPacket.towels;
-    totalDocument.totals.totalConsumption += infoPacket.consumption;
-    const updatedDocument = await totalDocument.save();
-    publishTotalsMessage(sensorDocument.sensorName, updatedDocument.totals);
+async function updateTowelTotals(towelConsumptionDoc){
+    let sensorDoc = {};
+    let checkInDoc = {};
+    try { 
+        sensorDoc = await espSensorUseCases.getEspSensorById({sensor_id : towelConsumptionDoc.sensor_id});
+        checkInDoc = await entities.CheckIn.findOne({room_id : sensorDoc.room_id, status : true});
+        let totalDocument = await totalUseCases.getTotalByCheckInId({checkIn_id : checkInDoc._id});
+        totalDocument.totals.towels.consumption += towelConsumptionDoc.infoPacket.consumption;
+        totalDocument.totals.towels.weight += towelConsumptionDoc.infoPacket.weight;
+        totalDocument.totals.towels.towels += towelConsumptionDoc.infoPacket.towels;
+        totalDocument.totals.totalConsumption += towelConsumptionDoc.infoPacket.consumption;
+        const updatedDocument = await totalDocument.save();
+        publishTotalsMessage(sensorDoc.sensorName, updatedDocument.totals);
+    } 
+    catch (error) { 
+        console.log(`Error: ${error}`);
+        throw new Error(error);
+    }
 }
 
-// Get total object by sensor name
+// Get total object by checkIn id
 // Update water values
 // Save again
 // Publish-back totals object via mqtt
-async function updateWaterTotals(infoPacket){
-    const sensorDocument = await espSensorUseCases.getEspSensorByName(
-        {sensorName : infoPacket.sensorName}
-    );
-    let totalDocument = (await totalUseCases.getTotalBySensorId({sensor_id : sensorDocument._id}))[0];
-    totalDocument.totals.water.consumption += infoPacket.consumption;
-    totalDocument.totals.water.seconds += infoPacket.seconds;
-    totalDocument.totals.totalConsumption += infoPacket.consumption;
-    const updatedDocument = await totalDocument.save();
-    publishTotalsMessage(sensorDocument.sensorName, updatedDocument.totals);
+async function updateWaterTotals(waterConsumptionDoc){
+    let sensorDoc = {};
+    let checkInDoc = {};
+    try { 
+        sensorDoc = await espSensorUseCases.getEspSensorById({sensor_id : waterConsumptionDoc.sensor_id});
+        checkInDoc = await entities.CheckIn.findOne({room_id : sensorDoc.room_id, status : true});
+        let totalDocument = await totalUseCases.getTotalByCheckInId({checkIn_id : checkInDoc._id});
+        totalDocument.totals.water.consumption += waterConsumptionDoc.infoPacket.consumption;
+        totalDocument.totals.water.seconds += waterConsumptionDoc.infoPacket.seconds;
+        totalDocument.totals.totalConsumption += waterConsumptionDoc.infoPacket.consumption;
+        const updatedDocument = await totalDocument.save();
+        publishTotalsMessage(sensorDoc.sensorName, updatedDocument.totals);
+    
+    } 
+    catch (error) { 
+        console.log(`Error: ${error}`);
+        throw new Error(error);
+    }
 }
 
 // Based on a towelConsumptionDocument returns the guest who consume
@@ -175,8 +190,8 @@ const getGuestByConsumption = async (consumptionDoc) => {
         return guestDoc;
     } 
     catch (error) { 
-        console.log(`Error: ${err}`);
-        throw new Error(err);
+        console.log(`Error: ${error}`);
+        throw new Error(error);
     }
 };
 
