@@ -1,0 +1,50 @@
+<%- include('../partials/_header') %>
+<body>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                <div class="card-header card-header-primary text-center">
+                    <h3 class="card-title mt-0">Habitaciones</h3>
+                    <h5 class="card-category">Registro y estado de las habitaciones</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center">
+                            <thead class="">
+                                <th>Número de habitación</th>
+                                <th>Capacidad de huéspedes</th>
+                                <th>Estado</th>
+                            </thead>
+                            <tbody>
+                                <% rooms.forEach(function(room){ %>
+                                    <tr>
+                                        <td><%= room.roomNumber %></td>
+                                        <td><%= room.capacity %></td>
+                                        <td>
+                                            <% if(room.occupancyState == true){ %>
+                                                <span class="text-danger font-weight-bold">Ocupada</span>
+                                            <% } else { %>
+                                                <span class="text-success font-weight-bold">Desocupada</span>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+</body>
+</html>
