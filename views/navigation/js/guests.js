@@ -1,5 +1,5 @@
-const towelByGuestEndPoint = 'http://localhost:3000/api/towelConsumption/guest/';
-const waterByGuestEndPoint = 'http://localhost:3000/api/waterConsumption/guest/';
+const towelByGuestEndPoint = '/api/towelConsumption/guest/';
+const waterByGuestEndPoint = '/api/waterConsumption/guest/';
 
 window.addEventListener('load', async function () {
 
