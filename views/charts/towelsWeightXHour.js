@@ -1,6 +1,6 @@
-var waterXHourCanvas = document.getElementById('waterXHour').getContext('2d');
+var towelsWeightXHourCanvas = document.getElementById('towelsWeightXHour').getContext('2d');
 
-const waterXHour = new Chart(waterXHourCanvas, {
+const towelsWeightXHour = new Chart(towelsWeightXHourCanvas, {
     type: 'line',
     data: {
         labels: ['00:00', '01:00', '02:00','03:00','04:00','05:00',
@@ -9,7 +9,7 @@ const waterXHour = new Chart(waterXHourCanvas, {
                 '20:00','21:00','22:00','23:00'
         ],
         datasets: [{
-            label: 'Litros de agua',
+            label: 'Kgs de Toallas',
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(39, 33, 146, 0.85)',
             borderWidth: 2,
@@ -24,7 +24,7 @@ const waterXHour = new Chart(waterXHourCanvas, {
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            text: "Consumo de agua por hora (hoy)",
+            text: "Kilos de toallas consumidas por hora (hoy)",
         },
         legend: {
             display: true,
@@ -56,17 +56,16 @@ const waterXHour = new Chart(waterXHourCanvas, {
     }
 });
 
-const loadWaterXHourChart = (serverData) => {
+const loadTowelsWeightXHourChart = (serverData) => {
     for (object of Object.values(serverData)){
-        let index = getElementIndex(object._id+':00', waterXHour);
-        waterXHour.data.datasets[0].data[index] += object.consumption;
+        let index = getElementIndex(object._id+':00', towelsWeightXHour);
+        towelsWeightXHour.data.datasets[0].data[index] += Math.round(object.weight / 1000);
     }
-    waterXHour.update();
+    towelsWeightXHour.update();
 };
 
-socket.on('waterXHour', function(object){
-    console.log(object._id);
-    let index = getElementIndex(object._id+':00', waterXHour);
-    waterXHour.data.datasets[0].data[index] += object.consumption;
-    waterXHour.update();
+socket.on('towelsWeightXHour', function(object){
+    let index = getElementIndex(object._id+':00', towelsWeightXHour);
+    towelsWeightXHour.data.datasets[0].data[index] += Math.round(object.weight / 1000);
+    towelsWeightXHour.update();
 });

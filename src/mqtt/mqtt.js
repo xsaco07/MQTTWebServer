@@ -200,7 +200,8 @@ const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
     sockets.emitTowelsXAge(
         guestDoc.age, 
         towelConsumptionDoc.infoPacket.towels,
-        towelConsumptionDoc.infoPacket.consumption);
+        towelConsumptionDoc.infoPacket.consumption,
+        towelConsumptionDoc.infoPacket.weight);
 };
 
 const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
@@ -208,7 +209,8 @@ const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
     sockets.emitTowelsXCountry(
         guestDoc.country, 
         towelConsumptionDoc.infoPacket.towels,
-        towelConsumptionDoc.infoPacket.consumption);
+        towelConsumptionDoc.infoPacket.consumption,
+        towelConsumptionDoc.infoPacket.weight);
 };
 
 const updateTowelsXDayChart = (towelConsumptionDoc) => {
@@ -217,6 +219,7 @@ const updateTowelsXDayChart = (towelConsumptionDoc) => {
     sockets.emitTowelsXDay(
         towelConsumptionDoc.infoPacket.towels,
         towelConsumptionDoc.infoPacket.consumption,
+        towelConsumptionDoc.infoPacket.weight,
         date
     );
 };
@@ -232,6 +235,7 @@ const updateTowelsXHourChart = (towelConsumptionDoc) => {
     sockets.emitTowelsXHour(
         towelConsumptionDoc.infoPacket.towels,
         towelConsumptionDoc.infoPacket.consumption,
+        towelConsumptionDoc.infoPacket.weight,
         hour
     );
 };
@@ -243,6 +247,7 @@ const updateTowelsXRoomChart = async (towelConsumptionDoc) => {
     sockets.emitTowelsXRoom(
         towelConsumptionDoc.infoPacket.towels,
         towelConsumptionDoc.infoPacket.consumption,
+        towelConsumptionDoc.infoPacket.weight,
         roomDoc.roomNumber,
         roomDoc.occupancyState
     );

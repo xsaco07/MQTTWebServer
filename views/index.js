@@ -31,11 +31,11 @@ window.addEventListener('load', async function () {
 
         if(towelByDayResponse.status == 200) {
             jsonData = await towelByDayResponse.json();
-            loadTowelsXDayChart(jsonData);
+            loadTowelsWeightXDayChart(jsonData);
         }
         if(towelByHourResponse.status == 200) {
             jsonData = await towelByHourResponse.json();
-            loadTowelsXHourChart(jsonData);
+            loadTowelsWeightXHourChart(jsonData);
         }
         if(waterByDayResponse.status == 200) {
             jsonData = await waterByDayResponse.json();
@@ -60,6 +60,6 @@ socket.on('waterMetric', function(object) {
 socket.on('towelsMetric', function(object) {
     $(document).ready(function(){
         $('#towelMetric').text(object.towels);
-        $('#towelWeightMetric').text(object.weight + ' gr');
+        $('#towelWeightMetric').text(object.weight + ' Kgr');
       });
 });

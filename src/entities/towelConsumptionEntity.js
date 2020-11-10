@@ -15,7 +15,7 @@ const towelConsumptionSchema = {
         },
         towels : {
             type : Number,
-            require : true,
+            default : 0, // this value is calculated at a server level
         },
         weight : {
             type : Number,

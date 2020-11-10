@@ -1,8 +1,8 @@
-const towelsXDayCanvas = document.getElementById('towelsXDay').getContext('2d');
-const towelsXDay = new Chart(towelsXDayCanvas, {
+const towelsWeightXAgeCanvas = document.getElementById('towelsWeightXAge').getContext('2d');
+const towelsWeightXAge = new Chart(towelsWeightXAgeCanvas, {
     type: 'bar',
     data: {
-        labels: [],
+        labels: ['< 20','20 - 30','31 - 40','41 - 50','51 - 60','61 - 70', '> 70'],
         datasets: [{
             label: 'Kgs de Toallas',
             data: [0, 0, 0, 0, 0, 0, 0],
@@ -18,7 +18,7 @@ const towelsXDay = new Chart(towelsXDayCanvas, {
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            text: "Kilos de toallas consumidos por día (últimos 7 días)"
+            text: "Kilos de toallas consumidas por edad"
         },
         legend: {
             display: true,
@@ -46,26 +46,15 @@ const towelsXDay = new Chart(towelsXDayCanvas, {
     }
 });
 
-const loadTowelsXDayChart = (serverData) => {
-    towelsXDay.data.labels = getLastXDays(lastDays);
-    serverData.sort(custom_sort);
-    for (object of Object.values(serverData)){
-        let index = getElementIndex(object._id, towelsXDay);
-        if(index == -1){
-            towelsXDay.data.labels.push(object._id);
-            towelsXDay.data.datasets[0].data.push(object.towels);
-        }
-        else towelsXDay.data.datasets[0].data[index] += object.towels;
+const loadTowelsWeightXAgeChart = (serverData) =>{
+    for (guestData of Object.values(serverData)){
+        const index = getAgeIndex(guestData.guest.age);
+        towelsWeightXAge.data.datasets[0].data[index] += Math.round(guestData.weight / 1000);
     }
-    towelsXDay.update();
+    towelsWeightXAge.update();
 };
 
-socket.on('towelsXDay', function(object){
-    let index = getElementIndex(object._id, towelsXDay);
-    if(index == -1){
-        towelsXDay.data.labels.push(object._id);
-        towelsXDay.data.datasets[0].data.push(object.towels);
-    }
-    else towelsXDay.data.datasets[0].data[index] += object.towels;
-    towelsXDay.update();
+socket.on('towelsWeightXAge', function(data){
+    towelsWeightXAge.data.datasets[0].data[data.index] += Math.round(data.weight / 1000);
+    towelsWeightXAge.update();
 });
