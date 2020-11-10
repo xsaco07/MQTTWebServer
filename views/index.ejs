@@ -67,11 +67,13 @@
     <div class="main-panel">
       <div class="content">
         <div class="container-fluid">
+
           <div class="row mb-5 mt-5">
             <div class="col text-center">
               <h2>Métricas</h2>
             </div>
           </div>
+
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 col-sm-6">
               <div class="card card-stats">
@@ -80,11 +82,12 @@
                     <i class="material-icons">money</i>
                   </div>
                   <p class="card-category">Peso de toallas utilizadas</p>
-                  <h3 class="card-title" id="towelWeightMetric"><%= towelsMetric.weight / 1000 %> kgs</h3>
+                  <h3 class="card-title" id="towelWeightMetric"><%= Math.round(towelsMetric.weight / 1000) %> kgs</h3>
                 </div>
                 <div class="card-footer text-center"></div>
               </div>
             </div>
+
             <div class="col-lg-4 col-md-6 col-sm-6">
               <div class="card card-stats">
                 <div class="card-header card-header-warning card-header-icon">
@@ -112,13 +115,14 @@
                 <div class="card-footer text-center"></div>
               </div>
             </div>
+            
             <div class="col-lg-4 col-md-6 col-sm-6">
               <div class="card card-stats">
                 <div class="card-header card-header-info card-header-icon">
                   <div class="card-icon">
                     <i class="material-icons">av_timer</i>
                   </div>
-                  <p class="card-category">Tiempo total del flujo de agua</p>
+                  <p class="card-category">Tiempo de agua consumida</p>
                   <h3 class="card-title" id="waterTimeMetric"><%= Math.round(waterMetric.seconds / 60)%> min</h3>
                 </div>
                 <div class="card-footer text-center"></div>
@@ -151,7 +155,7 @@
           <div class="row justify-content-center mb-5">
             <div class="col-8">
               <div>
-                <canvas id="towelsXDay"></canvas>
+                <canvas id="towelsWeightXDay"></canvas>
               </div>
             </div>
           </div>
@@ -159,7 +163,7 @@
           <div class="row justify-content-center mb-5">
             <div class="col-8">
               <div>
-                <canvas id="towelsXHour"></canvas>
+                <canvas id="towelsWeightXHour"></canvas>
               </div>
             </div>
           </div>
@@ -171,8 +175,8 @@
   
   <%- include('partials/_scripts') %>
   <script src="index.js"></script>
-  <script src="charts/towelsXDay.js"></script>
-  <script src="charts/towelsXHour.js"></script>
+  <script src="charts/towelsWeightXDay.js"></script>
+  <script src="charts/towelsWeightXHour.js"></script>
   <script src="charts/waterXDay.js"></script>
   <script src="charts/waterXHour.js"></script>
 

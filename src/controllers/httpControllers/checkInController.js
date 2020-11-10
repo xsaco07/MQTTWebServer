@@ -24,6 +24,7 @@ module.exports = {
             const room_id = req.body.room_id;
             // Save new guest
             const guestInfo = {
+                status : true,
                 name : req.body.name,
                 lastName1 : req.body.lastName1,
                 lastName2 : req.body.lastName2,

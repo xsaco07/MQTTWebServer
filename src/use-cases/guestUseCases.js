@@ -18,6 +18,7 @@ module.exports = {
     //              room_id : ObjectId}
     newGuest : async (inputData) => {
         const finalObject = Object.freeze({
+            status : inputData.status,
             fullName : {
                 name : inputData.name, 
                 lastName1 : inputData.lastName1,

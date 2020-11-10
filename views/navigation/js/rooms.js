@@ -17,7 +17,7 @@ window.addEventListener('load', async function () {
 
         if(towelByRoomResponse.status == 200) {
             jsonData = await towelByRoomResponse.json();
-            loadTowelsXRoomChart(jsonData);
+            loadTowelsWeightXRoomChart(jsonData);
         }
         if(waterByRoomResponse.status == 200) {
             jsonData = await waterByRoomResponse.json();

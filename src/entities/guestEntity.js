@@ -12,6 +12,10 @@ const guestSchema = {
         required: true,
         ref : 'Room'
     },
+    status : {
+        type : Boolean,
+        default : false
+    },
     fullName : {
         name : {
             type : String,

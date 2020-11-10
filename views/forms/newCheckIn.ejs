@@ -18,7 +18,9 @@
                       <select class="custom-select" name="room_id" required>
                         <option disabled selected>Habitaciones diponibles...</option>
                         <% rooms.forEach(function(room){ %>
-                            <option value="<%= room._id %>">Habitación #<%= room.roomNumber %></option>
+                            <option value="<%= room._id %>">
+                              Habitación #<%= room.roomNumber %> Capacidad: <%= room.capacity %> 
+                            </option>
                         <% }) %>
                       </select>
                     </div>

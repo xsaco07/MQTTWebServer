@@ -146,12 +146,14 @@ module.exports = {
                     result[guestDoc._id] = {
                         guest : guestDoc,
                         towels : doc.infoPacket.towels,
-                        consumption : doc.infoPacket.consumption
+                        consumption : doc.infoPacket.consumption,
+                        weight : doc.infoPacket.weight
                     };
                 }
                 else {
                     result[guestDoc._id].consumption += doc.infoPacket.consumption;
                     result[guestDoc._id].towels += doc.infoPacket.towels;
+                    result[guestDoc._id].weight += doc.infoPacket.weight;
                 } 
                 
             }));
