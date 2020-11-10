@@ -125,7 +125,6 @@ module.exports = {
     // Params = {}
     getCurrentConsumptionByRoom : async (req, res, next) => {
         try {
-            console.log('Reach controller');
             const docs = await waterUseCases.getCurrentConsumptionByRoom();
             if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
             else res.status(200).json(docs);

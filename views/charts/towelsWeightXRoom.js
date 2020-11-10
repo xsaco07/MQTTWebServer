@@ -1,11 +1,11 @@
-var waterXRoomCanvas = document.getElementById('waterXRoom').getContext('2d');
+var towelsWeightXRoomCanvas = document.getElementById('towelsWeightXRoom').getContext('2d');
 
-var waterXRoom = new Chart(waterXRoomCanvas, {
+var towelsWeightXRoom = new Chart(towelsWeightXRoomCanvas, {
     type: 'bar',
     data: {
         labels: [],
         datasets: [{
-            label: 'Litros de agua',
+            label: 'Kgs de Toallas',
             data: [],
             // Custom field to show each room capacity for each tooltip
             capacity : [],
@@ -16,6 +16,7 @@ var waterXRoom = new Chart(waterXRoomCanvas, {
         }]
     },
     options: {
+
         tooltips : {
             callbacks : {
                 title: function(tooltipItems, data) {
@@ -24,12 +25,13 @@ var waterXRoom = new Chart(waterXRoomCanvas, {
                 }
             }
         },
+
         title: {
             display : true,
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            text: "Consumo de agua por habitación activa"
+            text: "Kilos de toallas consumidos por habitación (activas)"
         },
         legend: {
             display: true,
@@ -57,28 +59,30 @@ var waterXRoom = new Chart(waterXRoomCanvas, {
     }
 });
 
-const loadWaterXRoomChart = (serverData) => {
+const loadTowelsWeightXRoomChart = (serverData) => {
     // Fill data, capacity, and labels array
     for (_id of Object.keys(serverData)){
         const object = serverData[_id];
         const roomNumber = parseInt(_id);
-        let index = getElementIndex(`Hab-${roomNumber}`, waterXRoom);
+        let index = getElementIndex(`Hab-${roomNumber}`, towelsWeightXRoom);
         if(index == -1){
-            waterXRoom.data.labels.push(`Hab-${roomNumber}`);
-            waterXRoom.data.datasets[0].data.push(object.consumption);
-            waterXRoom.data.datasets[0].capacity.push(object.capacity);
+            towelsWeightXRoom.data.labels.push(`Hab-${roomNumber}`);
+            towelsWeightXRoom.data.datasets[0].data.push(Math.round(object.towels));
+            towelsWeightXRoom.data.datasets[0].capacity.push(object.capacity);
         }
-        else waterXRoom.data.datasets[0].data[index] += object.consumption;
+        else towelsWeightXRoom.data.datasets[0].data[index] += Math.round(object.towels);
     }
-    waterXRoom.update();
+
+    towelsWeightXRoom.update();
 };
 
-socket.on('waterXRoom', function(data){
-    let index = getElementIndex(`Hab-${data._id}`, waterXRoom);
+socket.on('towelsXRoom', function(data){
+    let index = getElementIndex(`Hab-${data._id}`, towelsWeightXRoom);
+    console.log(index);
     if(index == -1){
-        waterXRoom.data.labels.push(`Hab-${data._id}`);
-        waterXRoom.data.datasets[0].data.push(data.consumption);
+        towelsWeightXRoom.data.labels.push(`Hab-${data._id}`);
+        towelsWeightXRoom.data.datasets[0].data.push(Math.round(data.towels));
     }
-    else waterXRoom.data.datasets[0].data[index] += data.consumption;
-    waterXRoom.update();
+    else towelsWeightXRoom.data.datasets[0].data[index] += Math.round(data.towels);
+    towelsWeightXRoom.update();
 });

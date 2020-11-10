@@ -9,6 +9,7 @@ const {buildTotalTowelsConsumptionEntity} = require('../entities/totalTowelsCons
 const {buildTotalWaterConsumptionEntity} = require('../entities/totalWaterConsumptionEntity');
 const {buildTotalEntity} = require('./totalEntity');
 const {buildSensorStateEntity} = require('../entities/sensorStateEntity');
+const {buildUserEntity} = require('../entities/userEntity');
 
 module.exports = {
     buildCheckInEntity,
@@ -21,5 +22,6 @@ module.exports = {
     buildTotalTowelsConsumptionEntity,
     buildTotalWaterConsumptionEntity,
     buildTotalEntity,
-    buildSensorStateEntity
+    buildSensorStateEntity,
+    buildUserEntity
 }

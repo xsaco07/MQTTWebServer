@@ -9,6 +9,7 @@
                 <div class="table-responsive">
                     <table class="table table-hover text-center">
                         <thead class="">
+                            <th>Estado</th>
                             <th>Nombre</th>
                             <th>Primer apellido</th>
                             <th>Segundo apellido</th>
@@ -19,6 +20,13 @@
                         <tbody>
                             <% guests.forEach(function(guest){ %>
                                 <tr>
+                                    <td>
+                                        <% if(guest.status == true){ %>
+                                            <span class="text-success font-weight-bold">Activo</span>
+                                        <% } else { %>
+                                            <span class="text-danger font-weight-bold">Inactivo</span>
+                                        <% } %>
+                                    </td>
                                     <td><%= guest.fullName.name %></td>
                                     <td><%= guest.fullName.lastName1 %></td>
                                     <td><%= guest.fullName.lastName2 %></td>

@@ -17,6 +17,7 @@ const guestRoutes = require('./routes/guestRoutes');
 const totalRoutes = require('./routes/totalRoutes');
 const towelConsumptionRoutes = require('./routes/towelConsumptionRoutes');
 const waterConsumptionRoutes = require('./routes/waterConsumptionRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Use cases
 const useCases = require('./use-cases/useCases');
@@ -48,6 +49,7 @@ app.use('/api/checkOut', checkOutRoutes);
 app.use('/api/total', totalRoutes);
 app.use('/api/towelConsumption', towelConsumptionRoutes);
 app.use('/api/waterConsumption', waterConsumptionRoutes);
+app.use('/api/user', userRoutes);
 
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));
@@ -62,6 +64,7 @@ const server = app.listen(app.get('port'), () => {
     mqtt.listenToMQTTMessages();
 });
 
+// Init web sockets
 socket.connect(server);
 
 // Render tables

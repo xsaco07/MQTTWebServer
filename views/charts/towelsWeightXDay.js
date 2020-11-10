@@ -1,10 +1,10 @@
-const waterXDayCanvas = document.getElementById('waterXDay').getContext('2d');
-const waterXDay = new Chart(waterXDayCanvas, {
+const towelsWeightXDayCanvas = document.getElementById('towelsWeightXDay').getContext('2d');
+const towelsWeightXDay = new Chart(towelsWeightXDayCanvas, {
     type: 'bar',
     data: {
         labels: [],
         datasets: [{
-            label: 'Litros de agua',
+            label: 'Kgs de Toallas',
             data: [0, 0, 0, 0, 0, 0, 0],
             backgroundColor: 'rgb(39, 33, 146, 0.85)',
             borderWidth: 1,
@@ -18,7 +18,7 @@ const waterXDay = new Chart(waterXDayCanvas, {
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            text: "Consumo de agua por día (últimos 7 días)"
+            text: "Kilos de toallas consumidos por día (últimos 7 días)"
         },
         legend: {
             display: true,
@@ -46,26 +46,26 @@ const waterXDay = new Chart(waterXDayCanvas, {
     }
 });
 
-const loadWaterXDayChart = (serverData) => {
-    waterXDay.data.labels = getLastXDays(lastDays);
+const loadTowelsWeightXDayChart = (serverData) => {
+    towelsWeightXDay.data.labels = getLastXDays(lastDays);
     serverData.sort(custom_sort);
     for (object of Object.values(serverData)){
-        let index = getElementIndex(object._id, waterXDay);
+        let index = getElementIndex(object._id, towelsWeightXDay);
         if(index == -1){
-            waterXDay.data.labels.push(object._id);
-            waterXDay.data.datasets[0].data.push(object.consumption);
+            towelsWeightXDay.data.labels.push(object._id);
+            towelsWeightXDay.data.datasets[0].data.push(Math.round(object.weight / 1000));
         }
-        else waterXDay.data.datasets[0].data[index] += object.consumption;
+        else towelsWeightXDay.data.datasets[0].data[index] += Math.round(object.weight / 1000);
     }
-    waterXDay.update();
+    towelsWeightXDay.update();
 };
 
-socket.on('waterXDay', function(object){
-    let index = getElementIndex(object._id, waterXDay);
+socket.on('towelsWeightXDay', function(object){
+    let index = getElementIndex(object._id, towelsWeightXDay);
     if(index == -1){
-        waterXDay.data.labels.push(object._id);
-        waterXDay.data.datasets[0].data.push(object.consumption);
+        towelsWeightXDay.data.labels.push(object._id);
+        towelsWeightXDay.data.datasets[0].data.push(Match.round(object.weight / 1000));
     }
-    else waterXDay.data.datasets[0].data[index] += object.consumption;
-    waterXDay.update();
+    else towelsWeightXDay.data.datasets[0].data[index] += Math.round(object.weight / 1000);
+    towelsWeightXDay.update();
 });

@@ -30,11 +30,11 @@ window.addEventListener('load', async function () {
 
         if(towelByDayResponse.status == 200) {
             jsonData = await towelByDayResponse.json();
-            loadTowelsXDayChart(jsonData);
+            loadTowelsWeightXDayChart(jsonData);
         }
         if(towelByHourResponse.status == 200) {
             jsonData = await towelByHourResponse.json();
-            loadTowelsXHourChart(jsonData);
+            loadTowelsWeightXHourChart(jsonData);
         }
         if(waterByDayResponse.status == 200) {
             jsonData = await waterByDayResponse.json();
