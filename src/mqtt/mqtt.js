@@ -125,9 +125,39 @@ function publishStateMessage(sensorName, stateObject){
 
 function publishTotalsMessage(sensorName, totalsObject){
     const topic = `${rootTopic}server/${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
-    const message = JSON.stringify(totalsObject);
+    const message = JSON.stringify(totalsObject.totals);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
+}
+
+// Each 3 min
+// Get active totals by active check In
+// Send totals to each active ESPSensor
+// If no active checkIns
+// Send totals every 5 min
+function setUpIntermitentTotalsCommunication() {
+    let delay = 180000;
+    let timerId = setTimeout(async function grabAndSendTotals() {
+        try {
+            const activeCheckInDocs = await entities.CheckIn.find({status : true});
+            if(activeCheckInDocs.length > 0) {
+                activeCheckInDocs.forEach(async (checkIn) => {
+                    const totalDoc = await totalUseCases.getTotalByCheckInId({checkIn_id : checkIn._id});
+                    const sensorDoc = await espSensorUseCases.getEspSensorById({sensor_id : totalDoc.sensor_id});
+                    publishTotalsMessage(sensorDoc.sensorName, totalDoc);
+                });
+                console.log('Intermitent totals data published...');
+                delay = 180000;
+            }
+            else delay = 300000; // If no active checkIns - notify each 5 min
+        } catch (error) {
+            console.log(`Error: ${error}`);
+            throw new Error(error);
+        }
+        finally {
+            timerId = setTimeout(grabAndSendTotals, delay);
+        }
+    }, delay);
 }
 
 // Get total object by checkIn id
@@ -329,6 +359,7 @@ module.exports.mqttClient = mqttClient;
 module.exports.connectClient = connectClient;
 module.exports.subscribeToTopics = subscribeToTopics;
 module.exports.listenToMQTTMessages = listenToMQTTMessages;
+module.exports.setUpIntermitentTotalsCommunication = setUpIntermitentTotalsCommunication;
 module.exports.publishStateMessage = publishStateMessage;
 module.exports.publishTotalsMessage = publishTotalsMessage;
 module.exports.SUB_TOPICS = SUB_TOPICS;
