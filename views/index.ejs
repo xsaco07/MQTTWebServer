@@ -54,12 +54,14 @@
               <p>Consumos generales</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/unexpected/">
-              <i class="material-icons">report</i>
-              <p>Consumos inesperados</p>
-            </a>
-          </li>
+          <% if(userDoc.userName === 'admin'){ %>
+            <li class="nav-item">
+              <a class="nav-link" href="/unexpected/">
+                <i class="material-icons">report</i>
+                <p>Consumos inesperados</p>
+              </a>
+            </li>
+          <% } %>
           <!-- your sidebar here -->
         </ul>
       </div>

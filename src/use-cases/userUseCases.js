@@ -1,6 +1,9 @@
 const entities = require('../entities/entities');
 const factories = require('../entities/factories');
 
+// For password encryption
+const bcrypt = require('bcrypt');
+
 const handleDBOperationError = (err) => {
     console.log(`Guest Use Case`);
     console.log(`Error: ${err}`);
@@ -15,9 +18,12 @@ module.exports = {
     //              lastName2 : String,
     //              email : String}
     newUser : async (inputData) => {
+
+        const hashedPassword = await bcrypt.hash(inputData.password, 10)
+
         const finalObject = Object.freeze({
             userName : inputData.userName,
-            password : inputData.password,
+            password : hashedPassword,
             fullName : {
                 name : inputData.name, 
                 lastName1 : inputData.lastName1,
@@ -54,7 +60,7 @@ module.exports = {
     },
     // inputData = {userName : String}
     getUserByUserName : async (inputData) => {
-        try { return await entities.User.find({userName : inputData.userName}); } 
+        try { return await entities.User.findOne({userName : inputData.userName}); } 
         catch (error) { handleDBOperationError(error); }
     }
 }
