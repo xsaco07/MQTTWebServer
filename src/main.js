@@ -27,7 +27,7 @@ const towelConsumptionRoutes = require('./routes/towelConsumptionRoutes');
 const waterConsumptionRoutes = require('./routes/waterConsumptionRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-// Use cases
+// Retrieve all use cases
 const useCases = require('./use-cases/useCases');
 
 // DB
@@ -73,7 +73,7 @@ app.use('/api/user', userRoutes);
 // Static Files (HTML, JS, CSS)
 app.use(express.static(path.join(__dirname, '../views')));
 
-// Mongo connection
+// Initi Mongo connection
 makeDB();
 
 // Start listening
@@ -91,7 +91,7 @@ app.get('/', checkAuthenticated, async (req, res, next) => {
     const towelsMetric = (await useCases.towelConsumptionUseCases.metrics.totalConsumption())[0];
     const waterMetric = (await useCases.waterConsumptionUseCases.metrics.totalConsumption())[0];
     const activeCheckIns = await useCases.checkInUseCases.metrics.activeCheckIns();
-    // Get in-session user from passport authentication
+    // Send in-session user from passport authentication
     res.render('index', {towelsMetric, waterMetric, activeCheckIns, userDoc : req.user});
 });
 

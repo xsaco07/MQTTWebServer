@@ -100,7 +100,7 @@
                     <i class="material-icons">bathtub</i>
                   </div>
                   <p class="card-category">Agua consumida</p>
-                  <h3 class="card-title" id="waterMetric"><%= waterMetric.consumption %> lts</h3>
+                  <h3 class="card-title" id="waterMetric"><%= Math.round(waterMetric.consumption) %> lts</h3>
                 </div>
                 <div class="card-footer text-center"></div>
               </div>
@@ -142,10 +142,20 @@
           </div>
 
           <div class="row justify-content-center mb-5">
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="WaterXDay.goXDaysBack()">
+                <i class="material-icons" style="font-size: 28px;">arrow_back_ios</i>
+              </button>
+            </div>
             <div class="col-8 text-center">
               <div>
                 <canvas id="waterXDay"></canvas>
               </div>
+            </div>
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="WaterXDay.goXDaysForward()">
+                <i class="material-icons" style="font-size: 28px;">arrow_forward_ios</i>
+              </button>
             </div>
           </div>
 

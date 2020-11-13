@@ -15,7 +15,7 @@ window.addEventListener('load', function () {
     try {
         fetchAndLoadTowelsWeightXDay(towelByDayEndPoint, formmattedDate);
         fetchAndLoadTowelsWeightXHour(towelByHourEndPoint);
-        fetchAndLoadWaterXDay(waterByDayEndPoint);
+        fetchAndLoadWaterXDay(waterByDayEndPoint, formmattedDate);
         fetchAndLoadWaterXHour(waterByHourEndPoint);
 
     } catch (error) {
@@ -50,13 +50,13 @@ async function fetchAndLoadTowelsWeightXHour(endPoint) {
     }
 }
 
-async function fetchAndLoadWaterXDay(endPoint) {
+async function fetchAndLoadWaterXDay(endPoint, lastDayConsidered) {
     let jsonData = {};
     try {
         const waterByDayResponse = await fetch(endPoint);
         if(waterByDayResponse.status == 200) {
             jsonData = await waterByDayResponse.json();
-            loadWaterXDayChart(jsonData);
+            loadWaterXDayChart(jsonData, lastDayConsidered);
         }
     } catch (error) {
         console.log(`Error fetching: ${error}`);
