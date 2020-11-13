@@ -66,6 +66,9 @@ const loadWaterXHourChart = (serverData) => {
 
 socket.on('waterXHour', function(object){
     let index = getElementIndex(object._id+':00', waterXHour);
-    waterXHour.data.datasets[0].data[index] += object.consumption;
-    waterXHour.update();
+    // If the label is being shown in this moment
+    if(index != -1){
+        waterXHour.data.datasets[0].data[index] += object.consumption;
+        waterXHour.update();    
+    }
 });

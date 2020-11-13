@@ -3,19 +3,19 @@ const towelByDayEndPoint = `/api/towelConsumption/day/${CONS_LAST_DAYS}`;
 const waterByDayEndPoint = `/api/waterConsumption/day/${CONS_LAST_DAYS}`;
 
 // Get todays date formatted to yyyy-mm-dd
-const date = new Date();
-date.setHours(date.getHours() - new Date().getTimezoneOffset()/60);
-const formmattedDate = date.toISOString().slice(0, 10);
+const TODAY = new Date();
+TODAY.setHours(TODAY.getHours() - new Date().getTimezoneOffset()/60);
+const TODAY_FORMATTED = TODAY.toISOString().slice(0, 10);
 
-const towelByHourEndPoint = `/api/towelConsumption/hour/${formmattedDate}/`;
-const waterByHourEndPoint = `/api/waterConsumption/hour/${formmattedDate}/`;
+const towelByHourEndPoint = `/api/towelConsumption/hour/${TODAY_FORMATTED}/`;
+const waterByHourEndPoint = `/api/waterConsumption/hour/${TODAY_FORMATTED}/`;
 
 window.addEventListener('load', function () {
 
     try {
-        fetchAndLoadTowelsWeightXDay(towelByDayEndPoint, formmattedDate);
+        fetchAndLoadTowelsWeightXDay(towelByDayEndPoint, TODAY_FORMATTED);
         fetchAndLoadTowelsWeightXHour(towelByHourEndPoint);
-        fetchAndLoadWaterXDay(waterByDayEndPoint, formmattedDate);
+        fetchAndLoadWaterXDay(waterByDayEndPoint, TODAY_FORMATTED);
         fetchAndLoadWaterXHour(waterByHourEndPoint);
 
     } catch (error) {
