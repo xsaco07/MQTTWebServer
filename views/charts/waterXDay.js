@@ -47,7 +47,7 @@ const waterXDay = new Chart(waterXDayCanvas, {
 });
 
 const loadWaterXDayChart = (serverData) => {
-    waterXDay.data.labels = getLastXDays(lastDays);
+    waterXDay.data.labels = getLastXDays(CONS_LAST_DAYS);
     serverData.sort(custom_sort);
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, waterXDay);

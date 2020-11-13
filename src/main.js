@@ -148,12 +148,17 @@ app.get('/newCheckIn', checkAuthenticated, async (req, res, next) => {
     res.render('forms/newCheckIn', {rooms});
 });
 
-// Login
+// Login/Logout
 app.post('/login', checkNonAuthenticaded, passport.authenticate('local', {
     successRedirect: '/', // go home
     failureRedirect: '/login', // try to login again
     failureFlash: true
 }));
+
+app.post('/logout', checkAuthenticated, (req, res, next) => {
+    req.logOut();
+    res.redirect('/login');
+});
 
 function checkAuthenticated(req, res, next) {
     if(req.isAuthenticated()) return next();
