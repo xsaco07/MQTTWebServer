@@ -160,6 +160,11 @@ app.post('/logout', checkAuthenticated, (req, res, next) => {
     res.redirect('/login');
 });
 
+// Landing page
+app.get('/info', (req, res, next) => {
+    res.render('navigation/ejs/info'); 
+});
+
 function checkAuthenticated(req, res, next) {
     if(req.isAuthenticated()) return next();
     res.redirect('/login');
