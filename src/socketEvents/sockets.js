@@ -33,7 +33,6 @@ module.exports = {
             consumption,
             weight
         };
-        console.log(message);
         io.emit('towelsXAge', message);
     },
 
@@ -45,7 +44,6 @@ module.exports = {
             consumption,
             weight
         };
-        console.log(message);
         io.emit('towelsXCountry', message);
     },
 
@@ -57,7 +55,6 @@ module.exports = {
             weight,
             _id : date
         };
-        console.log(message);
         io.emit('towelsXDay', message);
     },
 
@@ -69,7 +66,6 @@ module.exports = {
             weight,
             _id : hour
         };
-        console.log(message);
         io.emit('towelsXHour', message);
     },
 
@@ -83,7 +79,6 @@ module.exports = {
             capacity,
             roomOccupancyState
         };
-        console.log(message);
         io.emit('towelsXRoom', message);
     },
 
@@ -93,7 +88,6 @@ module.exports = {
             index : getAgeIndex(age),
             consumption
         };
-        console.log(message);
         io.emit('waterXAge', message);
     },
 
@@ -103,7 +97,6 @@ module.exports = {
             country,
             consumption
         };
-        console.log(message);
         io.emit('waterXCountry', message);
     },
 
@@ -114,7 +107,6 @@ module.exports = {
             seconds,
             _id : date
         };
-        console.log(message);
         io.emit('waterXDay', message);
     },
 
@@ -125,7 +117,6 @@ module.exports = {
             seconds,
             _id : hour
         };
-        console.log(message);
         io.emit('waterXHour', message);
     },
 
@@ -138,7 +129,6 @@ module.exports = {
             capacity,
             roomOccupancyState,
         };
-        console.log(message);
         io.emit('waterXRoom', message);
     },
 
@@ -149,7 +139,6 @@ module.exports = {
             weight,
             consumption
         };
-        console.log(message);
         io.emit('towelsMetric', message);
     },
 
@@ -159,7 +148,6 @@ module.exports = {
             consumption,
             seconds
         };
-        console.log(message);
         io.emit('waterMetric', message);
     }
 

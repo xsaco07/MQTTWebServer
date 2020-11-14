@@ -74,6 +74,7 @@ async function handleTowelConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await towelConsumptionUseCases.newTowelConsumption(parsedMessage);
+        console.log(savedObject);
         if(savedObject.expected) {
             const guestDoc = await getGuestByConsumption(savedObject);
             updateTowelTotals(savedObject);
@@ -98,6 +99,7 @@ async function handleWaterConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await waterConsumptionUseCases.newWaterConsumption(parsedMessage);
+        console.log(savedObject);
         if(savedObject.expected) {
             const guestDoc = await getGuestByConsumption(savedObject);
             updateWaterTotals(savedObject);
@@ -125,7 +127,7 @@ function publishStateMessage(sensorName, stateObject){
 
 function publishTotalsMessage(sensorName, totalsObject){
     const topic = `${rootTopic}server/${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
-    const message = JSON.stringify(totalsObject.totals);
+    const message = JSON.stringify(totalsObject);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
@@ -144,7 +146,7 @@ function setUpIntermitentTotalsCommunication() {
                 activeCheckInDocs.forEach(async (checkIn) => {
                     const totalDoc = await totalUseCases.getTotalByCheckInId({checkIn_id : checkIn._id});
                     const sensorDoc = await espSensorUseCases.getEspSensorById({sensor_id : totalDoc.sensor_id});
-                    publishTotalsMessage(sensorDoc.sensorName, totalDoc);
+                    publishTotalsMessage(sensorDoc.sensorName, totalDoc.totals);
                 });
                 console.log('Intermitent totals data published...');
                 delay = 180000;
@@ -199,7 +201,7 @@ async function updateWaterTotals(waterConsumptionDoc){
         totalDocument.totals.water.seconds += waterConsumptionDoc.infoPacket.seconds;
         totalDocument.totals.totalConsumption += waterConsumptionDoc.infoPacket.consumption;
         const updatedDocument = await totalDocument.save();
-        publishTotalsMessage(sensorDoc.sensorName, updatedDocument.totals);
+        publishTotalsMessage(sensorDoc.sensorName, updatedDocument);
     
     } 
     catch (error) { 
@@ -226,7 +228,6 @@ const getGuestByConsumption = async (consumptionDoc) => {
 };
 
 const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
-    console.log("Updating towelsXAge chart");
     sockets.emitTowelsXAge(
         guestDoc.age, 
         towelConsumptionDoc.infoPacket.towels,
@@ -235,7 +236,6 @@ const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
 };
 
 const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
-    console.log("Updating towelsXCountry chart");
     sockets.emitTowelsXCountry(
         guestDoc.country, 
         towelConsumptionDoc.infoPacket.towels,
@@ -244,7 +244,6 @@ const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
 };
 
 const updateTowelsXDayChart = (towelConsumptionDoc) => {
-    console.log("Updating towelsXDay chart");
     const date = towelConsumptionDoc.infoPacket.date.toISOString().slice(0,10);
     sockets.emitTowelsXDay(
         towelConsumptionDoc.infoPacket.towels,
@@ -255,7 +254,6 @@ const updateTowelsXDayChart = (towelConsumptionDoc) => {
 };
 
 const updateTowelsXHourChart = (towelConsumptionDoc) => {
-    console.log("Updating towelsXHour chart");
     const date = towelConsumptionDoc.infoPacket.date;
     // Fix hours offset
     date.setHours(date.getHours() + utils.offsetUTCHours);
@@ -271,7 +269,6 @@ const updateTowelsXHourChart = (towelConsumptionDoc) => {
 };
 
 const updateTowelsXRoomChart = async (towelConsumptionDoc) => {
-    console.log("Updating towelsXRoom chart");
     const sensorDoc = await entities.EspSensor.findById(towelConsumptionDoc.sensor_id, 'room_id');
     const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber capacity occupancyState');
     sockets.emitTowelsXRoom(
@@ -285,7 +282,6 @@ const updateTowelsXRoomChart = async (towelConsumptionDoc) => {
 };
 
 const updateTotalTowelsMetric = async () => {
-    console.log("Updating total towels metric");
     const totals = (await towelConsumptionUseCases.metrics.totalConsumption())[0];
     sockets.emitTotalTowelsMetric(
         totals.towels,
@@ -295,8 +291,6 @@ const updateTotalTowelsMetric = async () => {
 };
 
 const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {
-    console.log("Updating waterXAge chart");
-    console.log("Call socket to emit message");
     console.log(waterConsumptionDoc);
     sockets.emitWaterXAge(
         guestDoc.age,
@@ -304,14 +298,12 @@ const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {
 };
 
 const updateWaterXCountryChart = async (waterConsumptionDoc, guestDoc) => {
-    console.log("Updating waterXCountry chart");
     sockets.emitWaterXCountry(
         guestDoc.country,
         waterConsumptionDoc.infoPacket.consumption);
 };
 
 const updateWaterXDayChart = (waterConsumptionDoc) => {
-    console.log("Updating waterXDay chart");
     const date = waterConsumptionDoc.infoPacket.date.toISOString().slice(0,10);
     sockets.emitWaterXDay(
         waterConsumptionDoc.infoPacket.consumption,
@@ -321,7 +313,6 @@ const updateWaterXDayChart = (waterConsumptionDoc) => {
 };
 
 const updateWaterXHourChart = (waterConsumptionDoc) => {
-    console.log("Updating waterXHour chart");
     const date = waterConsumptionDoc.infoPacket.date;
     // Fix hours offset
     date.setHours(date.getHours() + utils.offsetUTCHours);
@@ -336,7 +327,6 @@ const updateWaterXHourChart = (waterConsumptionDoc) => {
 };
 
 const updateWaterXRoomChart = async (waterConsumptionDoc) => {
-    console.log("Updating waterXRoom chart");
     const sensorDoc = await entities.EspSensor.findById(waterConsumptionDoc.sensor_id, 'room_id');
     const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber capacity occupancyState');
     sockets.emitWaterXRoom(
@@ -349,7 +339,6 @@ const updateWaterXRoomChart = async (waterConsumptionDoc) => {
 };
 
 const updateTotalWaterMetric = async () => {
-    console.log("Updating total water metric");
     const totals = (await waterConsumptionUseCases.metrics.totalConsumption())[0];
     sockets.emitTotalWaterMetric(
         totals.consumption,
