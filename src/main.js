@@ -81,6 +81,7 @@ const server = app.listen(app.get('port'), () => {
     console.log(`Listening on port ${app.get('port')}`);
     mqtt.connectClient();
     mqtt.listenToMQTTMessages();
+    mqtt.setUpIntermitentTotalsCommunication();
 });
 
 // Init web sockets
@@ -158,6 +159,11 @@ app.post('/login', checkNonAuthenticaded, passport.authenticate('local', {
 app.post('/logout', checkAuthenticated, (req, res, next) => {
     req.logOut();
     res.redirect('/login');
+});
+
+// Landing page
+app.get('/info', (req, res, next) => {
+    res.render('navigation/ejs/info');
 });
 
 function checkAuthenticated(req, res, next) {

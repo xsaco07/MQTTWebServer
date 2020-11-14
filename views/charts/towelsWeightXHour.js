@@ -119,7 +119,7 @@ class TowelsXHour {
 const loadTowelsWeightXHourChart = (serverData) => {
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id+':00', towelsWeightXHour);
-        towelsWeightXHour.data.datasets[0].data[index] = Math.round(object.weight / 1000);
+        towelsWeightXHour.data.datasets[0].data[index] = object.weight / 1000;
     }
     towelsWeightXHour.update();
 };
@@ -129,7 +129,7 @@ socket.on('towelsXHour', function(object){
     if(TowelsXHour.CURRENT_DATE >= TODAY){
         // If the label is being shown in this moment
         if(index != -1){
-            towelsWeightXHour.data.datasets[0].data[index] += Math.round(object.weight / 1000);
+            towelsWeightXHour.data.datasets[0].data[index] += object.weight / 1000;
             towelsWeightXHour.update();
         }
     }

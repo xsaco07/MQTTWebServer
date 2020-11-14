@@ -22,8 +22,6 @@ const turnOnRoomState = async (room_id) => {
 // Creates a Total document given the checkIn id
 // Returns sensor document
 const createTotalObject = async (checkIn_id, room_id) => {
-    console.log(checkIn_id);
-    console.log(room_id);
     const sensorDoc = await espSensorUseCases.getEspSensorByRoomId({room_id});
     const totalObject = factories.buildTotalEntity({
         checkIn_id,
@@ -45,7 +43,6 @@ module.exports = {
     // inputData = {room_id : ObjectId, guest_id : ObjectId, duration : {days : int, nights : int}}
     newCheckIn : async (inputData) => {
         try {
-            console.log(inputData);
             // Build and save object
             const finalObject = {
                 room_id : inputData.room_id,
@@ -58,7 +55,6 @@ module.exports = {
             // Actions post save
             const roomDoc = await turnOnRoomState(inputData.room_id);
             const sensorDoc = await createTotalObject(savedObject._id, roomDoc._id);
-            console.log(sensorDoc);
             turnOnSensorState(sensorDoc);
 
             return savedObject;

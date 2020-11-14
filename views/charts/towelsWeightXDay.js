@@ -63,7 +63,7 @@ const loadTowelsWeightXDayChart = (serverData, lastDayConsidered) => {
 
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, towelsWeightXDay);
-        towelsWeightXDay.data.datasets[0].data[index] = Math.round(object.weight / 1000);
+        towelsWeightXDay.data.datasets[0].data[index] = object.weight / 1000;
     }
     
     towelsWeightXDay.update();
@@ -99,7 +99,7 @@ socket.on('towelsXDay', function(object){
     let index = getElementIndex(object._id, towelsWeightXDay);
     // If the label is being shown in this moment
     if(index != -1){
-        towelsWeightXDay.data.datasets[0].data[index] += Math.round(object.weight / 1000);
+        towelsWeightXDay.data.datasets[0].data[index] += object.weight / 1000;
         towelsWeightXDay.update();
     }
 });
