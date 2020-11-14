@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const utils = require('../utils/utils');
+const constants = require('../utils/constants');
 const Schema = mongoose.Schema;
 
 const towelConsumptionSchema = {
@@ -15,7 +16,10 @@ const towelConsumptionSchema = {
         },
         towels : {
             type : Number,
-            default : 0, // this value is calculated at a server level
+            default : function() {
+                const count = Math.round(this.infoPacket.weight / constants.TOWEL_WEIGHT_GR_APROX);
+                return (count === 0) ? 1 : count;
+            }, 
         },
         weight : {
             type : Number,
@@ -23,7 +27,10 @@ const towelConsumptionSchema = {
         },
         consumption : {
             type : Number,
-            requird : true,
+            default : function() {
+                const consumption = this.infoPacket.towels * constants.WATER_CONSUMP_APROX;
+                return consumption;
+            }
         },
         date : {
             type : Date,

@@ -67,10 +67,10 @@ const loadTowelsWeightXRoomChart = (serverData) => {
         let index = getElementIndex(`Hab-${roomNumber}`, towelsWeightXRoom);
         if(index == -1){
             towelsWeightXRoom.data.labels.push(`Hab-${roomNumber}`);
-            towelsWeightXRoom.data.datasets[0].data.push(Math.round(object.towels));
+            towelsWeightXRoom.data.datasets[0].data.push(object.weight / 1000);
             towelsWeightXRoom.data.datasets[0].capacity.push(object.capacity);
         }
-        else towelsWeightXRoom.data.datasets[0].data[index] += Math.round(object.towels);
+        else towelsWeightXRoom.data.datasets[0].data[index] += object.weight / 1000;
     }
 
     towelsWeightXRoom.update();
@@ -81,8 +81,8 @@ socket.on('towelsXRoom', function(data){
     console.log(index);
     if(index == -1){
         towelsWeightXRoom.data.labels.push(`Hab-${data._id}`);
-        towelsWeightXRoom.data.datasets[0].data.push(Math.round(data.towels));
+        towelsWeightXRoom.data.datasets[0].data.push(data.weight / 1000);
     }
-    else towelsWeightXRoom.data.datasets[0].data[index] += Math.round(data.towels);
+    else towelsWeightXRoom.data.datasets[0].data[index] += data.weight / 1000;
     towelsWeightXRoom.update();
 });

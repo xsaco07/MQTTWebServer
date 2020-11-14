@@ -120,7 +120,7 @@ class WaterXHour {
 const loadWaterXHourChart = (serverData) => {
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id+':00', waterXHour);
-        waterXHour.data.datasets[0].data[index] += Math.round(object.consumption);
+        waterXHour.data.datasets[0].data[index] += object.consumption;
     }
     waterXHour.update();
 };
@@ -130,7 +130,7 @@ socket.on('waterXHour', function(object){
     if(WaterXHour.CURRENT_DATE >= TODAY){
         // If the label is being shown in this moment
         if(index != -1){
-            waterXHour.data.datasets[0].data[index] += Math.round(object.consumption);
+            waterXHour.data.datasets[0].data[index] += object.consumption;
             waterXHour.update();    
         }
     }

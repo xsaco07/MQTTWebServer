@@ -49,12 +49,12 @@ const towelsWeightXAge = new Chart(towelsWeightXAgeCanvas, {
 const loadTowelsWeightXAgeChart = (serverData) =>{
     for (guestData of Object.values(serverData)){
         const index = getAgeIndex(guestData.guest.age);
-        towelsWeightXAge.data.datasets[0].data[index] += Math.round(guestData.weight / 1000);
+        towelsWeightXAge.data.datasets[0].data[index] += guestData.weight / 1000;
     }
     towelsWeightXAge.update();
 };
 
 socket.on('towelsXAge', function(data){
-    towelsWeightXAge.data.datasets[0].data[data.index] += Math.round(data.weight / 1000);
+    towelsWeightXAge.data.datasets[0].data[data.index] += data.weight / 1000;
     towelsWeightXAge.update();
 });
