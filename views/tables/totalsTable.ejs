@@ -36,7 +36,7 @@
                                     <td><%= total.totals.towels.weight / 1000 %></td>
                                     <td><%= total.totals.towels.consumption %></td>
                                     <td><%= total.totals.water.consumption %></td>
-                                    <td><%= total.totals.water.seconds / 60 %></td>
+                                    <td><%= Math.roound(total.totals.water.seconds / 60) %></td>
                                     <td>
                                         <span class="font-weight-bold">
                                             <%= total.totals.totalConsumption%>

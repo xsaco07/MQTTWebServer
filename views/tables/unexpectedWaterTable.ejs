@@ -30,7 +30,7 @@
                                 <td><%= consumption.infoPacket.date.toLocaleDateString(); %></td>
                                 <td><%= consumption.infoPacket.date.toLocaleTimeString(); %> </td>
                                 <td><%= consumption.infoPacket.consumption %></td>
-                                <td><%= consumption.infoPacket.seconds / 60 %></td>
+                                <td><%= Math.round(consumption.infoPacket.seconds / 60) %></td>
                             </tr>
                         <% }) %>
                     </tbody>
