@@ -201,6 +201,44 @@ module.exports = {
             return null;
         } catch (error) { handleDBOperationError(error); }   
     },
+    // Returns towel consumptions by day for the last utils.LAST_DAYS days
+    // starting from an specific date
+    // inputData = {days : Number, lastDate : Date}
+    getConsumptionByDaySince : async (inputData) => {
+        try {
+            
+            let queryFilter = {};
+            // get current date
+            let date1 = new Date(inputData.lastDate);
+            // set date to midnight
+            date1.setHours(48,0,0,0);
+            // align with time zone offset
+            date1.setHours(date1.getHours() - utils.offsetUTCHours);
+            // substract N days
+            date1.setDate(date1.getDate() - inputData.days);
+
+            // get current date
+            let date2 = new Date(inputData.lastDate);
+            // set date to midnight
+            date2.setHours(48,0,0,0);
+            // align with time zone offset
+            date2.setHours(date2.getHours() - utils.offsetUTCHours);
+
+            queryFilter = {"infoPacket.date" : { $gte: date1, $lt: date2}};
+
+            const total = await entities.TowelConsumption.aggregate()
+            .match({ $and : [queryFilter,{expected : true}]})
+            .group({
+                // Each row will be grouped by the day
+                _id : { $dateToString: { format: "%Y-%m-%d", date: "$infoPacket.date" } }, 
+                towels : {$sum : "$infoPacket.towels"},
+                weight : {$sum : "$infoPacket.weight"},
+                consumption : {$sum : "$infoPacket.consumption"}
+            });
+            if(total.length > 0) return total;
+            return null;
+        } catch (error) { handleDBOperationError(error); }   
+    },
     // Returns expected towel consumptions by hour for specific day
     // inputData = {date : Date}
     getConsumptionByHour : async (inputData) => {

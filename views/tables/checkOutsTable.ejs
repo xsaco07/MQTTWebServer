@@ -1,82 +1,70 @@
-<%- include('../partials/_header') %>
-<body>
-
-    <div class="content">
-        <div class="container-fluid">
-            <div class="row">
-            <div class="col-md-12">
-                <div class="card card-plain">
-                <div class="card-header card-header-primary text-center">
-                    <h3 class="card-title mt-0">Check Outs</h3>
-                    <h5 class="card-category">Registro de check outs y consumo total</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover text-center">
-                            <thead class="">
-                                <th>Check In</th>
-                                <th>Dias</th>
-                                <th>Noches</th>
-                                <th>Check Out</th>
-                                <th>Nombre</th>
-                                <th>Primer apellido</th>
-                                <th>Segundo apellido</th>
-                                <th>Total peso toallas (kgs)</th>
-                                <th>Total agua por salidas (lts)</th>
-                                <th>Total agua por toallas (lts)</th>
-                                <th>Tiempo de consumo de agua (min)</th>
-                                <th>Consumo de agua total (lts)</th>
-                            </thead>
-                            <tbody>
-                                <% checkOuts.forEach(function(checkOut){ %>
-                                    <tr>
-                                        <% 
-                                            checkOut.checkIn_id.date.setHours(
-                                            checkOut.checkIn_id.date.getHours() + 
-                                            new Date().getTimezoneOffset()/60
-                                            ); 
-                                            checkOut.date.setHours(
-                                            checkOut.date.getHours() + 
-                                            new Date().getTimezoneOffset()/60
-                                            ); 
-                                        %> 
-                                        <td>
-                                            <%= checkOut.checkIn_id.date.toLocaleDateString(); %>
-                                            <%= checkOut.checkIn_id.date.toLocaleTimeString(); %> 
-                                        </td>
-                                        <td><%= checkOut.checkIn_id.duration.days %></td>
-                                        <td><%= checkOut.checkIn_id.duration.nights %></td>
-                                        <td>
-                                            <%= checkOut.date.toLocaleDateString(); %>
-                                            <%= checkOut.date.toLocaleTimeString(); %> 
-                                        </td>
-                                        <td><%= checkOut.checkIn_id.guest_id.fullName.name %></td>
-                                        <td><%= checkOut.checkIn_id.guest_id.fullName.lastName1 %></td>
-                                        <td><%= checkOut.checkIn_id.guest_id.fullName.lastName2 %></td>
-                                        <td><%= checkOut.total_id.totals.towels.weight / 1000 %></td>
-                                        <td><%= checkOut.total_id.totals.water.consumption %></td>
-                                        <td><%= checkOut.total_id.totals.towels.consumption %></td>
-                                        <td><%= Math.round((checkOut.total_id.totals.water.seconds / 60)) %></td>
-                                        <td>
-                                            <span class="font-weight-bold">
-                                                <%= checkOut.total_id.totals.totalConsumption%>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                <% }) %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                </div>
-            </div>
+<div class="row mb-5 mt-5">
+    <div class="col-md-12">
+        <div class="card card-plain">
+        <div class="card-header card-header-primary text-center">
+            <h3 class="card-title mt-0">Check Outs</h3>
+            <h5 class="card-category">Registro de check outs y consumo total</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover text-center">
+                    <thead class="">
+                        <th>Check In</th>
+                        <th>Dias</th>
+                        <th>Noches</th>
+                        <th>Check Out</th>
+                        <th>Habitación</th>
+                        <th>Nombre</th>
+                        <th>Primer apellido</th>
+                        <th>Segundo apellido</th>
+                        <th>Total toallas(kgs)</th>
+                        <th>Total agua por salidas(lts)</th>
+                        <th>Total agua por toallas(lts)</th>
+                        <th>Tiempo de consumo de agua(min)</th>
+                        <th>Consumo total de agua(lts)</th>
+                    </thead>
+                    <tbody>
+                        <% checkOuts.forEach(function(checkOut){ %>
+                            <tr>
+                                <% 
+                                    checkOut.checkIn_id.date.setHours(
+                                    checkOut.checkIn_id.date.getHours() + 
+                                    new Date().getTimezoneOffset()/60
+                                    ); 
+                                    checkOut.date.setHours(
+                                    checkOut.date.getHours() + 
+                                    new Date().getTimezoneOffset()/60
+                                    ); 
+                                %> 
+                                <td>
+                                    <%= checkOut.checkIn_id.date.toLocaleDateString(); %>
+                                    <%= checkOut.checkIn_id.date.toLocaleTimeString(); %> 
+                                </td>
+                                <td><%= checkOut.checkIn_id.duration.days %></td>
+                                <td><%= checkOut.checkIn_id.duration.nights %></td>
+                                <td>
+                                    <%= checkOut.date.toLocaleDateString(); %>
+                                    <%= checkOut.date.toLocaleTimeString(); %> 
+                                </td>
+                                <td><%= checkOut.checkIn_id.room_id.roomNumber %></td>
+                                <td><%= checkOut.checkIn_id.guest_id.fullName.name %></td>
+                                <td><%= checkOut.checkIn_id.guest_id.fullName.lastName1 %></td>
+                                <td><%= checkOut.checkIn_id.guest_id.fullName.lastName2 %></td>
+                                <td><%= checkOut.total_id.totals.towels.weight / 1000 %></td>
+                                <td><%= checkOut.total_id.totals.water.consumption %></td>
+                                <td><%= checkOut.total_id.totals.towels.consumption %></td>
+                                <td><%= Math.round((checkOut.total_id.totals.water.seconds / 60)) %></td>
+                                <td>
+                                    <span class="font-weight-bold">
+                                        <%= checkOut.total_id.totals.totalConsumption%>
+                                    </span>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             </div>
         </div>
+        </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
-</body>
-</html>
+</div>

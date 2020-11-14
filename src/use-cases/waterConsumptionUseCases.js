@@ -197,6 +197,43 @@ module.exports = {
             return null;
         } catch (error) { handleDBOperationError(error); }   
     },
+    // Returns expected water consumptions by day for the last utils.LAST_DAYS days
+    // starting from a specific date
+    // inputData = {}
+    getConsumptionByDaySince : async (inputData) => {
+        try {
+
+            let queryFilter = {};
+            // get current date
+            let date1 = new Date(inputData.lastDate);
+            // set date to midnight
+            date1.setHours(48,0,0,0);
+            // align with time zone offset
+            date1.setHours(date1.getHours() - utils.offsetUTCHours);
+            // substract N days
+            date1.setDate(date1.getDate() - inputData.days);
+
+            // get current date
+            let date2 = new Date(inputData.lastDate);
+            // set date to midnight
+            date2.setHours(48,0,0,0);
+            // align with time zone offset
+            date2.setHours(date2.getHours() - utils.offsetUTCHours);
+
+            queryFilter = {"infoPacket.date" : { $gte: date1, $lt: date2}};
+
+            const total = await entities.WaterConsumption.aggregate()
+            .match({ $and : [queryFilter,{expected : true}]})
+            .group({
+                // Each row will be grouped by the day
+                _id : { $dateToString: { format: "%Y-%m-%d", date: "$infoPacket.date" } }, 
+                consumption : {$sum : "$infoPacket.consumption"},
+                seconds : {$sum : "$infoPacket.seconds"}
+            });
+            if(total.length > 0) return total;
+            return null;
+        } catch (error) { handleDBOperationError(error); }   
+    },
     // Returns expected water consumptions by hour for specific day
     // inputData = {date : Date}
     getConsumptionByHour : async (inputData) => {
@@ -246,7 +283,7 @@ module.exports = {
 
             let state = (inputData.state != null ) ? (inputData.state == 'true') : null;
             
-            // Get all waterConsumptions registered
+            // Get all expected waterConsumptions registered
             const waterConsumptions = await entities.WaterConsumption.find(
                 {expected : true}, 
                 'sensor_id infoPacket');
