@@ -41,4 +41,16 @@
         return daysList.reverse();
     }
 
+    // Return list of last X days in 'yyyy-mm-dd' format starting from lastDay day
+    function getLastXDaysSince (days, lastDay) {
+        const date = new Date(lastDay);
+        const daysList = [];
+        for (let i = 0; i < days; i++) {
+            daysList.push(date.toISOString().slice(0, 10));
+            var pastDate = date.getDate() - 1;  
+            date.setDate(pastDate);
+        }
+        return daysList.reverse();
+    }
+
 </script>

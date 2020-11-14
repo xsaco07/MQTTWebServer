@@ -98,6 +98,18 @@ module.exports = {
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
+    // Action = towel_consumption/day/:lastDate/:days
+    // Params = {days : Number, lastDate : Date}
+    getConsumptionByDaySince : async (req, res, next) => {
+        try {
+            const days = req.params.days;
+            const lastDate = req.params.lastDate;
+            const docs = await towelUseCases.getConsumptionByDaySince({days, lastDate});
+            if(docs == null || Object.keys(docs).length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
     // Action = towel_consumption/hour/:date
     // Params = {}
     getConsumptionByHour : async (req, res, next) => {

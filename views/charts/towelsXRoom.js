@@ -82,6 +82,7 @@ socket.on('towelsXRoom', function(data){
     if(index == -1){
         towelsXRoom.data.labels.push(`Hab-${data._id}`);
         towelsXRoom.data.datasets[0].data.push(data.towels);
+        towelsXRoom.data.datasets[0].capacity.push(object.capacity);
     }
     else towelsXRoom.data.datasets[0].data[index] += data.towels;
     towelsXRoom.update();
