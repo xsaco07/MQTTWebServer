@@ -24,7 +24,7 @@ const towelsWeightXHour = new Chart(towelsWeightXHourCanvas, {
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            text: "Kilos de toallas consumidas por hora (hoy)",
+            text: `Kilos de toallas consumidas por hora (${TODAY_FORMATTED})`,
         },
         legend: {
             display: true,
@@ -56,16 +56,81 @@ const towelsWeightXHour = new Chart(towelsWeightXHourCanvas, {
     }
 });
 
+class TowelsXHour {
+
+    static getNewDate() {
+        const newDate = new Date();
+        newDate.setHours(newDate.getHours() - new Date().getTimezoneOffset()/60);
+        return newDate;
+    }
+
+    static CURRENT_DATE = this.getNewDate();
+    static CURRENT_FORMATTED_DATE = this.CURRENT_DATE.toISOString().slice(0, 10);
+    static chart = towelsWeightXDay;
+
+    static goBack() {
+
+        // Reduce 1 day
+        this.CURRENT_DATE.setDate(this.CURRENT_DATE.getDate() - 1);
+        // Get yyyy-mm-dd format
+        this.CURRENT_FORMATTED_DATE = this.CURRENT_DATE.toISOString().slice(0, 10);
+
+        // Update chart title to show current date
+        towelsWeightXHour.options.title.text = 
+            `Kilos de toallas consumidas por hora (${this.CURRENT_FORMATTED_DATE})`;
+        towelsWeightXHour.data.datasets[0].data = 
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        towelsWeightXHour.update();
+
+        const endPoint = `/api/towelConsumption/hour/${this.CURRENT_FORMATTED_DATE}/`;
+        fetchAndLoadTowelsWeightXHour(endPoint);
+
+    }
+    
+    static goForward() {
+        
+        // Save tmp date to midnight
+        const tmpToday = new Date(TODAY);
+        tmpToday.setHours(24, 0, 0, 0);
+
+        const tmpDate = new Date(this.CURRENT_DATE);
+        // Add 1 day
+        tmpDate.setDate(tmpDate.getDate() + 1);
+
+        // Can not go beyond today
+        if(tmpDate < tmpToday){
+            
+            this.CURRENT_DATE.setDate(this.CURRENT_DATE.getDate() + 1);
+            this.CURRENT_FORMATTED_DATE = this.CURRENT_DATE.toISOString().slice(0, 10);
+
+            // Update chart title to show current date
+            towelsWeightXHour.options.title.text = 
+                `Kilos de toallas consumidas por hora (${this.CURRENT_FORMATTED_DATE})`;
+            towelsWeightXHour.data.datasets[0].data = 
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            towelsWeightXHour.update();
+
+            const endPoint = `/api/towelConsumption/hour/${this.CURRENT_FORMATTED_DATE}/`;
+            fetchAndLoadTowelsWeightXHour(endPoint);
+        }
+    }
+};
+
 const loadTowelsWeightXHourChart = (serverData) => {
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id+':00', towelsWeightXHour);
-        towelsWeightXHour.data.datasets[0].data[index] += Math.round(object.weight / 1000);
+        towelsWeightXHour.data.datasets[0].data[index] = Math.round(object.weight / 1000);
     }
     towelsWeightXHour.update();
 };
 
-socket.on('towelsWeightXHour', function(object){
+socket.on('towelsXHour', function(object){
     let index = getElementIndex(object._id+':00', towelsWeightXHour);
-    towelsWeightXHour.data.datasets[0].data[index] += Math.round(object.weight / 1000);
-    towelsWeightXHour.update();
+    if(TowelsXHour.CURRENT_DATE >= TODAY){
+        // If the label is being shown in this moment
+        if(index != -1){
+            towelsWeightXHour.data.datasets[0].data[index] += Math.round(object.weight / 1000);
+            towelsWeightXHour.update();
+        }
+    }
 });

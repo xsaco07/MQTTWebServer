@@ -54,7 +54,7 @@ const loadTowelsWeightXAgeChart = (serverData) =>{
     towelsWeightXAge.update();
 };
 
-socket.on('towelsWeightXAge', function(data){
+socket.on('towelsXAge', function(data){
     towelsWeightXAge.data.datasets[0].data[data.index] += Math.round(data.weight / 1000);
     towelsWeightXAge.update();
 });

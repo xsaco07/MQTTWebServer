@@ -78,6 +78,7 @@ socket.on('waterXRoom', function(data){
     if(index == -1){
         waterXRoom.data.labels.push(`Hab-${data._id}`);
         waterXRoom.data.datasets[0].data.push(data.consumption);
+        waterXRoom.data.datasets[0].capacity.push(object.capacity);
     }
     else waterXRoom.data.datasets[0].data[index] += data.consumption;
     waterXRoom.update();
