@@ -54,17 +54,22 @@
               <p>Consumos generales</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/unexpected/">
-              <i class="material-icons">report</i>
-              <p>Consumos inesperados</p>
-            </a>
-          </li>
+          <% if(userDoc.userName === 'admin'){ %>
+            <li class="nav-item">
+              <a class="nav-link" href="/unexpected/">
+                <i class="material-icons">report</i>
+                <p>Consumos inesperados</p>
+              </a>
+            </li>
+          <% } %>
           <!-- your sidebar here -->
         </ul>
       </div>
     </div>
     <div class="main-panel">
+
+      <%- include('partials/_navbar') %>
+
       <div class="content">
         <div class="container-fluid">
 
@@ -95,7 +100,7 @@
                     <i class="material-icons">bathtub</i>
                   </div>
                   <p class="card-category">Agua consumida</p>
-                  <h3 class="card-title" id="waterMetric"><%= waterMetric.consumption %> lts</h3>
+                  <h3 class="card-title" id="waterMetric"><%= Math.round(waterMetric.consumption) %> lts</h3>
                 </div>
                 <div class="card-footer text-center"></div>
               </div>
@@ -137,34 +142,74 @@
           </div>
 
           <div class="row justify-content-center mb-5">
-            <div class="col-8">
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="WaterXDay.goXDaysBack()">
+                <i class="material-icons" style="font-size: 28px;">arrow_back_ios</i>
+              </button>
+            </div>
+            <div class="col-8 text-center">
               <div>
                 <canvas id="waterXDay"></canvas>
               </div>
             </div>
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="WaterXDay.goXDaysForward()">
+                <i class="material-icons" style="font-size: 28px;">arrow_forward_ios</i>
+              </button>
+            </div>
           </div>
 
           <div class="row justify-content-center mb-5">
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="WaterXHour.goBack()">
+                <i class="material-icons" style="font-size: 28px;">arrow_back_ios</i>
+              </button>
+            </div>
             <div class="col-8">
               <div>
                 <canvas id="waterXHour"></canvas>
               </div>
             </div>
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="WaterXHour.goForward()">
+                <i class="material-icons" style="font-size: 28px;">arrow_forward_ios</i>
+              </button>
+            </div>
           </div>
 
           <div class="row justify-content-center mb-5">
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="TowelsXDay.goXDaysBack()">
+                <i class="material-icons" style="font-size: 28px;">arrow_back_ios</i>
+              </button>
+            </div>
             <div class="col-8">
               <div>
                 <canvas id="towelsWeightXDay"></canvas>
               </div>
             </div>
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="TowelsXDay.goXDaysForward()">
+                <i class="material-icons" style="font-size: 28px;">arrow_forward_ios</i>
+              </button>
+            </div>
           </div>
 
           <div class="row justify-content-center mb-5">
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="TowelsXHour.goBack()">
+                <i class="material-icons" style="font-size: 28px;">arrow_back_ios</i>
+              </button>
+            </div>
             <div class="col-8">
               <div>
                 <canvas id="towelsWeightXHour"></canvas>
               </div>
+            </div>
+            <div class="col-2 text-center align-self-center">
+              <button type="button" class="btn btn-secondary text-center" onclick="TowelsXHour.goForward()">
+                <i class="material-icons" style="font-size: 28px;">arrow_forward_ios</i>
+              </button>
             </div>
           </div>
 
@@ -175,6 +220,7 @@
   
   <%- include('partials/_scripts') %>
   <script src="index.js"></script>
+  <script src="dashboard/assets/js/material-dashboard.js"></script>
   <script src="charts/towelsWeightXDay.js"></script>
   <script src="charts/towelsWeightXHour.js"></script>
   <script src="charts/waterXDay.js"></script>

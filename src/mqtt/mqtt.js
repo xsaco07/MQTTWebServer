@@ -243,12 +243,13 @@ const updateTowelsXHourChart = (towelConsumptionDoc) => {
 const updateTowelsXRoomChart = async (towelConsumptionDoc) => {
     console.log("Updating towelsXRoom chart");
     const sensorDoc = await entities.EspSensor.findById(towelConsumptionDoc.sensor_id, 'room_id');
-    const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+    const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber capacity occupancyState');
     sockets.emitTowelsXRoom(
         towelConsumptionDoc.infoPacket.towels,
         towelConsumptionDoc.infoPacket.consumption,
         towelConsumptionDoc.infoPacket.weight,
         roomDoc.roomNumber,
+        roomDoc.capacity,
         roomDoc.occupancyState
     );
 };
@@ -307,13 +308,14 @@ const updateWaterXHourChart = (waterConsumptionDoc) => {
 const updateWaterXRoomChart = async (waterConsumptionDoc) => {
     console.log("Updating waterXRoom chart");
     const sensorDoc = await entities.EspSensor.findById(waterConsumptionDoc.sensor_id, 'room_id');
-    const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber occupancyState');
+    const roomDoc = await entities.Room.findById(sensorDoc.room_id, 'roomNumber capacity occupancyState');
     sockets.emitWaterXRoom(
         waterConsumptionDoc.infoPacket.consumption,
         waterConsumptionDoc.infoPacket.seconds,
         roomDoc.roomNumber,
+        roomDoc.capacity,
         roomDoc.occupancyState
-    )
+    );
 };
 
 const updateTotalWaterMetric = async () => {

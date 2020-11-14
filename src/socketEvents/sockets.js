@@ -25,56 +25,62 @@ module.exports = {
         });
     },
 
-    emitTowelsXAge : (age, towels, consumption) => {
+    emitTowelsXAge : (age, towels, consumption, weight) => {
         console.log('Emitting towelsXAge message through socket...');
         const message = {
             index : getAgeIndex(age),
             towels,
-            consumption
+            consumption,
+            weight
         };
         console.log(message);
         io.emit('towelsXAge', message);
     },
 
-    emitTowelsXCountry : (country, towels, consumption) => {
+    emitTowelsXCountry : (country, towels, consumption, weight) => {
         console.log('Emitting towelsXCountry message through socket...');
         const message = {
             country,
             towels,
-            consumption
+            consumption,
+            weight
         };
         console.log(message);
         io.emit('towelsXCountry', message);
     },
 
-    emitTowelsXDay : (towels, consumption, date) => {
+    emitTowelsXDay : (towels, consumption, weight, date) => {
         console.log('Emitting towelsXDay message through socket...');
         const message = {
             towels,
             consumption,
+            weight,
             _id : date
         };
         console.log(message);
         io.emit('towelsXDay', message);
     },
 
-    emitTowelsXHour : (towels, consumption, hour) => {
+    emitTowelsXHour : (towels, consumption, weight, hour) => {
         console.log('Emitting towelsXHour message through socket...');
         const message = {
             towels,
             consumption,
+            weight,
             _id : hour
         };
         console.log(message);
         io.emit('towelsXHour', message);
     },
 
-    emitTowelsXRoom : (towels, consumption, roomNumber, roomOccupancyState) => {
+    emitTowelsXRoom : (towels, consumption, weight, roomNumber, capacity, roomOccupancyState) => {
         console.log('Emitting towelsXRoom message through socket...');
         const message = {
             _id : roomNumber,
             towels,
             consumption,
+            weight,
+            capacity,
             roomOccupancyState
         };
         console.log(message);
@@ -123,12 +129,13 @@ module.exports = {
         io.emit('waterXHour', message);
     },
 
-    emitWaterXRoom : (consumption, seconds, roomNumber, roomOccupancyState) => {
+    emitWaterXRoom : (consumption, seconds, roomNumber, capacity, roomOccupancyState) => {
         console.log('Emitting towelsXRoom message through socket...');
         const message = {
             _id : roomNumber,
             consumption,
             seconds,
+            capacity,
             roomOccupancyState,
         };
         console.log(message);

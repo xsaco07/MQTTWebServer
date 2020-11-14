@@ -59,9 +59,9 @@ module.exports = {
     getByUserName : async (req, res, next) => {
         const userName = req.params.userName;
         try {
-            const docs = await userUseCases.getUserByUserName({userName});
-            if(docs.length == 0) res.status(204).end();
-            else res.status(200).json(docs);
+            const doc = await userUseCases.getUserByUserName({userName});
+            if(doc == null) res.status(204).end();
+            else res.status(200).json(doc);
         } catch (error) { handleGetRequestError(error, res); }
     }
 }

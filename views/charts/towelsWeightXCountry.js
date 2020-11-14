@@ -60,7 +60,7 @@ const loadTowelsWeightXCountryChart = (serverData) => {
     towelsWeightXCountry.update();
 };
 
-socket.on('towelsWeightXCountry', function(data){
+socket.on('towelsXCountry', function(data){
     let index = getElementIndex(data.country, towelsWeightXCountry);
     if(index == -1){
         towelsWeightXCountry.data.labels.push(data.country);

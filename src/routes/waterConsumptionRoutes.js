@@ -18,6 +18,8 @@ router.get('/day/', waterConsumptionController.getConsumptionByDay);
 
 router.get('/day/:days', waterConsumptionController.getConsumptionByDay);
 
+router.get('/day/:lastDate/:days', waterConsumptionController.getConsumptionByDaySince);
+
 router.get('/hour/:date/', waterConsumptionController.getConsumptionByHour);
 
 router.get('/room/', waterConsumptionController.getConsumptionByRoom);
