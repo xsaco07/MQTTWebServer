@@ -53,7 +53,7 @@
                                 <td><%= checkOut.total_id.totals.towels.weight / 1000 %></td>
                                 <td><%= checkOut.total_id.totals.water.consumption %></td>
                                 <td><%= checkOut.total_id.totals.towels.consumption %></td>
-                                <td><%= Math.round((checkOut.total_id.totals.water.seconds / 60)) %></td>
+                                <td><%= Math.round(checkOut.total_id.totals.water.seconds / 60) %></td>
                                 <td>
                                     <span class="font-weight-bold">
                                         <%= checkOut.total_id.totals.totalConsumption%>
