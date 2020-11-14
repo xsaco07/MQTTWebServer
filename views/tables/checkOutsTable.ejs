@@ -13,14 +13,15 @@
                         <th>Dias</th>
                         <th>Noches</th>
                         <th>Check Out</th>
+                        <th>Habitación</th>
                         <th>Nombre</th>
                         <th>Primer apellido</th>
                         <th>Segundo apellido</th>
-                        <th>Total peso toallas (kgs)</th>
-                        <th>Total agua por salidas (lts)</th>
-                        <th>Total agua por toallas (lts)</th>
-                        <th>Tiempo de consumo de agua (min)</th>
-                        <th>Consumo de agua total (lts)</th>
+                        <th>Total toallas(kgs)</th>
+                        <th>Total agua por salidas(lts)</th>
+                        <th>Total agua por toallas(lts)</th>
+                        <th>Tiempo de consumo de agua(min)</th>
+                        <th>Consumo total de agua(lts)</th>
                     </thead>
                     <tbody>
                         <% checkOuts.forEach(function(checkOut){ %>
@@ -45,6 +46,7 @@
                                     <%= checkOut.date.toLocaleDateString(); %>
                                     <%= checkOut.date.toLocaleTimeString(); %> 
                                 </td>
+                                <td><%= checkOut.checkIn_id.room_id.roomNumber %></td>
                                 <td><%= checkOut.checkIn_id.guest_id.fullName.name %></td>
                                 <td><%= checkOut.checkIn_id.guest_id.fullName.lastName1 %></td>
                                 <td><%= checkOut.checkIn_id.guest_id.fullName.lastName2 %></td>

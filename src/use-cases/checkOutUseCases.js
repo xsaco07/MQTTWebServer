@@ -28,7 +28,7 @@ const turnOffCheckInStatus = async (checkIn_id) => {
 // Returns the updated checkIn document
 const turnOffGuestStatus = async (checkIn_id) => {
     const boundCheckIn = await checkInUseCases.getCheckInById({checkIn_id});
-    let guestDoc = await guestUseCases.getGuestById(boundCheckIn.guest_id);
+    let guestDoc = await guestUseCases.getGuestById({guest_id: boundCheckIn.guest_id});
     guestDoc.status = false;
     return await guestDoc.save();
 };

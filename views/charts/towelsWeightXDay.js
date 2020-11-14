@@ -95,7 +95,7 @@ const TowelsXDay = Object.freeze({
     }
 });
 
-socket.on('towelsWeightXDay', function(object){
+socket.on('towelsXDay', function(object){
     let index = getElementIndex(object._id, towelsWeightXDay);
     // If the label is being shown in this moment
     if(index != -1){

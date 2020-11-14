@@ -89,7 +89,7 @@ const loadWaterXDayChart = (serverData, lastDayConsidered) => {
 
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id, waterXDay);
-        waterXDay.data.datasets[0].data[index] += object.consumption;
+        waterXDay.data.datasets[0].data[index] += Math.round(object.consumption);
     }
     waterXDay.update();
 };
@@ -98,7 +98,7 @@ socket.on('waterXDay', function(object){
     let index = getElementIndex(object._id, waterXDay);
     // If the label is being shown in this moment
     if(index != -1){
-        waterXDay.data.datasets[0].data[index] += object.consumption;
+        waterXDay.data.datasets[0].data[index] += Math.round(object.consumption);
         waterXDay.update();
     }
 });

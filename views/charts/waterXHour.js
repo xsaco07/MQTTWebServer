@@ -24,7 +24,7 @@ const waterXHour = new Chart(waterXHourCanvas, {
             padding : 20,
             fontSize : 24,
             fontStyle : "normal",
-            text: "Consumo de agua por hora (hoy)",
+            text: `Consumo de agua por hora (${TODAY_FORMATTED})`,
         },
         legend: {
             display: true,
@@ -56,19 +56,82 @@ const waterXHour = new Chart(waterXHourCanvas, {
     }
 });
 
+class WaterXHour {
+
+    static getNewDate() {
+        const newDate = new Date();
+        newDate.setHours(newDate.getHours() - new Date().getTimezoneOffset()/60);
+        return newDate;
+    }
+
+    static CURRENT_DATE = this.getNewDate();
+    static CURRENT_FORMATTED_DATE = this.CURRENT_DATE.toISOString().slice(0, 10);
+    static chart = waterXHour;
+
+    static goBack() {
+
+        // Reduce 1 day
+        this.CURRENT_DATE.setDate(this.CURRENT_DATE.getDate() - 1);
+        // Get yyyy-mm-dd format
+        this.CURRENT_FORMATTED_DATE = this.CURRENT_DATE.toISOString().slice(0, 10);
+
+        // Update chart title to show current date
+        waterXHour.options.title.text = 
+            `Consumo de agua por hora (${this.CURRENT_FORMATTED_DATE})`;
+        waterXHour.data.datasets[0].data = 
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        waterXHour.update();
+        
+        const endPoint = `/api/waterConsumption/hour/${this.CURRENT_FORMATTED_DATE}/`;
+        fetchAndLoadWaterXHour(endPoint);
+
+    }
+    static goForward() {
+        
+        // Save tmp date to midnight
+        const tmpToday = new Date(TODAY);
+        tmpToday.setHours(24, 0, 0, 0);
+
+        const tmpDate = new Date(this.CURRENT_DATE);
+        // Add 1 day
+        tmpDate.setDate(tmpDate.getDate() + 1);
+
+        // Can not go beyond today
+        if(tmpDate < tmpToday){
+
+            this.CURRENT_DATE.setDate(this.CURRENT_DATE.getDate() + 1);
+            this.CURRENT_FORMATTED_DATE = this.CURRENT_DATE.toISOString().slice(0, 10);
+
+            // Update chart title to show current date
+            waterXHour.options.title.text = 
+                `Consumo de agua por hora (${this.CURRENT_FORMATTED_DATE})`;
+            // Reset values in case the server answer is empty
+            waterXHour.data.datasets[0].data = 
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            waterXHour.update();
+
+            const endPoint = `/api/waterConsumption/hour/${this.CURRENT_FORMATTED_DATE}/`;
+            fetchAndLoadWaterXHour(endPoint);
+
+        }
+    }
+};
+
 const loadWaterXHourChart = (serverData) => {
     for (object of Object.values(serverData)){
         let index = getElementIndex(object._id+':00', waterXHour);
-        waterXHour.data.datasets[0].data[index] += object.consumption;
+        waterXHour.data.datasets[0].data[index] += Math.round(object.consumption);
     }
     waterXHour.update();
 };
 
 socket.on('waterXHour', function(object){
     let index = getElementIndex(object._id+':00', waterXHour);
-    // If the label is being shown in this moment
-    if(index != -1){
-        waterXHour.data.datasets[0].data[index] += object.consumption;
-        waterXHour.update();    
+    if(WaterXHour.CURRENT_DATE >= TODAY){
+        // If the label is being shown in this moment
+        if(index != -1){
+            waterXHour.data.datasets[0].data[index] += Math.round(object.consumption);
+            waterXHour.update();    
+        }
     }
 });
