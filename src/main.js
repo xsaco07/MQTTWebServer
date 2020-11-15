@@ -92,9 +92,26 @@ app.get('/', checkAuthenticated, async (req, res, next) => {
     let towelsMetric = (await useCases.towelConsumptionUseCases.metrics.totalConsumption())[0];
     let waterMetric = (await useCases.waterConsumptionUseCases.metrics.totalConsumption())[0];
     let activeCheckIns = await useCases.checkInUseCases.metrics.activeCheckIns();
-    if (towelsMetric == undefined) towelsMetric = 0;
-    if (waterMetric == undefined) waterMetric = 0;
-    if (activeCheckIns == undefined) activeCheckIns = 0;
+    if (towelsMetric == undefined) {
+        towelsMetric = {
+            _id : null,
+            towels: 0,
+            weight : 0,
+            consumption : 0
+        };
+    }
+    if (waterMetric == undefined) {
+        waterMetric = {
+            _id: null,
+            consumption: 0,
+            seconds: 0
+        };
+    }
+    if (activeCheckIns == undefined) {
+        activeCheckIns = {
+            total : 0
+        };
+    }
     // Send in-session user from passport authentication
     res.render('index', {towelsMetric, waterMetric, activeCheckIns, userDoc : req.user});
 });
