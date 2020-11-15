@@ -89,9 +89,12 @@ socket.connect(server);
 
 // Render tables
 app.get('/', checkAuthenticated, async (req, res, next) => {
-    const towelsMetric = (await useCases.towelConsumptionUseCases.metrics.totalConsumption())[0];
-    const waterMetric = (await useCases.waterConsumptionUseCases.metrics.totalConsumption())[0];
-    const activeCheckIns = await useCases.checkInUseCases.metrics.activeCheckIns();
+    let towelsMetric = (await useCases.towelConsumptionUseCases.metrics.totalConsumption())[0];
+    let waterMetric = (await useCases.waterConsumptionUseCases.metrics.totalConsumption())[0];
+    let activeCheckIns = await useCases.checkInUseCases.metrics.activeCheckIns();
+    if (towelsMetric == undefined) towelsMetric = 0;
+    if (waterMetric == undefined) waterMetric = 0;
+    if (activeCheckIns == undefined) activeCheckIns = 0;
     // Send in-session user from passport authentication
     res.render('index', {towelsMetric, waterMetric, activeCheckIns, userDoc : req.user});
 });
