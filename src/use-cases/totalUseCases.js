@@ -32,6 +32,36 @@ module.exports = {
         } 
         catch (error) { handleDBOperationError(error); }
     },
+    getTotalsByGuest : async () => {
+        try { 
+            return await entities.Total.find({}, 'totals').
+            populate({
+                path : 'checkIn_id',
+                populate : {
+                    path : 'guest_id',
+                    select : 'age country'
+                },
+                select : 'guest_id'
+            }).
+            exec(); 
+        } 
+        catch (error) { handleDBOperationError(error); }
+    },
+    getTotalsByRoom : async () => {
+        try { 
+            return await entities.Total.find({}, 'totals').
+            populate({
+                path : 'checkIn_id',
+                populate : {
+                    path : 'room_id',
+                    select : 'roomNumber'
+                },
+                select : 'room_id'
+            }).
+            exec(); 
+        } 
+        catch (error) { handleDBOperationError(error); }
+    },
     // inputData = {total_id : ObjectId}
     getTotalById : async (inputData) => {
         try { return await entities.Total.findById(inputData.total_id); } 
