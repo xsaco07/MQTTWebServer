@@ -15,17 +15,21 @@ const URL_CONNECTION = process.env.MQTT_URL;
 const mqttClient = MQTT.connect(URL_CONNECTION);
 
 // Suscription topics
+const envTopic = process.env.MQTT_ENV_TOPIC;
 const rootTopic = "ecoH2o/";
-const rootServerTopic = `${rootTopic}sensor/`
-const towelConsumptionTopic = `${rootServerTopic}towelsConsumption/`;
-const waterConsumptionTopic = `${rootServerTopic}waterConsumption/`;
+const rootSensorTopic = `${envTopic}${rootTopic}sensor/`;
+const rootServerTopic = `${envTopic}${rootTopic}server/`;
+const towelConsumptionTopic = `${rootSensorTopic}towelsConsumption/`;
+const waterConsumptionTopic = `${rootSensorTopic}waterConsumption/`;
 
 // Publish topics
 const sensorTotalsTopic = 'totals/';
 const sensorStateTopic = 'state/';
 
 const SUB_TOPICS = {
+    envTopic,
     rootTopic,
+    rootSensorTopic,
     rootServerTopic,
     towelConsumptionTopic,
     waterConsumptionTopic
@@ -72,16 +76,15 @@ async function handleTowelConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await towelConsumptionUseCases.newTowelConsumption(parsedMessage);
-        console.log(savedObject);
         if(savedObject.expected) {
             const guestDoc = await getGuestByConsumption(savedObject);
-            updateTowelTotals(savedObject);
+            await updateTowelTotals(savedObject);
+            await updateTowelsXRoomChart(savedObject);
+            await updateTotalTowelsMetric();
             updateTowelsXAgeChart(savedObject, guestDoc);
             updateTowelsXCountryChart(savedObject, guestDoc);
             updateTowelsXDayChart(savedObject);
             updateTowelsXHourChart(savedObject);
-            updateTowelsXRoomChart(savedObject);
-            updateTotalTowelsMetric();
         }
         else {
             console.log('ALERT! Not expected towel consumption');  
@@ -97,16 +100,15 @@ async function handleWaterConsumptionMessage(message) {
     try {
         parsedMessage = JSON.parse(message);
         const savedObject = await waterConsumptionUseCases.newWaterConsumption(parsedMessage);
-        console.log(savedObject);
         if(savedObject.expected) {
             const guestDoc = await getGuestByConsumption(savedObject);
-            updateWaterTotals(savedObject);
+            await updateWaterTotals(savedObject);
+            await updateWaterXRoomChart(savedObject);
+            await updateTotalWaterMetric();
             updateWaterXAgeChart(savedObject, guestDoc);
             updateWaterXCountryChart(savedObject, guestDoc);
             updateWaterXDayChart(savedObject);
             updateWaterXHourChart(savedObject);
-            updateWaterXRoomChart(savedObject);
-            updateTotalWaterMetric();
         }
         else {
             console.log('ALERT! Not expected water consumption');
@@ -117,20 +119,20 @@ async function handleWaterConsumptionMessage(message) {
 }
 
 function publishStateMessage(sensorName, stateObject){
-    const topic = `${rootTopic}server/${sensorName}/${PUB_TOPICS.sensorStateTopic}`;
+    const topic = `${rootServerTopic}${sensorName}/${PUB_TOPICS.sensorStateTopic}`;
     const message = JSON.stringify(stateObject);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
 
 function publishTotalsMessage(sensorName, totalsObject){
-    const topic = `${rootTopic}server/${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
+    const topic = `${rootServerTopic}${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
     const message = JSON.stringify(totalsObject);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
 
-// Each 3 min
+// Every 3 min
 // Get active totals by active check In
 // Send totals to each active ESPSensor
 // If no active checkIns
@@ -199,7 +201,7 @@ async function updateWaterTotals(waterConsumptionDoc){
         totalDocument.totals.water.seconds += waterConsumptionDoc.infoPacket.seconds;
         totalDocument.totals.totalConsumption += waterConsumptionDoc.infoPacket.consumption;
         const updatedDocument = await totalDocument.save();
-        publishTotalsMessage(sensorDoc.sensorName, updatedDocument);
+        publishTotalsMessage(sensorDoc.sensorName, updatedDocument.totals);
     
     } 
     catch (error) { 
@@ -225,7 +227,7 @@ const getGuestByConsumption = async (consumptionDoc) => {
     }
 };
 
-const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
+const updateTowelsXAgeChart = (towelConsumptionDoc, guestDoc) => {
     sockets.emitTowelsXAge(
         guestDoc.age, 
         towelConsumptionDoc.infoPacket.towels,
@@ -233,7 +235,7 @@ const updateTowelsXAgeChart = async (towelConsumptionDoc, guestDoc) => {
         towelConsumptionDoc.infoPacket.weight);
 };
 
-const updateTowelsXCountryChart = async (towelConsumptionDoc, guestDoc) => {
+const updateTowelsXCountryChart = (towelConsumptionDoc, guestDoc) => {
     sockets.emitTowelsXCountry(
         guestDoc.country, 
         towelConsumptionDoc.infoPacket.towels,
@@ -288,14 +290,13 @@ const updateTotalTowelsMetric = async () => {
     );
 };
 
-const updateWaterXAgeChart = async (waterConsumptionDoc, guestDoc) => {
-    console.log(waterConsumptionDoc);
+const updateWaterXAgeChart = (waterConsumptionDoc, guestDoc) => {
     sockets.emitWaterXAge(
         guestDoc.age,
         waterConsumptionDoc.infoPacket.consumption);
 };
 
-const updateWaterXCountryChart = async (waterConsumptionDoc, guestDoc) => {
+const updateWaterXCountryChart = (waterConsumptionDoc, guestDoc) => {
     sockets.emitWaterXCountry(
         guestDoc.country,
         waterConsumptionDoc.infoPacket.consumption);
