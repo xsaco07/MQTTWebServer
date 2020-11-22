@@ -54,7 +54,7 @@
                     <p>Consumos generales</p>
                   </a>
                 </li>
-                <% if(userDoc.userName === 'admin' || userDoc.userName === 'dev'){ %>
+                <% if(userDoc.role.roleName === 'Admin'){ %>
                   <li class="nav-item">
                     <a class="nav-link" href="/unexpected/">
                       <i class="material-icons">report</i>

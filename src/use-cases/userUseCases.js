@@ -38,12 +38,20 @@ module.exports = {
     },
     // inputData = {}
     getUsers : async () => {
-        try { return await entities.User.find({}); } 
+        try { 
+            return await entities.User.find({}).
+            populate('role')
+            .exec();
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {user_id : ObjectId}
     getUserById : async (inputData) => {
-        try { return await entities.User.findById(inputData.user_id); } 
+        try { 
+            return await entities.User.findById(inputData.user_id)
+            .populate('role')
+            .exec(); 
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {name : String, lastName1 : String, lastName2 : String}
@@ -55,7 +63,9 @@ module.exports = {
                     lastName1 : inputData.lastName1,
                     lastName2 : inputData.lastName2
                 }
-            });
+            })
+            .populate('role')
+            .exec();
         } 
         catch (error) { handleDBOperationError(error); }
     },
