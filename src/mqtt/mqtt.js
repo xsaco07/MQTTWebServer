@@ -15,22 +15,14 @@ const URL_CONNECTION = process.env.MQTT_URL;
 const mqttClient = MQTT.connect(URL_CONNECTION);
 
 // Suscription topics
-const envTopic = process.env.MQTT_ENV_TOPIC;
-const rootTopic = "ecoH2o/";
-const rootSensorTopic = `${envTopic}${rootTopic}sensor/`;
-const rootServerTopic = `${envTopic}${rootTopic}server/`;
-const towelConsumptionTopic = `${rootSensorTopic}towelsConsumption/`;
-const waterConsumptionTopic = `${rootSensorTopic}waterConsumption/`;
+const towelConsumptionTopic = process.env.TOWEL_CONSUMPTION_TOPIC;
+const waterConsumptionTopic = process.env.WATER_CONSUMPTION_TOPIC;
 
 // Publish topics
 const sensorTotalsTopic = 'totals/';
 const sensorStateTopic = 'state/';
 
 const SUB_TOPICS = {
-    envTopic,
-    rootTopic,
-    rootSensorTopic,
-    rootServerTopic,
     towelConsumptionTopic,
     waterConsumptionTopic
 };
@@ -119,14 +111,14 @@ async function handleWaterConsumptionMessage(message) {
 }
 
 function publishStateMessage(sensorName, stateObject){
-    const topic = `${rootServerTopic}${sensorName}/${PUB_TOPICS.sensorStateTopic}`;
+    const topic = `${process.env.ROOT_SERVER_TOPIC}${sensorName}/${PUB_TOPICS.sensorStateTopic}`;
     const message = JSON.stringify(stateObject);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
 }
 
 function publishTotalsMessage(sensorName, totalsObject){
-    const topic = `${rootServerTopic}${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
+    const topic = `${process.env.ROOT_SERVER_TOPIC}${sensorName}/${PUB_TOPICS.sensorTotalsTopic}`;
     const message = JSON.stringify(totalsObject);
     mqttClient.publish(topic, message, 
     (err) => errorHandlers.handlePublishMessageError(err, topic, message));
