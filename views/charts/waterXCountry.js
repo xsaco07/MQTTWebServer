@@ -48,14 +48,14 @@ const waterXCountry = new Chart(waterXCountryCanvas, {
 });
 
 const loadWaterXCountryChart = (serverData) => {
-    for (guestData of Object.values(serverData)){
-        const guestCountry = guestData.guest.country;
+    for (total of Object.values(serverData)){
+        const guestCountry = total.checkIn_id.guest_id.country;
         let index = getElementIndex(guestCountry, waterXCountry);
         if(index == -1){
             waterXCountry.data.labels.push(guestCountry);
-            waterXCountry.data.datasets[0].data.push(guestData.consumption);
+            waterXCountry.data.datasets[0].data.push(total.totals.water.consumption);
         }
-        else waterXCountry.data.datasets[0].data[index] += guestData.consumption;
+        else waterXCountry.data.datasets[0].data[index] += total.totals.water.consumption;
     }
     waterXCountry.update();
 };

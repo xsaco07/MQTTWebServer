@@ -1,5 +1,4 @@
-const towelsByRoomEndPoint = '/api/towelConsumption/current/room/';
-const waterByRoomEndPoint = '/api/waterConsumption/current/room/';
+const roomConsumptionEndPoint = '/api/total/';
 
 window.addEventListener('load', async function () {
 
@@ -7,21 +6,12 @@ window.addEventListener('load', async function () {
 
         let jsonData = {};
 
-        const [
-            towelByRoomResponse,
-            waterByRoomResponse
-        ] = await Promise.all([
-            fetch(towelsByRoomEndPoint),
-            fetch(waterByRoomEndPoint)
-        ]);
+        const response = await fetch(roomConsumptionEndPoint);
 
-        if(towelByRoomResponse.status == 200) {
-            jsonData = await towelByRoomResponse.json();
-            loadTowelsWeightXRoomChart(jsonData);
-        }
-        if(waterByRoomResponse.status == 200) {
-            jsonData = await waterByRoomResponse.json();
+        if(response.status == 200) {
+            jsonData = await response.json();
             loadWaterXRoomChart(jsonData);
+            loadTowelsWeightXRoomChart(jsonData);
         }
 
     } catch (error) { console.log(`Error: ${error}`); }

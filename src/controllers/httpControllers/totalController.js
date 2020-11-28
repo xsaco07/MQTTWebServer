@@ -23,6 +23,26 @@ module.exports = {
         } catch (error) { handleGetRequestError(error, res); }
     },
     // Method = GET
+    // Action = total/guest/
+    // Params = {}
+    getByGuest : async (req, res, next) => {
+        try {
+            const docs = await totalUseCases.getTotalsByGuest();
+            if(docs.length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
+    // Action = total/room/
+    // Params = {}
+    getByRoom : async (req, res, next) => {
+        try {
+            const docs = await totalUseCases.getTotalsByRoom();
+            if(docs.length == 0) res.status(204).end();
+            else res.status(200).json(docs);
+        } catch (error) { handleGetRequestError(error, res); }
+    },
+    // Method = GET
     // Action = /total/_id/:_id/
     // Params =  {_id : ObjectId}
     getById : async (req, res, next) => {

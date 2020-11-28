@@ -5,7 +5,7 @@ const factories = require('../entities/factories');
 const bcrypt = require('bcrypt');
 
 const handleDBOperationError = (err) => {
-    console.log(`Guest Use Case`);
+    console.log(`User Use Case`);
     console.log(`Error: ${err}`);
     throw new Error(err);
 };
@@ -24,6 +24,7 @@ module.exports = {
         const finalObject = Object.freeze({
             userName : inputData.userName,
             password : hashedPassword,
+            role : inputData.role,
             fullName : {
                 name : inputData.name, 
                 lastName1 : inputData.lastName1,
@@ -37,12 +38,20 @@ module.exports = {
     },
     // inputData = {}
     getUsers : async () => {
-        try { return await entities.User.find({}); } 
+        try { 
+            return await entities.User.find({}).
+            populate('role')
+            .exec();
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {user_id : ObjectId}
     getUserById : async (inputData) => {
-        try { return await entities.User.findById(inputData.user_id); } 
+        try { 
+            return await entities.User.findById(inputData.user_id)
+            .populate('role')
+            .exec(); 
+        } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {name : String, lastName1 : String, lastName2 : String}
@@ -54,13 +63,19 @@ module.exports = {
                     lastName1 : inputData.lastName1,
                     lastName2 : inputData.lastName2
                 }
-            });
+            })
+            .populate('role')
+            .exec();
         } 
         catch (error) { handleDBOperationError(error); }
     },
     // inputData = {userName : String}
     getUserByUserName : async (inputData) => {
-        try { return await entities.User.findOne({userName : inputData.userName}); } 
+        try { 
+            return await entities.User.findOne({userName : inputData.userName})
+            .populate('role')
+            .exec();
+        } 
         catch (error) { handleDBOperationError(error); }
     }
 }

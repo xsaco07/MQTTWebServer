@@ -48,14 +48,14 @@ const towelsWeightXCountry = new Chart(towelsWeightXCountryCanvas, {
 });
 
 const loadTowelsWeightXCountryChart = (serverData) => {
-    for (guestData of Object.values(serverData)){
-        const guestCountry = guestData.guest.country;
+    for (total of Object.values(serverData)){
+        const guestCountry = total.checkIn_id.guest_id.country;
         let index = getElementIndex(guestCountry, towelsWeightXCountry);
         if(index == -1){
             towelsWeightXCountry.data.labels.push(guestCountry);
-            towelsWeightXCountry.data.datasets[0].data.push(guestData.weight / 1000);
+            towelsWeightXCountry.data.datasets[0].data.push(total.totals.towels.weight / 1000);
         }
-        else towelsWeightXCountry.data.datasets[0].data[index] += guestData.weight / 1000;
+        else towelsWeightXCountry.data.datasets[0].data[index] += (total.totals.towels.weight / 1000);
     }
     towelsWeightXCountry.update();
 };
@@ -67,6 +67,6 @@ socket.on('towelsXCountry', function(data){
         towelsWeightXCountry.data.datasets[0].data.push(data.weight / 1000);
         index = towelsWeightXCountry.data.datasets[0].data.length - 1;
     }
-    else towelsWeightXCountry.data.datasets[0].data[index] += data.weight / 1000;
+    else towelsWeightXCountry.data.datasets[0].data[index] += (data.weight / 1000);
     towelsWeightXCountry.update();
 });

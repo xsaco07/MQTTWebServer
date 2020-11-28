@@ -47,9 +47,9 @@ const towelsWeightXAge = new Chart(towelsWeightXAgeCanvas, {
 });
 
 const loadTowelsWeightXAgeChart = (serverData) =>{
-    for (guestData of Object.values(serverData)){
-        const index = getAgeIndex(guestData.guest.age);
-        towelsWeightXAge.data.datasets[0].data[index] += guestData.weight / 1000;
+    for (total of Object.values(serverData)){
+        const index = getAgeIndex(total.checkIn_id.guest_id.age);
+        towelsWeightXAge.data.datasets[0].data[index] += (total.totals.towels.weight / 1000);
     }
     towelsWeightXAge.update();
 };

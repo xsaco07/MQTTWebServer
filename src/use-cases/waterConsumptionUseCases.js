@@ -87,7 +87,7 @@ module.exports = {
             exec();
         } catch (error) { handleDBOperationError(error); }
     },
-    // Count the total expected consumption measured by a sensor in a room for the given period of time
+    // Count the total expected consumptions measured by a sensor in a room for the given period of time
     // inputData = {room_id : ObjectId, date1 : Date, date2 : Date}
     getTotalConsumptionByPeriodAndRoomId : async (inputData) => {
         try {
@@ -112,7 +112,7 @@ module.exports = {
             return null;
         } catch (error) { handleDBOperationError(error); }
     },
-    // Returns a list of expected water consumption for every guest 
+    // Returns a list of expected water consumptions for each guest 
     // inputData = {}
     getConsumptionForAllGuests : async () => {
         
@@ -122,7 +122,7 @@ module.exports = {
             
             // Get all towelConsumptions registered and expected
             const waterConsumptions = await entities.WaterConsumption.find(
-                {expected : true}, 
+                {expected : true, 'infoPacket.consumption' : {$gt : 0}},
                 'sensor_id infoPacket'
             );
             
@@ -151,7 +151,7 @@ module.exports = {
                 else {
                     result[guestDoc._id].consumption += doc.infoPacket.consumption;
                     result[guestDoc._id].seconds += doc.infoPacket.seconds;
-                } 
+                }
                 
             }));
 
