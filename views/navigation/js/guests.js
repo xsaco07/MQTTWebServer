@@ -1,5 +1,4 @@
-const towelByGuestEndPoint = '/api/towelConsumption/guest/';
-const waterByGuestEndPoint = '/api/waterConsumption/guest/';
+const guestConsumptionEndPoint = '/api/total/';
 
 window.addEventListener('load', async function () {
 
@@ -7,21 +6,12 @@ window.addEventListener('load', async function () {
 
         let jsonData = {};
 
-        const [
-            towelByGuestResponse, 
-            waterByGuestResponse
-        ] = await Promise.all([
-            fetch(towelByGuestEndPoint),
-            fetch(waterByGuestEndPoint)
-        ]);
+        const response = await fetch(guestConsumptionEndPoint);
 
-        if(towelByGuestResponse.status == 200) {
-            jsonData = await towelByGuestResponse.json();
+        if(response.status == 200) {
+            jsonData = await response.json();
             loadTowelsWeightXAgeChart(jsonData);
             loadTowelsWeightXCountryChart(jsonData);
-        }
-        if(waterByGuestResponse.status == 200) {
-            jsonData = await waterByGuestResponse.json();
             loadWaterXAgeChart(jsonData);
             loadWaterXCountryChart(jsonData);
         }

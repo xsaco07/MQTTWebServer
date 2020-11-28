@@ -59,16 +59,15 @@ var waterXRoom = new Chart(waterXRoomCanvas, {
 
 const loadWaterXRoomChart = (serverData) => {
     // Fill data, capacity, and labels array
-    for (_id of Object.keys(serverData)){
-        const object = serverData[_id];
-        const roomNumber = parseInt(_id);
+    for (total of Object.values(serverData)){
+        const roomNumber = total.checkIn_id.room_id.roomNumber;
         let index = getElementIndex(`Hab-${roomNumber}`, waterXRoom);
         if(index == -1){
             waterXRoom.data.labels.push(`Hab-${roomNumber}`);
-            waterXRoom.data.datasets[0].data.push(object.consumption);
-            waterXRoom.data.datasets[0].capacity.push(object.capacity);
+            waterXRoom.data.datasets[0].data.push(total.totals.water.consumption);
+            waterXRoom.data.datasets[0].capacity.push(total.checkIn_id.room_id.capacity);
         }
-        else waterXRoom.data.datasets[0].data[index] += object.consumption;
+        else waterXRoom.data.datasets[0].data[index] += (total.totals.water.consumption);
     }
     waterXRoom.update();
 };

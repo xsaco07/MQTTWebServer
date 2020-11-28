@@ -61,18 +61,16 @@ var towelsWeightXRoom = new Chart(towelsWeightXRoomCanvas, {
 
 const loadTowelsWeightXRoomChart = (serverData) => {
     // Fill data, capacity, and labels array
-    for (_id of Object.keys(serverData)){
-        const object = serverData[_id];
-        const roomNumber = parseInt(_id);
+    for (total of Object.values(serverData)){
+        const roomNumber = total.checkIn_id.room_id.roomNumber;
         let index = getElementIndex(`Hab-${roomNumber}`, towelsWeightXRoom);
         if(index == -1){
             towelsWeightXRoom.data.labels.push(`Hab-${roomNumber}`);
-            towelsWeightXRoom.data.datasets[0].data.push(object.weight / 1000);
-            towelsWeightXRoom.data.datasets[0].capacity.push(object.capacity);
+            towelsWeightXRoom.data.datasets[0].data.push(total.totals.towels.weight / 1000);
+            towelsWeightXRoom.data.datasets[0].capacity.push(total.checkIn_id.room_id.capacity);
         }
-        else towelsWeightXRoom.data.datasets[0].data[index] += object.weight / 1000;
+        else towelsWeightXRoom.data.datasets[0].data[index] += (total.totals.towels.weightweight / 1000);
     }
-
     towelsWeightXRoom.update();
 };
 

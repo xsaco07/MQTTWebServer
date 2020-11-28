@@ -48,9 +48,9 @@ const waterXAge = new Chart(waterXAgeCanvas, {
 });
 
 const loadWaterXAgeChart = (serverData) => {
-    for (guestData of Object.values(serverData)){
-        const index = getAgeIndex(guestData.guest.age);
-        waterXAge.data.datasets[0].data[index] += guestData.consumption;
+    for (total of Object.values(serverData)){
+        const index = getAgeIndex(total.checkIn_id.guest_id.age);
+        waterXAge.data.datasets[0].data[index] += total.totals.water.consumption;
     }
     waterXAge.update();
 };

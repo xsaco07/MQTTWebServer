@@ -15,6 +15,11 @@ const userSchema = {
         type : String,
         required : true
     },
+    role : {
+        type : Schema.Types.ObjectId,
+        required: true,
+        ref : 'Role'
+    },
     fullName : {
         name : {
             type : String,

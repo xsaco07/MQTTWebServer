@@ -25,8 +25,49 @@ module.exports = {
             populate({
                 path : 'checkIn_id',
                 populate : {
-                    path : 'room_id'
-                }
+                    path : 'room_id',
+                    select : 'roomNumber capacity -_id'
+                },
+                select : '-_id -__v'
+            }).
+            populate({
+                path : 'checkIn_id',
+                populate : {
+                    path : 'guest_id',
+                    select : 'age country -_id'
+                },
+                select : '-_id -__v'
+            }).
+            select('-_id -__v').
+            exec(); 
+        } 
+        catch (error) { handleDBOperationError(error); }
+    },
+    getTotalsByGuest : async () => {
+        try { 
+            return await entities.Total.find({}, 'totals').
+            populate({
+                path : 'checkIn_id',
+                populate : {
+                    path : 'guest_id',
+                    select : 'age country'
+                },
+                select : 'guest_id'
+            }).
+            exec(); 
+        } 
+        catch (error) { handleDBOperationError(error); }
+    },
+    getTotalsByRoom : async () => {
+        try { 
+            return await entities.Total.find({}, 'totals').
+            populate({
+                path : 'checkIn_id',
+                populate : {
+                    path : 'room_id',
+                    select : 'roomNumber'
+                },
+                select : 'room_id'
             }).
             exec(); 
         } 

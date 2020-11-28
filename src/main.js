@@ -1,3 +1,8 @@
+if(process.env.NODE_ENV !== 'prod'){
+    // For ENV variables
+    require('dotenv').config();
+}
+
 // Requirements
 const path = require('path');
 const express = require('express');
@@ -12,9 +17,6 @@ const session = require('express-session');
 const initializePassport = require('./passport-config');
 
 initializePassport(passport);
-
-// For ENV variables
-require('dotenv').config();
 
 // Routes
 const roomRoutes = require('./routes/roomRoutes');
